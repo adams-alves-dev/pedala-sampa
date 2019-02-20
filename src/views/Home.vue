@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <div>{{ records }}</div>
+    <div>{{ Records }}</div>
   </div>
 </template>
 
@@ -11,17 +11,21 @@ export default {
   name: 'Home',
   data () {
     return {
-      records: []
+      Records: []
     }
   },
   mounted () {
     this.getData()
   },
   methods: {
-    getData: function () {
+    getData () {
       this.$api().then((res) => {
-        this.records = res.data.records
+        this.configureRecords(res.data.records)
       })
+    },
+    configureRecords (Records) {
+      this.Records = Records
+      this.$store.commit('SetRecords', this.Records)
     }
   }
 }
