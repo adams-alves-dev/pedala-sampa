@@ -5,12 +5,14 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-
+    Records: []
   },
   mutations: {
-
+    SetRecords (state, Data) {
+      state.Records = Data
+    }
   },
-  actions: {
-
+  getters: {
+    Records: (state) => state.Records
   }
 })
