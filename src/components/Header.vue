@@ -1,10 +1,10 @@
 <template>
-  <header>
-    <h1>Pedala Sampa</h1>
-    <div id="nav">
+  <header class="header">
+    <h1 class="header__title">Pedala Sampa</h1>
+    <nav class="header__nav">
       <router-link to="/">Home</router-link> |
       <router-link to="/about">About</router-link>
-    </div>
+    </nav>
   </header>
 </template>
 
@@ -15,7 +15,15 @@ export default {
 </script>
 
 <style lang="stylus">
-#nav
+.header
+  width 100%
+  margin-top 20px
+  lost-center 960px
+  lost-utility clearfix
+.header__title
+  lost-column 1/2
+.header__nav
+  lost-column 1/3
   padding 30px
   a
     font-weight bold
