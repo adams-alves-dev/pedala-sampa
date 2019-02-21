@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <div>{{ Records }}</div>
+    <div>{{ Clubs }}</div>
   </div>
 </template>
 
@@ -11,7 +11,7 @@ export default {
   name: 'Home',
   data () {
     return {
-      Records: []
+      Clubs: []
     }
   },
   mounted () {
@@ -20,12 +20,12 @@ export default {
   methods: {
     getData () {
       this.$api().then((res) => {
-        this.configureRecords(res.data.records)
+        this.configureClubs(res.data.records)
       })
     },
-    configureRecords (Records) {
-      this.Records = Records
-      this.$store.commit('SetRecords', this.Records)
+    configureClubs (Clubs) {
+      this.Clubs = Clubs
+      this.$store.commit('SetClubs', this.Clubs)
     }
   }
 }

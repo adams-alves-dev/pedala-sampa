@@ -5,14 +5,14 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    Records: []
+    Clubs: []
   },
   mutations: {
-    SetRecords (state, Data) {
-      state.Records = Data
+    SetClubs (state, Data) {
+      state.Clubs = Data
     }
   },
   getters: {
-    Records: (state) => state.Records
+    Clubs: (state) => state.Clubs
   }
 })
