@@ -1,6 +1,13 @@
 <template>
   <div class="home">
-    <div>{{ Clubs }}</div>
+    <div v-for="Club in Clubs" :key="Club.id">
+      <article class="card">
+        <div class="content">
+          <h3><a :href="Club.fields.link">{{ Club.fields.name }}</a> - <span>{{ Club.fields.effort }}</span></h3>
+          <p>Local de concentração: <strong>{{ Club.fields.departure_location }}</strong> - {{ Club.fields.day }}, {{ Club.fields.start_hour }}</p>
+        </div>
+      </article>
+    </div>
   </div>
 </template>
 
