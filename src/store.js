@@ -13,6 +13,9 @@ export default new Vuex.Store({
     }
   },
   getters: {
-    Clubs: (state) => state.Clubs
+    Clubs: (state) => state.Clubs,
+    getClubById: (state) => (id) => {
+      return state.Clubs.find(Club => Club.id === id)
+    }
   }
 })
