@@ -4,8 +4,11 @@ import router from './router'
 import store from './store'
 import './registerServiceWorker'
 import axios from 'axios'
+import VueMoment from 'vue-moment'
 
 Vue.config.productionTip = false
+
+Vue.use(VueMoment)
 
 Vue.prototype.$api = Vue.$api = axios.create({
   baseURL: `${process.env.VUE_APP_AIRTABLE_API_URL}${process.env.VUE_APP_AIRTABLE_BASE}`,
