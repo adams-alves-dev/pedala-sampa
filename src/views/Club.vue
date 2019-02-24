@@ -4,7 +4,7 @@
       <h3>
         <a :href="Club.fields.link">{{ Club.fields.name }}</a> - <span>{{ Club.fields.effort }}</span>
       </h3>
-      <p>Distância: <strong>{{ Club.fields.distance }} km</strong> - Ritmo <strong>{{ Club.fields.rhythm }} km/h</strong> - Duração: <strong>~ {{ FomattingLapDuration }}</strong> - Nota: {{ Club.fields.rating }}</p>
+      <p>Distância: <strong>{{ Club.fields.distance }} km</strong> - Ritmo <strong>{{ Club.fields.rhythm }} km/h</strong> - Duração: <strong>~ {{ FormattingLapDuration }}</strong> - Nota: {{ Club.fields.rating }}</p>
       <p>Local de concentração: <strong>{{ Club.fields.departure_location }}</strong> - {{ Club.fields.day }}, {{ Club.fields.start_hour }}</p>
     </div>
   </div>
@@ -17,7 +17,7 @@ export default {
     Club () {
       return this.$store.getters.getClubById(this.$route.params.id)
     },
-    FomattingLapDuration () {
+    FormattingLapDuration () {
       const lap = this.Club.fields.lap_duration * 1000
       const moment = this.$moment.duration(lap)
       return `${moment._data.hours}h:${moment._data.minutes}m`
