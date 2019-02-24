@@ -2,7 +2,7 @@
   <div class="club">
     <div class="content">
       <h3>
-        {{ Club.fields.name }} - <span>{{ Club.fields.effort }}</span>
+        <a :href="Club.fields.link">{{ Club.fields.name }}</a> - <span>{{ Club.fields.effort }}</span>
       </h3>
       <p>Distância: <strong>{{ Club.fields.distance }} km</strong> - Ritmo <strong>{{ Club.fields.rhythm }} km/h</strong> - Duração: <strong>~ {{ FomattingLapDuration }}</strong> - Nota: {{ Club.fields.rating }}</p>
       <p>Local de concentração: <strong>{{ Club.fields.departure_location }}</strong> - {{ Club.fields.day }}, {{ Club.fields.start_hour }}</p>
