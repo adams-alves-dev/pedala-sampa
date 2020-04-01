@@ -21,7 +21,10 @@ export default new Router({
       path: '/club/:id',
       name: 'club',
       component: () => import('./views/Club.vue')
+    },
+    {
+      path: '*',
+      component: () => import('./views/PageNotFound.vue')
     }
-    // { path: "*", component: PageNotFound } fazer pagina notfound
   ]
 })
