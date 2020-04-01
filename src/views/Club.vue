@@ -1,6 +1,6 @@
 <template>
   <div class="club">
-    <div class="content">
+    <div class="content" v-if="Club.fields">
       <h3>
         <a :href="Club.fields.link">{{ Club.fields.name }}</a> - <span>{{ Club.fields.effort }}</span>
       </h3>
@@ -13,10 +13,19 @@
 <script>
 export default {
   name: 'Club',
+  data () {
+    return {
+      Club: {}
+    }
+  },
+  mounted () {
+    const id = this.$route.params.id
+    this.Club = this.$store.getters.getClubById(id) || JSON.parse(localStorage.getItem('Club'))
+    // parse para o localStorage
+    const parsed = JSON.stringify(this.Club)
+    localStorage.setItem('Club', parsed)
+  },
   computed: {
-    Club () {
-      return this.$store.getters.getClubById(this.$route.params.id)
-    },
     FormattingLapDuration () {
       const lap = this.Club.fields.lap_duration * 1000
       const moment = this.$moment.duration(lap)
@@ -25,7 +34,3 @@ export default {
   }
 }
 </script>
-
-<style>
-
-</style>
