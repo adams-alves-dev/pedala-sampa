@@ -11,6 +11,8 @@
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
   name: 'Club',
   data () {
@@ -20,10 +22,20 @@ export default {
   },
   mounted () {
     const id = this.$route.params.id
-    this.Club = this.$store.getters.getClubById(id) || JSON.parse(localStorage.getItem('Club'))
-    // parse para o localStorage
-    const parsed = JSON.stringify(this.Club)
-    localStorage.setItem('Club', parsed)
+    const clubDetail = axios.get(
+      `${process.env.VUE_APP_AIRTABLE_API_URL}${process.env.VUE_APP_AIRTABLE_BASE}/${id}`,
+      {
+        headers: { 'Authorization': `Bearer ${process.env.VUE_APP_AIRTABLE_API_KEY}` }
+      }
+    )
+    // adiciona o resuldato da chamada ao Club
+    clubDetail
+      .then((res) => {
+        this.Club = res.data || JSON.parse(localStorage.getItem('Club'))
+        // parse para o localStorage
+        const clubParsed = JSON.stringify(this.Club)
+        localStorage.setItem('Club', clubParsed)
+      })
   },
   computed: {
     FormattingLapDuration () {
