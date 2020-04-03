@@ -4,15 +4,16 @@
       <h3>
         <a :href="Club.fields.link">{{ Club.fields.name }}</a> - <span>{{ Club.fields.effort }}</span>
       </h3>
-      <p>Distância: <strong>{{ Club.fields.distance }} km</strong> - Ritmo <strong>{{ Club.fields.rhythm }} km/h</strong> - Duração: <strong>~ {{ FormattingLapDuration }}</strong> - Nota: {{ Club.fields.rating }}</p>
+      <p>
+        Distância: <strong>{{ Club.fields.distance }} km</strong> - Ritmo <strong>{{ Club.fields.rhythm }} km/h</strong>
+        - Duração: <strong>~ {{ FormattingLapDuration }}</strong> - Nota: {{ Club.fields.rating }}
+      </p>
       <p>Local de concentração: <strong>{{ Club.fields.departure_location }}</strong> - {{ Club.fields.day }}, {{ Club.fields.start_hour }}</p>
     </div>
   </div>
 </template>
 
 <script>
-import axios from 'axios'
-
 export default {
   name: 'Club',
   data () {
@@ -22,20 +23,13 @@ export default {
   },
   mounted () {
     const id = this.$route.params.id
-    const clubDetail = axios.get(
-      `${process.env.VUE_APP_AIRTABLE_API_URL}${process.env.VUE_APP_AIRTABLE_BASE}/${id}`,
-      {
-        headers: { 'Authorization': `Bearer ${process.env.VUE_APP_AIRTABLE_API_KEY}` }
-      }
-    )
-    // adiciona o resuldato da chamada ao Club
-    clubDetail
-      .then((res) => {
-        this.Club = res.data || JSON.parse(localStorage.getItem('Club'))
-        // parse para o localStorage
-        const clubParsed = JSON.stringify(this.Club)
-        localStorage.setItem('Club', clubParsed)
-      })
+    const clubDetail = this.$api(id)
+    clubDetail.then((res) => {
+      this.Club = res.data || JSON.parse(localStorage.getItem('Club'))
+      // parse para o localStorage
+      const clubParsed = JSON.stringify(this.Club)
+      localStorage.setItem('Club', clubParsed)
+    })
   },
   computed: {
     FormattingLapDuration () {
