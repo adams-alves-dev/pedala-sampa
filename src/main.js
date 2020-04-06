@@ -5,6 +5,7 @@ import store from './store'
 import './registerServiceWorker'
 import axios from 'axios'
 import VueMoment from 'vue-moment'
+import './stylus/style.styl'
 
 Vue.config.productionTip = false
 
