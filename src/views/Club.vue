@@ -25,7 +25,7 @@ export default {
     const id = this.$route.params.id
     const clubDetail = this.$api(id)
     clubDetail.then((res) => {
-      this.Club = res.data || JSON.parse(localStorage.getItem('Club'))
+      this.Club = JSON.parse(localStorage.getItem('Club')) || res.data
       // parse para o localStorage
       const clubParsed = JSON.stringify(this.Club)
       localStorage.setItem('Club', clubParsed)
