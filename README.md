@@ -4,7 +4,7 @@
 
 > **Pedala Sampa** é um mapa colaborativo que visa ajudar os ciclistas da cidade de **São Paulo** a encontrar grupos de pedal próximos da sua casa ou trabalho.
 
-> #bike #micromobilidade #app  
+> #bike #micromobilidade #mapacolaborativo #app  
 
 ## Desenvolvedor :computer:
 
