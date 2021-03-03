@@ -1,20 +1,20 @@
-# pedala-sampa
+# Pedala Sampa
 
-## Build Setup
+> :bicyclist: Descubra os clubes de pedal perto de você na cidade de São Paulo :mountain_bicyclist:
 
-```bash
-# install dependencies
-$ yarn install
+> **Pedala Sampa** é um mapa colaborativo que visa ajudar os ciclistas da cidade de **São Paulo** a encontrar grupos de pedal próximos da sua casa ou trabalho.
 
-# serve with hot reload at localhost:3000
-$ yarn dev
+> #bike #micromobilidade #mapacolaborativo #app  
 
-# build for production and launch server
-$ yarn build
-$ yarn start
+## Desenvolvedor :computer:
 
-# generate static project
-$ yarn generate
-```
+*  **Adams Alves** - [https://github.com/adamsalves](https://github.com/adamsalves)
+*  Quer contribuir? Entre em contato comigo pelo e-mail contato@adamsalves.com.br :)
 
-For detailed explanation on how things work, check out [Nuxt.js docs](https://nuxtjs.org).
+## Gostou do projeto, me apoie no Ko-fi :raised_hands: :coffee:
+
+- [https://ko-fi.com/adamsalves](https://ko-fi.com/adamsalves)
+
+## Status
+
+> :construction: Em desenvolvimento :building_construction:
