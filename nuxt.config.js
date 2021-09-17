@@ -34,7 +34,19 @@ export default {
     '@nuxtjs/axios',
     // https://go.nuxtjs.dev/pwa
     '@nuxtjs/pwa',
+    'nuxt-leaflet',
+    '@nuxtjs/apollo',
   ],
+
+  apollo: {
+    clientConfigs: {
+      default: {
+        httpEndpoint:
+          'https://api-us-east-1.graphcms.com/v2/cktlzsv381lsy01z0109u52uf/master',
+        getAuth: () => `Bearer ${process.env.GRAPHQL_TOKEN}` || '',
+      },
+    },
+  },
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {},

@@ -1,6 +1,6 @@
 {
   "name": "pedala-sampa",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "private": true,
   "scripts": {
     "dev": "nuxt",
@@ -12,10 +12,13 @@
     "test": "jest"
   },
   "dependencies": {
+    "@nuxtjs/apollo": "^4.0.1-rc.5",
     "@nuxtjs/axios": "^5.12.5",
     "@nuxtjs/pwa": "^3.3.5",
     "core-js": "^3.8.3",
-    "nuxt": "^2.14.12"
+    "graphql-tag": "^2.12.5",
+    "nuxt": "^2.14.12",
+    "nuxt-leaflet": "^0.0.25"
   },
   "devDependencies": {
     "@nuxtjs/eslint-config": "^5.0.0",
