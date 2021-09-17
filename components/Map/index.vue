@@ -1,6 +1,6 @@
 <template>
   <div id="map-wrap" class="map-wrap">
-    <no-ssr>
+    <client-only>
       <l-map
         :zoom="zoom"
         :min-zoom="minZoom"
@@ -18,7 +18,7 @@
           @click="handleClick({ name: group.name, slug: group.slug })"
         />
       </l-map>
-    </no-ssr>
+    </client-only>
   </div>
 </template>
 
