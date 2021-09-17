@@ -7,7 +7,7 @@
         :center="center"
         :max-bounds="maxBounds"
       >
-        <l-tile-layer url="http://{s}.tile.osm.org/{z}/{x}/{y}.png" />
+        <l-tile-layer url="https://{s}.tile.osm.org/{z}/{x}/{y}.png" />
         <l-marker
           v-for="group in groups"
           :key="group.id"
