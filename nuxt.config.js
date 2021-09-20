@@ -26,6 +26,7 @@ export default {
   buildModules: [
     // https://go.nuxtjs.dev/eslint
     '@nuxtjs/eslint-module',
+    '@nuxtjs/dotenv',
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
@@ -38,11 +39,16 @@ export default {
     '@nuxtjs/apollo',
   ],
 
+  publicRuntimeConfig: {
+    MAPBOX_API_KEY: process.env.MAPBOX_API_KEY,
+    MAPBOX_USERID: process.env.MAPBOX_USERID,
+    MAPBOX_STYLEID: process.env.MAPBOX_STYLEID,
+  },
+
   apollo: {
     clientConfigs: {
       default: {
-        httpEndpoint:
-          'https://api-us-east-1.graphcms.com/v2/cktlzsv381lsy01z0109u52uf/master',
+        httpEndpoint: process.env.GRAPHQL_HOST,
         getAuth: () => `Bearer ${process.env.GRAPHQL_TOKEN}` || '',
       },
     },

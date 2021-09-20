@@ -11,7 +11,9 @@ export default {
   components: { Map },
   methods: {
     groupName(event) {
-      console.log('get event on Index', event)
+      this.$router.push({
+        path: `/grupo/${event.slug}`,
+      })
     },
   },
 }
