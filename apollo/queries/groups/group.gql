@@ -1,0 +1,29 @@
+query getGroup($slug: String!) {
+  group(where: { slug: $slug }) {
+    id
+    name
+    slug
+    link {
+      text
+      html
+    }
+    departureLocation {
+      latitude
+      longitude
+    }
+    groupInfos {
+      id
+      startHour
+      address
+      day
+      rating
+      effort
+      distance
+      rhythm
+      group {
+        id
+        name
+      }
+    }
+  }
+}

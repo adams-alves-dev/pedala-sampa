@@ -7,25 +7,12 @@
 </template>
 
 <script>
-import { gql } from 'graphql-tag'
+import getPage from '@/apollo/queries/pages/page'
 
 export default {
   apollo: {
     page: {
-      query: gql`
-        query getPage($slug: String!) {
-          page(where: { slug: $slug }) {
-            heading
-            slug
-            description
-            body {
-              html
-              markdown
-            }
-            desc
-          }
-        }
-      `,
+      query: getPage,
       variables() {
         return {
           slug: this.$route.params.slug,

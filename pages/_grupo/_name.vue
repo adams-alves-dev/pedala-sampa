@@ -29,7 +29,7 @@
 
 <script>
 import moment from 'moment'
-import { gql } from 'graphql-tag'
+import getGroup from '@/apollo/queries/groups/group'
 
 export default {
   methods: {
@@ -43,37 +43,7 @@ export default {
   },
   apollo: {
     group: {
-      query: gql`
-        query getGroup($slug: String!) {
-          group(where: { slug: $slug }) {
-            id
-            name
-            slug
-            link {
-              text
-              html
-            }
-            departureLocation {
-              latitude
-              longitude
-            }
-            groupInfos {
-              id
-              startHour
-              address
-              day
-              rating
-              effort
-              distance
-              rhythm
-              group {
-                id
-                name
-              }
-            }
-          }
-        }
-      `,
+      query: getGroup,
       variables() {
         return {
           slug: this.$route.params.name,
