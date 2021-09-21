@@ -55,7 +55,8 @@ export default {
   apollo: {
     clientConfigs: {
       default: {
-        httpEndpoint: process.env.GRAPHQL_HOST,
+        httpEndpoint:
+          'https://api-us-east-1.graphcms.com/v2/cktlzsv381lsy01z0109u52uf/master',
         getAuth: () => `Bearer ${process.env.GRAPHQL_TOKEN}` || '',
       },
     },
