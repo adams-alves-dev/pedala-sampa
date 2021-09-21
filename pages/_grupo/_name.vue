@@ -9,6 +9,7 @@
       <ul>
         <li v-for="info in group.groupInfos" :key="info.id">
           <p>Saída {{ info.startHour }}</p>
+          <p>Endereço: {{ info.address }}</p>
           <p>Dia: {{ info.day }}</p>
           <p>Nível: {{ info.effort }}</p>
           <p>Distância: {{ info.distance }} KM</p>
@@ -59,6 +60,7 @@ export default {
             groupInfos {
               id
               startHour
+              address
               day
               rating
               effort
