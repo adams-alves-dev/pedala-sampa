@@ -1,14 +1,40 @@
 <template>
-  <div>
-    <h1>Group name: {{ group ? group.name : '' }}</h1>
-    {{ group }}
+  <div class="group">
+    <section v-if="group" class="group-info">
+      <h1>{{ group ? group.name : '' }}</h1>
+      <div v-html="group.link.html"></div>
+      <ul>
+        <li v-for="info in group.groupInfos" :key="info.id">
+          <p>Saída {{ info.startHour }}</p>
+          <p>Dia: {{ info.day }}</p>
+          <p>Nível: {{ info.effort }}</p>
+          <p>Distância: {{ info.distance }} KM</p>
+          <p>Ritmo: {{ info.rhythm }} KM/h</p>
+          <p>
+            Tempo médio da volta
+            {{ FormattingLapDuration(info) }}
+          </p>
+        </li>
+      </ul>
+      <div>
+        <NuxtLink to="/">Voltar</NuxtLink>
+      </div>
+    </section>
   </div>
 </template>
 
 <script>
+import moment from 'moment'
 import { gql } from 'graphql-tag'
 
 export default {
+  methods: {
+    FormattingLapDuration(info) {
+      const lap = ((info.distance * 1000) / (info.rhythm / 3.6)) * 1000
+      const lapDuration = moment.duration(lap)
+      return `${lapDuration._data.hours}h:${lapDuration._data.minutes}m`
+    },
+  },
   apollo: {
     group: {
       query: gql`
@@ -32,6 +58,7 @@ export default {
               rating
               effort
               distance
+              rhythm
               group {
                 id
                 name
@@ -50,4 +77,10 @@ export default {
 }
 </script>
 
-<style></style>
+<style lang="scss" scoped>
+.group {
+  width: 780px;
+  margin: 0 auto;
+  padding-top: 100px;
+}
+</style>
