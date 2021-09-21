@@ -2,7 +2,7 @@
   <div v-if="page" class="page">
     <h1>{{ page.heading }}</h1>
     <p>{{ page.description }}</p>
-    <div v-html="page.body.html"></div>
+    <div class="description" v-html="$md.render(page.desc)"></div>
   </div>
 </template>
 
@@ -20,7 +20,9 @@ export default {
             description
             body {
               html
+              markdown
             }
+            desc
           }
         }
       `,
@@ -39,5 +41,8 @@ export default {
   width: 780px;
   margin: 0 auto;
   padding-top: 100px;
+  h1 {
+    padding: 10px 0;
+  }
 }
 </style>

@@ -4,7 +4,14 @@
       <h1>Pedala Sampa</h1>
     </NuxtLink>
     <nav>
-      <NuxtLink :to="{ path: '/sobre' }"> Sobre </NuxtLink>
+      <ul>
+        <li>
+          <NuxtLink to="/"> Mapa </NuxtLink>
+        </li>
+        <li>
+          <NuxtLink :to="{ path: '/sobre' }"> Sobre </NuxtLink>
+        </li>
+      </ul>
     </nav>
   </header>
 </template>
@@ -30,6 +37,23 @@ export default {}
   h1 {
     font-size: 2rem;
     line-height: 1.5rem;
+  }
+  a {
+    text-decoration: none;
+    color: #000;
+  }
+  nav {
+    a {
+      font-weight: bold;
+    }
+    ul {
+      list-style: none;
+      li {
+        display: inline-block;
+        text-decoration: none;
+        margin-right: 20px;
+      }
+    }
   }
 }
 </style>

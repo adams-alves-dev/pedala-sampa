@@ -44,6 +44,8 @@ export default {
     '@nuxtjs/pwa',
     'nuxt-leaflet',
     '@nuxtjs/apollo',
+    '@nuxtjs/markdownit',
+    '@nuxtjs/style-resources',
   ],
 
   publicRuntimeConfig: {
@@ -62,6 +64,10 @@ export default {
     },
   },
 
+  markdownit: {
+    runtime: true, // Support `$md()`
+  },
+
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {},
 
@@ -74,4 +80,9 @@ export default {
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {},
+
+  // Style Resources
+  styleResources: {
+    scss: ['./assets/scss/*.scss'],
+  },
 }
