@@ -10,7 +10,14 @@ export default {
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       { hid: 'description', name: 'description', content: '' },
     ],
-    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
+    link: [
+      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+      {
+        rel: 'stylesheet',
+        href:
+          'https://fonts.googleapis.com/css2?family=Montserrat:wght@100;400;600&display=swap',
+      },
+    ],
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
@@ -26,6 +33,7 @@ export default {
   buildModules: [
     // https://go.nuxtjs.dev/eslint
     '@nuxtjs/eslint-module',
+    '@nuxtjs/dotenv',
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
@@ -37,6 +45,12 @@ export default {
     'nuxt-leaflet',
     '@nuxtjs/apollo',
   ],
+
+  publicRuntimeConfig: {
+    MAPBOX_API_KEY: process.env.MAPBOX_API_KEY,
+    MAPBOX_USERID: process.env.MAPBOX_USERID,
+    MAPBOX_STYLEID: process.env.MAPBOX_STYLEID,
+  },
 
   apollo: {
     clientConfigs: {

@@ -7,7 +7,7 @@
         :center="center"
         :max-bounds="maxBounds"
       >
-        <l-tile-layer url="https://{s}.tile.osm.org/{z}/{x}/{y}.png" />
+        <CustomTileLayer />
         <l-marker
           v-for="group in groups"
           :key="group.id"
@@ -15,7 +15,13 @@
             group.departureLocation.latitude,
             group.departureLocation.longitude,
           ]"
-          @click="handleClick({ name: group.name, slug: group.slug })"
+          @click="
+            handleClick({
+              id: group.id,
+              name: group.name,
+              slug: group.slug,
+            })
+          "
         />
       </l-map>
     </client-only>
@@ -24,8 +30,10 @@
 
 <script>
 import { gql } from 'graphql-tag'
+import CustomTileLayer from './CustomTileLayer.vue'
 
 export default {
+  components: { CustomTileLayer },
   data() {
     return {
       zoom: 12.3,
