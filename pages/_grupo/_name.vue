@@ -32,7 +32,9 @@ export default {
     FormattingLapDuration(info) {
       const lap = ((info.distance * 1000) / (info.rhythm / 3.6)) * 1000
       const lapDuration = moment.duration(lap)
-      return `${lapDuration._data.hours}h:${lapDuration._data.minutes}m`
+      return `${lapDuration._data.hours}h:${
+        lapDuration._data.minutes === 0 ? '00' : lapDuration._data.minutes
+      }m`
     },
   },
   apollo: {
