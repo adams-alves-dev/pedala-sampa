@@ -48,10 +48,31 @@ export default {}
     }
     ul {
       list-style: none;
+      padding: 0;
       li {
         display: inline-block;
         text-decoration: none;
         margin-right: 20px;
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .header {
+    padding: 0 40px;
+    h1 {
+      font-size: 1.2rem;
+      line-height: 1.2rem;
+    }
+    nav {
+      ul {
+        li {
+          font-size: 1rem;
+          line-height: 1.2rem;
+          margin-right: 5px;
+          margin-left: 5px;
+        }
       }
     }
   }

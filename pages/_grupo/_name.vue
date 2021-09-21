@@ -2,7 +2,10 @@
   <div class="group">
     <section v-if="group" class="group-info">
       <h1>{{ group ? group.name : '' }}</h1>
-      <div v-html="group.link.html"></div>
+      <div class="link">
+        <p>Mais informações:</p>
+        <div v-html="group.link.html"></div>
+      </div>
       <ul>
         <li v-for="info in group.groupInfos" :key="info.id">
           <p>Saída {{ info.startHour }}</p>
