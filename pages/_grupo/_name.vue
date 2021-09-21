@@ -83,6 +83,13 @@ export default {
 .group {
   width: 780px;
   margin: 0 auto;
-  padding-top: 100px;
+  padding: 90px 20px 20px 20px;
+}
+
+@media (max-width: 768px) {
+  .group {
+    width: 100%;
+    margin: 0 auto;
+  }
 }
 </style>
