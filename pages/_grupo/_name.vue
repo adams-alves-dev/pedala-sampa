@@ -32,6 +32,35 @@ import moment from 'moment'
 import getGroup from '@/apollo/queries/groups/group'
 
 export default {
+  name: 'Group',
+  async asyncData({ app, route }) {
+    const client = app.apolloProvider.defaultClient
+    const slug = route.params.name
+
+    const res = await client.query({
+      query: getGroup,
+      variables: {
+        slug,
+      },
+    })
+
+    const { group } = res.data
+    return {
+      group,
+    }
+  },
+  head() {
+    return {
+      title: `${this.group.name} - Pedala Sampa`,
+      meta: [
+        {
+          hid: 'description_group',
+          name: 'description',
+          content: `${this.group.name} - Grupo de pedal em São Paulo - Pedala Sampa`,
+        },
+      ],
+    }
+  },
   methods: {
     FormattingLapDuration(info) {
       const lap = ((info.distance * 1000) / (info.rhythm / 3.6)) * 1000
@@ -39,16 +68,6 @@ export default {
       return `${lapDuration._data.hours}h:${
         lapDuration._data.minutes === 0 ? '00' : lapDuration._data.minutes
       }m`
-    },
-  },
-  apollo: {
-    group: {
-      query: getGroup,
-      variables() {
-        return {
-          slug: this.$route.params.name,
-        }
-      },
     },
   },
 }

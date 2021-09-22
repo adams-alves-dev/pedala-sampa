@@ -10,15 +10,35 @@
 import getPage from '@/apollo/queries/pages/page'
 
 export default {
-  apollo: {
-    page: {
+  name: 'Page',
+  async asyncData({ app, route }) {
+    const client = app.apolloProvider.defaultClient
+    const slug = route.params.slug
+
+    const res = await client.query({
       query: getPage,
-      variables() {
-        return {
-          slug: this.$route.params.slug,
-        }
+      variables: {
+        slug,
       },
-    },
+    })
+
+    const { page } = res.data
+    return {
+      page,
+    }
+  },
+  head() {
+    return {
+      title: `${this.page.heading} - Pedala Sampa`,
+      meta: [
+        {
+          hid: 'description_about',
+          name: 'description',
+          content:
+            'Este é um projeto coloborativo para unir ciclistas que querem descobrir e participar de grupos de pedal!',
+        },
+      ],
+    }
   },
 }
 </script>

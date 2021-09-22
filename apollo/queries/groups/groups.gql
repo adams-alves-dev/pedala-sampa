@@ -1,0 +1,27 @@
+query getGroups {
+  groups {
+    id
+    name
+    slug
+    link {
+      text
+    }
+    departureLocation {
+      latitude
+      longitude
+    }
+    groupInfos {
+      id
+      alternativeDepartureLocation {
+        latitude
+        longitude
+      }
+      startHour
+      rhythm
+      day
+      rating
+      effort
+      distance
+    }
+  }
+}
