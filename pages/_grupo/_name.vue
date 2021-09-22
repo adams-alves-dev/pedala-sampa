@@ -9,6 +9,7 @@
       <ul>
         <li v-for="info in group.groupInfos" :key="info.id">
           <p>Saída {{ info.startHour }}</p>
+          <p>Endereço: {{ info.address }}</p>
           <p>Dia: {{ info.day }}</p>
           <p>Nível: {{ info.effort }}</p>
           <p>Distância: {{ info.distance }} KM</p>
@@ -28,9 +29,38 @@
 
 <script>
 import moment from 'moment'
-import { gql } from 'graphql-tag'
+import getGroup from '@/apollo/queries/groups/group'
 
 export default {
+  name: 'Group',
+  async asyncData({ app, route }) {
+    const client = app.apolloProvider.defaultClient
+    const slug = route.params.name
+
+    const res = await client.query({
+      query: getGroup,
+      variables: {
+        slug,
+      },
+    })
+
+    const { group } = res.data
+    return {
+      group,
+    }
+  },
+  head() {
+    return {
+      title: `${this.group.name} - Pedala Sampa`,
+      meta: [
+        {
+          hid: 'description_group',
+          name: 'description',
+          content: `${this.group.name} - Grupo de pedal em São Paulo - Pedala Sampa`,
+        },
+      ],
+    }
+  },
   methods: {
     FormattingLapDuration(info) {
       const lap = ((info.distance * 1000) / (info.rhythm / 3.6)) * 1000
@@ -38,45 +68,6 @@ export default {
       return `${lapDuration._data.hours}h:${
         lapDuration._data.minutes === 0 ? '00' : lapDuration._data.minutes
       }m`
-    },
-  },
-  apollo: {
-    group: {
-      query: gql`
-        query getGroup($slug: String!) {
-          group(where: { slug: $slug }) {
-            id
-            name
-            slug
-            link {
-              text
-              html
-            }
-            departureLocation {
-              latitude
-              longitude
-            }
-            groupInfos {
-              id
-              startHour
-              day
-              rating
-              effort
-              distance
-              rhythm
-              group {
-                id
-                name
-              }
-            }
-          }
-        }
-      `,
-      variables() {
-        return {
-          slug: this.$route.params.name,
-        }
-      },
     },
   },
 }

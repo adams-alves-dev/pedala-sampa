@@ -29,10 +29,11 @@
 </template>
 
 <script>
-import { gql } from 'graphql-tag'
+import getGroups from '@/apollo/queries/groups/groups'
 import CustomTileLayer from './CustomTileLayer.vue'
 
 export default {
+  name: 'Map',
   components: { CustomTileLayer },
   data() {
     return {
@@ -51,35 +52,7 @@ export default {
     },
   },
   apollo: {
-    groups: gql`
-      query getGroups {
-        groups {
-          id
-          name
-          slug
-          link {
-            text
-          }
-          departureLocation {
-            latitude
-            longitude
-          }
-          groupInfos {
-            id
-            alternativeDepartureLocation {
-              latitude
-              longitude
-            }
-            startHour
-            rhythm
-            day
-            rating
-            effort
-            distance
-          }
-        }
-      }
-    `,
+    groups: getGroups,
   },
 }
 </script>

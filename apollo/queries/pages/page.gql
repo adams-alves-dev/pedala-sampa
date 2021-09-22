@@ -1,0 +1,12 @@
+query getPage($slug: String!) {
+  page(where: { slug: $slug }) {
+    heading
+    slug
+    description
+    body {
+      html
+      markdown
+    }
+    desc
+  }
+}
