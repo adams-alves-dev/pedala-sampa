@@ -2,7 +2,7 @@
   <div v-if="page" class="page">
     <h1>{{ page.heading }}</h1>
     <p>{{ page.description }}</p>
-    <div class="description" v-html="$md.render(page.desc)"></div>
+    <div class="description" v-html="$md.render(page.body)"></div>
   </div>
 </template>
 
