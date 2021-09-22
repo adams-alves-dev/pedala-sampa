@@ -3,10 +3,6 @@ query getPage($slug: String!) {
     heading
     slug
     description
-    body {
-      html
-      markdown
-    }
-    desc
+    body
   }
 }
