@@ -18,27 +18,27 @@ describe('CustomTileLayer', () => {
       expect(wrapper).toBeTruthy()
     })
 
-    test('is a component named `CustomTileLayer`', () => {
+    test('if have a component named `CustomTileLayer`', () => {
       expect(wrapper.findComponent({ name: 'CustomTileLayer' }).exists()).toBe(
         true
       )
     })
 
-    test('is in component `l-tile-layer` have a attribute `attribution`', () => {
+    test('if in component `l-tile-layer` have a attribute `attribution`', () => {
       expect(wrapper.find('attribution').exists())
     })
 
-    test('is in component `l-tile-layer` have a attribute `attribution` with content', () => {
+    test('if in component `l-tile-layer` have a attribute `attribution` with content', () => {
       expect(wrapper.attributes().attribution).toBe(
         '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
       )
     })
 
-    test('is in component `l-tile-layer` have a attribute `url`', () => {
+    test('if in component `l-tile-layer` have a attribute `url`', () => {
       expect(wrapper.find('url').exists())
     })
 
-    test('is in component `l-tile-layer` have a attribute `url` with content', () => {
+    test('if in component `l-tile-layer` have a attribute `url` with content', () => {
       expect(wrapper.attributes().url).toBe(
         'https://{s}.tile.osm.org/{z}/{x}/{y}.png'
       )
@@ -61,13 +61,13 @@ describe('CustomTileLayer', () => {
       })
     })
 
-    test('is in component `l-tile-layer` have a attribute `attribution` with content', () => {
+    test('if in component `l-tile-layer` have a attribute `attribution` with content', () => {
       expect(wrapper.attributes().attribution).toBe(
         '© <a href="https://apps.mapbox.com/feedback/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
       )
     })
 
-    test('is in component `l-tile-layer` have a attribute `url` with content', () => {
+    test('if in component `l-tile-layer` have exist a attribute `url` with content', () => {
       expect(wrapper.attributes().url).toBe(
         `https://api.mapbox.com/styles/v1/adamsalves/cktt15ncyIsfqthtmd/tiles/256/{z}/{x}/{y}@2x?access_token=eyJ1IjoiYWRhbXNhbHZlcyIsImE`
       )
