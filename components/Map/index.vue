@@ -39,7 +39,7 @@ export default {
     return {
       zoom: 12.3,
       minZoom: 12.3,
-      center: [-23.588053, -46.623798],
+      center: [-23.55, -46.623798],
       maxBounds: [
         [-23.36, -46.84],
         [-24.0, -46.36],
