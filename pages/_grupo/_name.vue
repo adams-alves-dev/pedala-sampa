@@ -51,8 +51,7 @@ export default {
   },
   async asyncData({ app, route }) {
     const client = app.apolloProvider.defaultClient
-    const groupSlug = window.localStorage.getItem('group-slug')
-    const slug = route.params.name || groupSlug
+    const slug = route.params.name
 
     const res = await client.query({
       query: getGroup,
@@ -66,17 +65,29 @@ export default {
       group,
     }
   },
+  data() {
+    return {
+      groupName: null,
+    }
+  },
   head() {
     return {
-      title: `${this.group.name} - Pedala Sampa`,
+      title: `${
+        this.group.name ? this.group.name : this.groupName
+      } - Pedala Sampa`,
       meta: [
         {
           hid: 'description_group',
           name: 'description',
-          content: `${this.group.name} - Grupo de pedal em São Paulo - Pedala Sampa`,
+          content: `${
+            this.group.name ? this.group.name : this.groupName
+          } - Grupo de pedal em São Paulo - Pedala Sampa`,
         },
       ],
     }
+  },
+  mounted() {
+    this.groupName = window.localStorage.getItem('group-name')
   },
   methods: {
     FormattingLapDuration(info) {
