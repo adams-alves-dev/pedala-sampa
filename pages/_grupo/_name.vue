@@ -1,7 +1,16 @@
 <template>
   <div class="group">
     <section v-if="group" class="group-name-info">
-      <h1>{{ group ? group.name : '' }}</h1>
+      <h1 class="group-name">
+        <NuxtLink to="/" class="arrow">&#8592;</NuxtLink>
+        {{ group ? group.name : '' }}
+      </h1>
+      <CustomGroupMap
+        :coordinates="[
+          group.departureLocation.latitude,
+          group.departureLocation.longitude,
+        ]"
+      />
       <ul class="group-info">
         <li
           v-for="info in group.groupInfos"
@@ -10,7 +19,9 @@
         >
           <p class="group-info-item">Nível: {{ info.effort }}</p>
           <p class="group-info-item">Saída {{ info.startHour }}</p>
-          <p class="group-info-item">Endereço: {{ info.address }}</p>
+          <p v-if="info.address" class="group-info-item">
+            Endereço: {{ info.address }}
+          </p>
           <p class="group-info-item">Dia: {{ info.day }}</p>
           <p class="group-info-item">Distância: {{ info.distance }} KM</p>
           <p class="group-info-item">Ritmo: {{ info.rhythm }} KM/h</p>
@@ -31,9 +42,13 @@
 <script>
 import moment from 'moment'
 import getGroup from '@/apollo/queries/groups/group'
+import CustomGroupMap from '@/components/Map/CustomGroupMap.vue'
 
 export default {
   name: 'Group',
+  components: {
+    CustomGroupMap,
+  },
   async asyncData({ app, route }) {
     const client = app.apolloProvider.defaultClient
     const slug = route.params.name
@@ -80,13 +95,23 @@ export default {
   margin: 0 auto;
   padding: 90px 20px 20px 20px;
 }
+.group-name {
+  margin-bottom: 20px;
+  .arrow {
+    font-size: 2.5rem;
+    text-decoration: none;
+    color: #000;
+  }
+}
 .group-info {
   display: flex;
+  flex-grow: 1;
   list-style: none;
   padding: 0;
   margin: 20px 0;
   .group-info-list {
     line-height: 1.5rem;
+    padding: 12px;
   }
   .group-info-item:first-child {
     font-size: 1.2rem;
@@ -108,6 +133,9 @@ export default {
   .group {
     width: 100%;
     margin: 0 auto;
+  }
+  .group-info {
+    flex-direction: column;
   }
 }
 </style>
