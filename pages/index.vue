@@ -29,6 +29,7 @@ export default {
       this.$router.push({
         path: `/grupo/${event.slug}`,
       })
+      window.localStorage.setItem('group-slug', event.slug)
     },
   },
 }

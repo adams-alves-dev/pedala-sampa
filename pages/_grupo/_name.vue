@@ -51,7 +51,8 @@ export default {
   },
   async asyncData({ app, route }) {
     const client = app.apolloProvider.defaultClient
-    const slug = route.params.name
+    const groupSlug = window.localStorage.getItem('group-slug')
+    const slug = route.params.name || groupSlug
 
     const res = await client.query({
       query: getGroup,
