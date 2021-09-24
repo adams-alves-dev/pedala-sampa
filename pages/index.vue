@@ -30,6 +30,7 @@ export default {
         path: `/grupo/${event.slug}`,
       })
       window.localStorage.setItem('group-slug', event.slug)
+      window.localStorage.setItem('group-name', event.name)
     },
   },
 }
