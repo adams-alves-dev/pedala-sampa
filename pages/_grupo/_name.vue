@@ -84,8 +84,12 @@ export default {
       ],
     }
   },
+  updated() {
+    window.localStorage.setItem('group', JSON.stringify(this.group))
+  },
   mounted() {
     this.groupName = window.localStorage.getItem('group-name')
+    this.group = JSON.parse(window.localStorage.getItem('group'))
   },
   methods: {
     FormattingLapDuration(info) {
