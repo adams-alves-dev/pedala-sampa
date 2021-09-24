@@ -72,15 +72,13 @@ export default {
   },
   head() {
     return {
-      title: `${
-        this.group.name ? this.group.name : this.groupName
-      } - Pedala Sampa`,
+      title: `${this.group ? this.group.name : this.groupName} - Pedala Sampa`,
       meta: [
         {
           hid: 'description_group',
           name: 'description',
           content: `${
-            this.group.name ? this.group.name : this.groupName
+            this.group ? this.group.name : this.groupName
           } - Grupo de pedal em São Paulo - Pedala Sampa`,
         },
       ],
