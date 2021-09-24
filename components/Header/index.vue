@@ -48,6 +48,14 @@ export default {
     a {
       font-weight: bold;
     }
+    a:hover {
+      border-bottom: 2px solid #000;
+      padding-bottom: 3px;
+    }
+    a.nuxt-link-exact-active {
+      border-bottom: 2px solid #000;
+      padding-bottom: 3px;
+    }
     ul {
       list-style: none;
       padding: 0;
