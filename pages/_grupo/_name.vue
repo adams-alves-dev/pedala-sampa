@@ -3,7 +3,7 @@
     <div class="group">
       <section v-if="GET_GROUP" class="group-name-info">
         <h1 class="group-name">
-          <NuxtLink to="/" class="arrow">&#8592;</NuxtLink>
+          <NuxtLink to="/" class="arrow" />
           {{ GET_GROUP ? GET_GROUP.name : '' }}
         </h1>
         <CustomGroupMap
@@ -96,6 +96,9 @@ export default {
     font-size: 2.5rem;
     text-decoration: none;
     color: #000;
+    &::before {
+      content: '←';
+    }
   }
 }
 .group-info {
