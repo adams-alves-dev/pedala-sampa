@@ -109,7 +109,7 @@ export default {
   margin: 20px 0;
   .group-info-list {
     line-height: 1.5rem;
-    padding: 12px;
+    padding: 12px 12px 12px 0;
   }
   .group-info-item:first-child {
     font-size: 1.2rem;
