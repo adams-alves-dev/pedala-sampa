@@ -22,7 +22,9 @@
               slug: group.slug,
             })
           "
-        />
+        >
+          <l-tooltip>{{ group.name }}</l-tooltip>
+        </l-marker>
       </l-map>
     </client-only>
   </div>
