@@ -14,7 +14,6 @@ export default {
     return {
       title: 'Home - Pedala Sampa',
       meta: [
-        // hid is used as unique identifier. Do not use `vmid` for it as it will not work
         {
           hid: 'description_index',
           name: 'description',
