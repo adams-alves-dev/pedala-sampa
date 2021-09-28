@@ -27,7 +27,7 @@
             <p class="group-info-item">Distância: {{ info.distance }} KM</p>
             <p class="group-info-item">Ritmo: {{ info.rhythm }} KM/h</p>
             <p class="group-info-item">
-              Tempo médio da volta
+              Tempo médio da volta:
               {{ FormattingLapDuration(info) }}
             </p>
           </li>
