@@ -4,7 +4,7 @@
       <section v-if="GET_GROUP" class="group-name-info">
         <h1 class="group-name">
           <NuxtLink to="/" class="arrow" />
-          {{ GET_GROUP ? GET_GROUP.name : '' }}
+          {{ GET_GROUP.name }}
         </h1>
         <CustomGroupMap
           :coordinates="[
