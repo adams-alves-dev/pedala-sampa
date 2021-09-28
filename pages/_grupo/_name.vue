@@ -1,42 +1,44 @@
 <template>
-  <div class="group">
-    <section v-if="GET_GROUP" class="group-name-info">
-      <h1 class="group-name">
-        <NuxtLink to="/" class="arrow">&#8592;</NuxtLink>
-        {{ GET_GROUP ? GET_GROUP.name : '' }}
-      </h1>
-      <CustomGroupMap
-        :coordinates="[
-          GET_GROUP.departureLocation.latitude,
-          GET_GROUP.departureLocation.longitude,
-        ]"
-      />
-      <ul class="group-info">
-        <li
-          v-for="info in GET_GROUP.groupInfos"
-          :key="info.id"
-          class="group-info-list"
-        >
-          <p class="group-info-item">Nível: {{ info.effort }}</p>
-          <p class="group-info-item">Saída {{ info.startHour }}</p>
-          <p v-if="info.address" class="group-info-item">
-            Endereço: {{ info.address }}
-          </p>
-          <p class="group-info-item">Dia: {{ info.day }}</p>
-          <p class="group-info-item">Distância: {{ info.distance }} KM</p>
-          <p class="group-info-item">Ritmo: {{ info.rhythm }} KM/h</p>
-          <p class="group-info-item">
-            Tempo médio da volta
-            {{ FormattingLapDuration(info) }}
-          </p>
-        </li>
-      </ul>
-      <div class="link">
-        <p class="link-desc">Mais informações:</p>
-        <div class="link-group" v-html="GET_GROUP.link.html"></div>
-      </div>
-    </section>
-  </div>
+  <keep-alive>
+    <div class="group">
+      <section v-if="GET_GROUP" class="group-name-info">
+        <h1 class="group-name">
+          <NuxtLink to="/" class="arrow">&#8592;</NuxtLink>
+          {{ GET_GROUP ? GET_GROUP.name : '' }}
+        </h1>
+        <CustomGroupMap
+          :coordinates="[
+            GET_GROUP.departureLocation.latitude,
+            GET_GROUP.departureLocation.longitude,
+          ]"
+        />
+        <ul class="group-info">
+          <li
+            v-for="info in GET_GROUP.groupInfos"
+            :key="info.id"
+            class="group-info-list"
+          >
+            <p class="group-info-item">Nível: {{ info.effort }}</p>
+            <p class="group-info-item">Saída {{ info.startHour }}</p>
+            <p v-if="info.address" class="group-info-item">
+              Endereço: {{ info.address }}
+            </p>
+            <p class="group-info-item">Dia: {{ info.day }}</p>
+            <p class="group-info-item">Distância: {{ info.distance }} KM</p>
+            <p class="group-info-item">Ritmo: {{ info.rhythm }} KM/h</p>
+            <p class="group-info-item">
+              Tempo médio da volta
+              {{ FormattingLapDuration(info) }}
+            </p>
+          </li>
+        </ul>
+        <div class="link">
+          <p class="link-desc">Mais informações:</p>
+          <div class="link-group" v-html="GET_GROUP.link.html"></div>
+        </div>
+      </section>
+    </div>
+  </keep-alive>
 </template>
 
 <script>
