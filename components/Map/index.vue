@@ -32,7 +32,7 @@
 
 <script>
 import getGroups from '@/apollo/queries/groups/groups'
-import CustomTileLayer from './CustomTileLayer.vue'
+import CustomTileLayer from './CustomTileLayer'
 
 export default {
   name: 'Map',

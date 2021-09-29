@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import CustomTileLayer from './CustomTileLayer.vue'
+import CustomTileLayer from './CustomTileLayer'
 
 export default {
   name: 'CustomGroupMap',
