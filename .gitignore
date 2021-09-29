@@ -93,4 +93,4 @@ sw.*
 .env
 .env.local
 .env.production
-.end.development
+.env.development
