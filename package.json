@@ -19,7 +19,7 @@
     "@nuxtjs/pwa": "^3.3.5",
     "core-js": "^3.8.3",
     "graphql-tag": "^2.12.5",
-    "moment": "^2.29.1",
+    "moment": "^2.29.4",
     "nuxt": "^2.14.12",
     "nuxt-leaflet": "^0.0.25"
   },
