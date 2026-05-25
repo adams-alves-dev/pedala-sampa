@@ -71,6 +71,9 @@ typings/
 # Nuxt generate
 dist
 
+# Superpowers local brainstorming artifacts
+.superpowers/
+
 # vuepress build output
 .vuepress/dist
 
