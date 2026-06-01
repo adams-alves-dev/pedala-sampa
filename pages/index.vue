@@ -1,34 +1,48 @@
 <template>
-  <div id="ps-wrap" class="ps-wrap">
-    <Map @groupName="groupName" />
+  <div>
+    <AppHeader :contribution-form-url="contributionFormUrl" />
+    <ExploreShell
+      :groups="filteredGroups"
+      :filters="filters"
+      :days="days"
+      :efforts="efforts"
+      :selected-group-slug="selectedGroupSlug"
+      :selected-group="selectedGroup"
+      :is-loading="pending"
+      :error="error"
+      :contribution-form-url="contributionFormUrl"
+      @select="selectGroup"
+      @update:filters="updateFilters"
+      @clear-filters="clearFilters"
+      @clear-selection="clearSelectedGroup"
+      @retry="refresh"
+    />
   </div>
 </template>
 
-<script>
-import Map from '@/components/Map'
+<script setup lang="ts">
+import { computed } from 'vue'
+import AppHeader from '../components/app/AppHeader.vue'
+import ExploreShell from '../components/explore/ExploreShell.vue'
+import { useGroupFilters } from '../composables/useGroupFilters'
+import { useGroups } from '../composables/useGroups'
+import { useSelectedGroup } from '../composables/useSelectedGroup'
 
-export default {
-  name: 'Home',
-  components: { Map },
-  head() {
-    return {
-      title: 'Home - Pedala Sampa',
-      meta: [
-        {
-          hid: 'description_index',
-          name: 'description',
-          content:
-            'Descubra os grupos de pedal perto de você na cidade de São Paulo',
-        },
-      ],
-    }
-  },
-  methods: {
-    groupName(event) {
-      this.$router.push({
-        path: `/grupo/${event.slug}`,
-      })
-    },
-  },
-}
+const config = useRuntimeConfig()
+const contributionFormUrl = config.public.contributionFormUrl
+
+const { data, pending, error, refresh } = await useGroups()
+const groups = computed(() => data.value || [])
+const { filters, filteredGroups, updateFilters, clearFilters } = useGroupFilters(groups)
+const { selectedGroupSlug, selectedGroup, selectGroup, clearSelectedGroup } = useSelectedGroup(groups)
+
+const days = computed(() => [...new Set(groups.value.flatMap((group) => group.schedules.map((schedule) => schedule.day)))])
+const efforts = computed(() => [
+  ...new Set(groups.value.flatMap((group) => group.schedules.map((schedule) => schedule.effort))),
+])
+
+useSeoMeta({
+  title: 'Pedala Sampa - Grupos de pedal em São Paulo',
+  description: 'Encontre grupos de pedal em São Paulo por região, dia, horário, nível, distância e ritmo.',
+})
 </script>
