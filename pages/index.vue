@@ -1,28 +1,24 @@
 <template>
-  <div>
-    <AppHeader :contribution-form-url="contributionFormUrl" />
-    <ExploreShell
-      :groups="filteredGroups"
-      :filters="filters"
-      :days="days"
-      :efforts="efforts"
-      :selected-group-slug="selectedGroupSlug"
-      :selected-group="selectedGroup"
-      :is-loading="pending"
-      :error="error"
-      :contribution-form-url="contributionFormUrl"
-      @select="selectGroup"
-      @update:filters="updateFilters"
-      @clear-filters="clearFilters"
-      @clear-selection="clearSelectedGroup"
-      @retry="refresh"
-    />
-  </div>
+  <ExploreShell
+    :groups="filteredGroups"
+    :filters="filters"
+    :days="days"
+    :efforts="efforts"
+    :selected-group-slug="selectedGroupSlug"
+    :selected-group="selectedGroup"
+    :is-loading="pending"
+    :error="error"
+    :contribution-form-url="contributionFormUrl"
+    @select="selectGroup"
+    @update:filters="updateFilters"
+    @clear-filters="clearFilters"
+    @clear-selection="clearSelectedGroup"
+    @retry="refresh"
+  />
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import AppHeader from '../components/app/AppHeader.vue'
 import ExploreShell from '../components/explore/ExploreShell.vue'
 import { useGroupFilters } from '../composables/useGroupFilters'
 import { useGroups } from '../composables/useGroups'

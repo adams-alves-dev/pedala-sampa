@@ -5,7 +5,7 @@
     <GroupMetaBadges v-if="primarySchedule" :schedule="primarySchedule" />
     <p v-if="primarySchedule">Tempo médio: {{ duration }}</p>
     <div class="actions">
-      <a v-if="group.link?.url" :href="group.link.url" target="_blank" rel="noopener noreferrer">Acessar grupo</a>
+      <a v-if="group.link?.url" :href="group.link.url" target="_blank" rel="noopener noreferrer" :aria-label="'Acessar grupo ' + group.name + ' (abre em nova aba)'">Acessar grupo</a>
       <ContributionLink :href="contributionFormUrl" context="correction" />
     </div>
   </article>
@@ -40,12 +40,13 @@ const duration = computed(() =>
   border: 2px solid var(--color-asphalt);
   border-radius: var(--radius-md);
   display: grid;
-  gap: 16px;
-  padding: 24px;
+  gap: var(--space-4);
+  padding: var(--space-6);
 }
 
 h1 {
-  font-size: clamp(2rem, 8vw, 4.5rem);
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
   line-height: 0.95;
   margin: 0;
 }
@@ -53,6 +54,6 @@ h1 {
 .actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: var(--space-3);
 }
 </style>

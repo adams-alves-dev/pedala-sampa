@@ -25,6 +25,18 @@
       />
       <GroupQuickView :group="selectedGroup" :contribution-form-url="contributionFormUrl" @close="$emit('clear-selection')" />
     </section>
+    <a
+      v-if="contributionFormUrl"
+      class="fab-cta"
+      :href="contributionFormUrl"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Sugerir grupo (abre em nova aba)"
+    >
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M12 5v14m-7-7h14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" />
+      </svg>
+    </a>
   </main>
 </template>
 
@@ -59,20 +71,19 @@ defineEmits<{
 .explore-shell {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(360px, 430px);
-  gap: 16px;
+  gap: var(--space-4);
   height: calc(100vh - var(--header-height));
-  padding: 16px;
+  padding: var(--space-4);
 }
 
 .map-area {
   border: 2px solid var(--color-asphalt);
-  border-radius: var(--radius-md);
   overflow: hidden;
 }
 
 .panel-area {
   display: grid;
-  gap: 12px;
+  gap: var(--space-3);
   overflow: auto;
 }
 
@@ -82,6 +93,29 @@ defineEmits<{
   display: flex;
   height: 100%;
   justify-content: center;
+  font-weight: 600;
+}
+
+.fab-cta {
+  position: fixed;
+  bottom: var(--space-6);
+  right: var(--space-6);
+  z-index: 900;
+  width: 56px;
+  height: 56px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-sun);
+  color: var(--color-asphalt);
+  box-shadow: var(--shadow-panel);
+  transition: transform var(--duration-fast) var(--ease-out);
+  text-decoration: none;
+  clip-path: polygon(8px 0, 100% 0, 100% 100%, 0 100%, 0 8px);
+}
+
+.fab-cta:hover {
+  transform: scale(1.08);
 }
 
 @media (max-width: 860px) {
@@ -101,14 +135,19 @@ defineEmits<{
   .panel-area {
     background: var(--color-paper);
     border: 2px solid var(--color-asphalt);
-    border-radius: 16px 16px 0 0;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
     bottom: 0;
     left: 0;
     max-height: 72vh;
     overflow: auto;
-    padding: 12px;
+    padding: var(--space-3);
     position: absolute;
     right: 0;
+  }
+
+  .fab-cta {
+    display: flex;
   }
 }
 </style>

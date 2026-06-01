@@ -35,27 +35,28 @@ defineProps<{
 .badges {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: var(--space-2);
   margin: 0;
 }
 
 .badge {
-  min-width: 72px;
+  min-width: 64px;
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  background: var(--color-paper);
-  padding: 8px;
+  background: var(--color-concrete);
+  padding: var(--space-1) var(--space-2);
 }
 
 dt {
-  color: rgb(21 21 21 / 68%);
-  font-size: 0.72rem;
-  font-weight: 700;
+  color: rgb(26 18 11 / 55%);
+  font-size: var(--text-xs);
+  font-weight: 600;
   text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 dd {
-  margin: 2px 0 0;
+  margin: 1px 0 0;
   font-weight: 800;
+  font-size: var(--text-sm);
 }
 </style>

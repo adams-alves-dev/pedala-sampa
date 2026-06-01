@@ -1,6 +1,5 @@
 <template>
   <main>
-    <AppHeader :contribution-form-url="contributionFormUrl" />
     <section class="about">
       <p class="eyebrow">Mapa colaborativo</p>
       <h1>Encontre grupos de pedal em São Paulo.</h1>
@@ -23,7 +22,6 @@
 </template>
 
 <script setup lang="ts">
-import AppHeader from '../components/app/AppHeader.vue'
 import ContributionLink from '../components/contribution/ContributionLink.vue'
 
 const config = useRuntimeConfig()
@@ -39,40 +37,42 @@ useSeoMeta({
 .about {
   max-width: 980px;
   margin: 0 auto;
-  padding: 72px 20px;
+  padding: var(--space-12) var(--space-5);
 }
 
 .eyebrow {
   color: var(--color-bike-green);
   font-weight: 900;
   text-transform: uppercase;
+  font-size: var(--text-sm);
 }
 
 h1 {
-  font-size: clamp(2.25rem, 8vw, 5rem);
+  font-family: var(--font-display);
+  font-size: var(--text-3xl);
   line-height: 0.95;
   margin: 0;
   max-width: 780px;
 }
 
 .lead {
-  font-size: 1.25rem;
+  font-size: var(--text-lg);
   line-height: 1.6;
   max-width: 680px;
 }
 
 .grid {
   display: grid;
-  gap: 16px;
+  gap: var(--space-4);
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  margin: 40px 0;
+  margin: var(--space-10) 0;
 }
 
 article {
   border: 2px solid var(--color-asphalt);
   border-radius: var(--radius-md);
   background: var(--color-paper);
-  padding: 22px;
+  padding: var(--space-5);
 }
 
 @media (max-width: 720px) {

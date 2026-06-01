@@ -1,28 +1,30 @@
 <template>
   <form class="filters" @submit.prevent>
-    <label>
-      <span>Buscar</span>
+    <label class="filter-group">
+      <span class="filter-label">Buscar</span>
       <input v-model="localFilters.query" type="search" placeholder="Nome, bairro, dia ou nível" @input="emitChange" />
     </label>
 
-    <label>
-      <span>Dia</span>
-      <select v-model="selectedDay" @change="syncDay">
-        <option value="">Todos</option>
-        <option v-for="day in days" :key="day" :value="day">{{ day }}</option>
-      </select>
-    </label>
+    <div class="filter-row">
+      <label class="filter-group">
+        <span class="filter-label">Dia</span>
+        <select v-model="selectedDay" @change="syncDay">
+          <option value="">Todos</option>
+          <option v-for="day in days" :key="day" :value="day">{{ day }}</option>
+        </select>
+      </label>
 
-    <label>
-      <span>Nível</span>
-      <select v-model="selectedEffort" @change="syncEffort">
-        <option value="">Todos</option>
-        <option v-for="effort in efforts" :key="effort" :value="effort">{{ effort }}</option>
-      </select>
-    </label>
+      <label class="filter-group">
+        <span class="filter-label">Nível</span>
+        <select v-model="selectedEffort" @change="syncEffort">
+          <option value="">Todos</option>
+          <option v-for="effort in efforts" :key="effort" :value="effort">{{ effort }}</option>
+        </select>
+      </label>
+    </div>
 
-    <label>
-      <span>Distância</span>
+    <label class="filter-group">
+      <span class="filter-label">Distância</span>
       <select v-model="localFilters.distanceRange" @change="emitChange">
         <option :value="undefined">Todas</option>
         <option value="up-to-20">Até 20 km</option>
@@ -31,25 +33,27 @@
       </select>
     </label>
 
-    <label>
-      <span>Período</span>
-      <select v-model="selectedPeriod" @change="syncPeriod">
-        <option value="">Todos</option>
-        <option value="morning">Manhã</option>
-        <option value="afternoon">Tarde</option>
-        <option value="night">Noite</option>
-      </select>
-    </label>
+    <div class="filter-row">
+      <label class="filter-group">
+        <span class="filter-label">Período</span>
+        <select v-model="selectedPeriod" @change="syncPeriod">
+          <option value="">Todos</option>
+          <option value="morning">Manhã</option>
+          <option value="afternoon">Tarde</option>
+          <option value="night">Noite</option>
+        </select>
+      </label>
 
-    <label>
-      <span>Ritmo</span>
-      <select v-model="selectedRhythm" @change="syncRhythm">
-        <option value="">Todos</option>
-        <option value="light">Leve</option>
-        <option value="moderate">Moderado</option>
-        <option value="strong">Forte</option>
-      </select>
-    </label>
+      <label class="filter-group">
+        <span class="filter-label">Ritmo</span>
+        <select v-model="selectedRhythm" @change="syncRhythm">
+          <option value="">Todos</option>
+          <option value="light">Leve</option>
+          <option value="moderate">Moderado</option>
+          <option value="strong">Forte</option>
+        </select>
+      </label>
+    </div>
 
     <button type="button" class="clear" @click="$emit('clear')">Limpar filtros</button>
   </form>
@@ -115,31 +119,60 @@ function syncRhythm() {
 <style scoped>
 .filters {
   display: grid;
-  gap: 10px;
+  gap: var(--space-3);
 }
 
-label {
+.filter-group {
   display: grid;
-  gap: 4px;
+  gap: var(--space-1);
+}
+
+.filter-label {
+  font-size: var(--text-xs);
   font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: rgb(26 18 11 / 55%);
+}
+
+.filter-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
 }
 
 input,
 select {
-  min-height: 42px;
+  min-height: 40px;
   border: 2px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  background: var(--color-paper);
-  padding: 0 10px;
+  background: var(--color-concrete);
+  padding: 0 var(--space-3);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  transition: border-color var(--duration-fast) var(--ease-out);
+}
+
+input:focus,
+select:focus {
+  border-color: var(--color-asphalt);
+  outline: none;
 }
 
 .clear {
   min-height: 40px;
-  border: 0;
-  border-radius: var(--radius-sm);
-  background: var(--color-asphalt);
-  color: var(--color-paper);
+  border: 2px solid var(--color-asphalt);
+  background: transparent;
+  color: var(--color-asphalt);
   cursor: pointer;
   font-weight: 800;
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  transition: background var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out);
+}
+
+.clear:hover {
+  background: var(--color-asphalt);
+  color: var(--color-concrete);
 }
 </style>

@@ -197,6 +197,7 @@ export default defineVitestConfig({
     environment: 'nuxt',
     globals: true,
     include: ['tests/**/*.test.ts'],
+    passWithNoTests: true,
     coverage: {
       reporter: ['text', 'html'],
       include: ['lib/**/*.ts', 'composables/**/*.ts', 'components/**/*.vue'],
@@ -1562,13 +1563,32 @@ git commit -m "feat: add redesigned app header and about page"
       </select>
     </label>
 
+    <label>
+      <span>Período</span>
+      <select v-model="selectedPeriod" @change="syncPeriod">
+        <option value="">Todos</option>
+        <option value="morning">Manhã</option>
+        <option value="afternoon">Tarde</option>
+        <option value="night">Noite</option>
+      </select>
+    </label>
+
+    <label>
+      <span>Ritmo</span>
+      <select v-model="selectedRhythm" @change="syncRhythm">
+        <option value="">Todos</option>
+        <option value="light">Leve</option>
+        <option value="moderate">Moderado</option>
+        <option value="strong">Forte</option>
+      </select>
+    </label>
+
     <button type="button" class="clear" @click="$emit('clear')">Limpar filtros</button>
   </form>
-</template>
 
 <script setup lang="ts">
 import { reactive, ref, watch } from 'vue'
-import type { GroupFilters } from '../../types/group'
+import type { GroupFilters, Period, Rhythm } from '../../types/group'
 
 const props = defineProps<{
   modelValue: GroupFilters
@@ -1584,6 +1604,8 @@ const emit = defineEmits<{
 const localFilters = reactive<GroupFilters>({ ...props.modelValue })
 const selectedDay = ref(props.modelValue.days[0] || '')
 const selectedEffort = ref(props.modelValue.efforts[0] || '')
+const selectedPeriod = ref<Period | ''>(props.modelValue.periods[0] || '')
+const selectedRhythm = ref<Rhythm | ''>(props.modelValue.rhythms[0] || '')
 
 watch(
   () => props.modelValue,
@@ -1591,11 +1613,33 @@ watch(
     Object.assign(localFilters, filters)
     selectedDay.value = filters.days[0] || ''
     selectedEffort.value = filters.efforts[0] || ''
+    selectedPeriod.value = filters.periods[0] || ''
+    selectedRhythm.value = filters.rhythms[0] || ''
   },
 )
 
 function emitChange() {
   emit('update:modelValue', { ...localFilters })
+}
+
+function syncDay() {
+  localFilters.days = selectedDay.value ? [selectedDay.value] : []
+  emitChange()
+}
+
+function syncEffort() {
+  localFilters.efforts = selectedEffort.value ? [selectedEffort.value] : []
+  emitChange()
+}
+
+function syncPeriod() {
+  localFilters.periods = selectedPeriod.value ? [selectedPeriod.value] : []
+  emitChange()
+}
+
+function syncRhythm() {
+  localFilters.rhythms = selectedRhythm.value ? [selectedRhythm.value] : []
+  emitChange()
 }
 
 function syncDay() {
@@ -1810,7 +1854,7 @@ const mapboxUrl = computed(() => {
 ```vue
 <template>
   <div class="group-map">
-    <LMap ref="mapRef" :zoom="12" :center="center" :min-zoom="10" :max-bounds="maxBounds" use-global-leaflet>
+    <LMap ref="mapRef" :zoom="12" :center="center" :min-zoom="10" :max-bounds="maxBounds" :use-global-leaflet="false">
       <MapTileLayer />
       <LMarker
         v-for="group in groups"
@@ -2297,10 +2341,39 @@ Esperado:
 - Diretórios vazios removidos.
 - Se algum diretório ainda tiver arquivo útil, o comando falha; revisar antes de remover à força.
 
-- [ ] **Passo 3: Commit**
+- [ ] **Passo 3: Remover Nuxt 2 scaffold e configs obsoletas**
+
+Artefatos do scaffold Nuxt 2 que não têm função no Nuxt 3:
 
 ```bash
-git add -u pages/_slug.vue store/index.js apollo
+rm assets/README.md components/README.md layouts/README.md middleware/README.md
+rm pages/README.md plugins/README.md static/README.md
+rm assets/scss/pages/sobre.scss assets/scss/stylesheet.scss
+rmdir assets/scss/pages assets/scss 2>/dev/null
+rm .babelrc .eslintrc.js jsconfig.json
+rmdir components/Header components/Map 2>/dev/null
+```
+
+Esperado:
+
+- Nenhum README de scaffold do Nuxt 2.
+- Nenhum arquivo SCSS órfão.
+- Nenhuma config de ferramenta Nuxt 2 não usada (Babel, ESLint legado, jsconfig).
+
+- [ ] **Passo 4: Remover diretórios vazios restantes**
+
+```bash
+rmdir components/Header components/Map 2>/dev/null; true
+```
+
+Esperado:
+
+- `components/Header/` e `components/Map/` removidos se vazios.
+
+- [ ] **Passo 5: Commit**
+
+```bash
+git add -u pages/_slug.vue store/index.js apollo assets/README.md components/README.md layouts/README.md middleware/README.md pages/README.md plugins/README.md static/README.md assets/scss .babelrc .eslintrc.js jsconfig.json components/Header components/Map
 git commit -m "chore: remove Nuxt 2 data and routing leftovers"
 ```
 
@@ -2340,23 +2413,12 @@ describe('map tile config', () => {
 })
 ```
 
-- [ ] **Passo 3: Atualizar `netlify.toml` se necessário**
-
-Se o deploy estático Nuxt 3 gerar `dist`, manter:
-
-```toml
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
-```
-
-Se for necessário explicitar build:
+- [ ] **Passo 3: Atualizar `netlify.toml`**
 
 ```toml
 [build]
   command = "yarn generate"
-  publish = "dist"
+  publish = ".output/public"
 
 [[redirects]]
   from = "/*"
@@ -2364,7 +2426,7 @@ Se for necessário explicitar build:
   status = 200
 ```
 
-Usar apenas uma das versões acima. Preferir adicionar `[build]` se o projeto ainda não tiver configuração equivalente no painel da Netlify.
+O diretório `.output/public` é o padrão do Nuxt 3 para `yarn generate`. Não usar `dist` (Nuxt 2).
 
 - [ ] **Passo 4: Rodar testes**
 

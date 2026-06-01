@@ -1,6 +1,5 @@
 <template>
   <div>
-    <AppHeader :contribution-form-url="contributionFormUrl" />
     <main class="group-page">
       <NuxtLink to="/" class="back-link">Voltar para o mapa</NuxtLink>
       <p v-if="pending">Carregando grupo...</p>
@@ -11,7 +10,6 @@
 </template>
 
 <script setup lang="ts">
-import AppHeader from '../../components/app/AppHeader.vue'
 import GroupDetails from '../../components/group/GroupDetails.vue'
 import { useGroup } from '../../composables/useGroup'
 
@@ -33,10 +31,10 @@ useSeoMeta({
 <style scoped>
 .group-page {
   display: grid;
-  gap: 20px;
+  gap: var(--space-5);
   margin: 0 auto;
   max-width: 980px;
-  padding: 32px 20px;
+  padding: var(--space-8) var(--space-5);
 }
 
 .back-link {

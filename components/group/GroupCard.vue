@@ -7,10 +7,13 @@
       :aria-pressed="isSelected"
       @click="$emit('select', group.slug)"
     >
-      <span v-if="isSelected" class="selected-label">Selecionado</span>
-      <strong class="group-card__name">{{ group.name }}</strong>
-      <span class="group-card__location">{{ group.region || group.departureAddress || 'Ponto de saída no mapa' }}</span>
-      <GroupMetaBadges v-if="primarySchedule" :schedule="primarySchedule" />
+      <span class="group-card__accent" />
+      <div class="group-card__body">
+        <span v-if="isSelected" class="selected-label">Selecionado</span>
+        <strong class="group-card__name">{{ group.name }}</strong>
+        <span class="group-card__location">{{ group.region || group.departureAddress || 'Ponto de saída no mapa' }}</span>
+        <GroupMetaBadges v-if="primarySchedule" :schedule="primarySchedule" />
+      </div>
     </button>
   </article>
 </template>
@@ -35,35 +38,65 @@ const primarySchedule = computed(() => props.group.schedules[0])
 <style scoped>
 .group-card {
   width: 100%;
+  display: grid;
+  grid-template-columns: 4px 1fr;
   border: 2px solid var(--color-border);
-  border-radius: var(--radius-md);
   background: var(--color-paper);
   color: var(--color-asphalt);
   cursor: pointer;
-  display: grid;
-  gap: 10px;
-  padding: 14px;
+  padding: 0;
   text-align: left;
+  transition: border-color var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out);
+  overflow: hidden;
 }
 
-.group-card:hover,
+.group-card:hover {
+  border-color: var(--color-forest);
+}
+
 .group-card--selected {
-  border-color: var(--color-bike-green);
-  box-shadow: 0 0 0 4px rgb(22 160 93 / 14%);
+  border-color: var(--color-forest);
+  box-shadow: 0 0 0 3px rgb(0 121 107 / 15%);
+}
+
+.group-card__accent {
+  width: 4px;
+  background: var(--color-border);
+  transition: background var(--duration-fast) var(--ease-out);
+}
+
+.group-card:hover .group-card__accent {
+  background: var(--color-forest);
+}
+
+.group-card--selected .group-card__accent {
+  background: var(--color-forest);
+}
+
+.group-card__body {
+  padding: var(--space-4);
+  display: grid;
+  gap: var(--space-1);
 }
 
 .selected-label {
-  color: var(--color-bike-green);
-  font-size: 0.72rem;
-  font-weight: 900;
+  color: var(--color-forest);
+  font-size: var(--text-xs);
+  font-weight: 800;
   text-transform: uppercase;
+  letter-spacing: 0.08em;
 }
 
 .group-card__name {
-  font-size: 1.05rem;
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: 700;
+  letter-spacing: -0.02em;
 }
 
 .group-card__location {
-  color: rgb(21 21 21 / 72%);
+  font-size: var(--text-sm);
+  color: rgb(26 18 11 / 55%);
+  margin-bottom: var(--space-1);
 }
 </style>

@@ -1,19 +1,53 @@
 :root {
-  --color-asphalt: #151515;
-  --color-concrete: #f4f1ea;
-  --color-paper: #fffdf7;
-  --color-bike-green: #16a05d;
-  --color-sign-yellow: #f5c542;
-  --color-alert-red: #e24b3c;
-  --color-transit-blue: #2f6fed;
-  --color-border: #d8d2c7;
-  --shadow-panel: 0 18px 50px rgb(21 21 21 / 18%);
-  --radius-sm: 6px;
-  --radius-md: 8px;
-  --header-height: 64px;
+  --color-asphalt: #1A120B;
+  --color-concrete: #E8E0D0;
+  --color-paper: #FFF8EE;
+  --color-bike-green: #00796B;
+  --color-sign-yellow: #FFB300;
+  --color-alert-red: #E53935;
+  --color-transit-blue: #1565C0;
+  --color-sun: #FFB300;
+  --color-forest: #00796B;
+  --color-border: #C8BFA8;
+
+  --font-display: 'Syne', ui-sans-serif, system-ui, sans-serif;
+  --font-body: 'Sora', ui-sans-serif, system-ui, sans-serif;
+
+  --text-xs: 0.6875rem;
+  --text-sm: 0.75rem;
+  --text-base: 0.875rem;
+  --text-md: 1rem;
+  --text-lg: 1.25rem;
+  --text-xl: 1.75rem;
+  --text-2xl: clamp(2rem, 6vw, 3.5rem);
+  --text-3xl: clamp(2.25rem, 8vw, 5rem);
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --duration-slow: 400ms;
+
+  --shadow-panel: 0 18px 50px rgb(26 18 11 / 18%);
+  --radius-sm: 4px;
+  --radius-md: 6px;
+
+  --header-height: 72px;
+
   color: var(--color-asphalt);
   background: var(--color-concrete);
-  font-family: ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-body);
 }
 
 *,
@@ -26,6 +60,8 @@ body {
   margin: 0;
   min-width: 320px;
   background: var(--color-concrete);
+  background-image: radial-gradient(circle at 25% 30%, rgb(255 179 0 / 3%) 0%, transparent 60%),
+                    radial-gradient(circle at 75% 70%, rgb(0 121 107 / 3%) 0%, transparent 60%);
 }
 
 a {
@@ -38,8 +74,13 @@ select {
   font: inherit;
 }
 
+::selection {
+  background: var(--color-sign-yellow);
+  color: var(--color-asphalt);
+}
+
 :focus-visible {
-  outline: 3px solid var(--color-transit-blue);
+  outline: 3px solid var(--color-sign-yellow);
   outline-offset: 3px;
 }
 

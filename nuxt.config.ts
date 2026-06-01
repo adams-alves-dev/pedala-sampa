@@ -6,18 +6,26 @@ export default defineNuxtConfig({
   app: {
     head: {
       htmlAttrs: { lang: 'pt-BR' },
-      title: 'Pedala Sampa - Grupos de pedal em Sao Paulo',
+      title: 'Pedala Sampa - Grupos de pedal em São Paulo',
       meta: [
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
         {
           name: 'description',
           content:
-            'Encontre grupos de pedal em Sao Paulo por regiao, dia, horario, nivel, distancia e ritmo.',
+            'Encontre grupos de pedal em São Paulo por região, dia, horário, nível, distância e ritmo.',
         },
         { property: 'og:site_name', content: 'Pedala Sampa' },
-        { name: 'theme-color', content: '#16A05D' },
+        { name: 'theme-color', content: '#FFB300' },
       ],
-      link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
+      link: [
+        { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
+        { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
+        {
+          rel: 'stylesheet',
+          href: 'https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Sora:wght@400;600;800&display=swap',
+        },
+        { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+      ],
     },
   },
   runtimeConfig: {

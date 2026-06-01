@@ -2,11 +2,16 @@
   <a
     v-if="state.isEnabled"
     class="contribution-link"
+    :class="{ 'contribution-link--fab': fab }"
     :href="state.href"
     target="_blank"
     rel="noopener noreferrer"
+    :aria-label="label + ' (abre em nova aba)'"
   >
-    {{ label }}
+    <span>{{ label }}</span>
+    <svg v-if="fab" class="cta-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
   </a>
   <span v-else class="contribution-link contribution-link--disabled" aria-disabled="true">
     {{ label }}
@@ -21,10 +26,12 @@ const props = withDefaults(
   defineProps<{
     href?: string
     context?: 'new-group' | 'correction'
+    fab?: boolean
   }>(),
   {
     href: '',
     context: 'new-group',
+    fab: false,
   },
 )
 
@@ -37,18 +44,33 @@ const state = computed(() => getContributionLinkState(props.href))
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: var(--space-2);
   min-height: 42px;
-  padding: 0 16px;
-  border: 2px solid var(--color-asphalt);
-  border-radius: var(--radius-sm);
-  background: var(--color-sign-yellow);
+  padding: 0 var(--space-5);
+  background: var(--color-sun);
   color: var(--color-asphalt);
   font-weight: 800;
+  font-size: var(--text-sm);
   text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  transition: transform var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out);
+  clip-path: polygon(var(--space-1) 0, 100% 0, calc(100% - var(--space-1)) 100%, 0 100%);
+}
+
+.contribution-link:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 var(--color-asphalt);
 }
 
 .contribution-link--disabled {
   cursor: not-allowed;
-  opacity: 0.55;
+  opacity: 0.45;
+  clip-path: none;
+}
+
+.contribution-link--disabled:hover {
+  transform: none;
+  box-shadow: none;
 }
 </style>
