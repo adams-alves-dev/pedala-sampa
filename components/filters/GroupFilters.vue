@@ -31,13 +31,33 @@
       </select>
     </label>
 
+    <label>
+      <span>Período</span>
+      <select v-model="selectedPeriod" @change="syncPeriod">
+        <option value="">Todos</option>
+        <option value="morning">Manhã</option>
+        <option value="afternoon">Tarde</option>
+        <option value="night">Noite</option>
+      </select>
+    </label>
+
+    <label>
+      <span>Ritmo</span>
+      <select v-model="selectedRhythm" @change="syncRhythm">
+        <option value="">Todos</option>
+        <option value="light">Leve</option>
+        <option value="moderate">Moderado</option>
+        <option value="strong">Forte</option>
+      </select>
+    </label>
+
     <button type="button" class="clear" @click="$emit('clear')">Limpar filtros</button>
   </form>
 </template>
 
 <script setup lang="ts">
 import { reactive, ref, watch } from 'vue'
-import type { GroupFilters } from '../../types/group'
+import type { GroupFilters, Period, Rhythm } from '../../types/group'
 
 const props = defineProps<{
   modelValue: GroupFilters
@@ -53,6 +73,8 @@ const emit = defineEmits<{
 const localFilters = reactive<GroupFilters>({ ...props.modelValue })
 const selectedDay = ref(props.modelValue.days[0] || '')
 const selectedEffort = ref(props.modelValue.efforts[0] || '')
+const selectedPeriod = ref<Period | ''>(props.modelValue.periods[0] || '')
+const selectedRhythm = ref<Rhythm | ''>(props.modelValue.rhythms[0] || '')
 
 watch(
   () => props.modelValue,
@@ -60,6 +82,8 @@ watch(
     Object.assign(localFilters, filters)
     selectedDay.value = filters.days[0] || ''
     selectedEffort.value = filters.efforts[0] || ''
+    selectedPeriod.value = filters.periods[0] || ''
+    selectedRhythm.value = filters.rhythms[0] || ''
   },
 )
 
@@ -74,6 +98,16 @@ function syncDay() {
 
 function syncEffort() {
   localFilters.efforts = selectedEffort.value ? [selectedEffort.value] : []
+  emitChange()
+}
+
+function syncPeriod() {
+  localFilters.periods = selectedPeriod.value ? [selectedPeriod.value] : []
+  emitChange()
+}
+
+function syncRhythm() {
+  localFilters.rhythms = selectedRhythm.value ? [selectedRhythm.value] : []
   emitChange()
 }
 </script>
