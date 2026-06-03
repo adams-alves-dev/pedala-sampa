@@ -37,20 +37,39 @@
       @select="selectGroup"
     />
 
+    <EmptyState
+      v-if="!filteredGroups.length"
+      :contribution-form-url="contributionFormUrl"
+      @clear="clearFilters"
+    />
+
     <GroupQuickView
       :group="selectedGroup"
       :contribution-form-url="contributionFormUrl"
       @close="clearSelectedGroup"
+    />
+
+    <MobileSheet
+      :groups="filteredGroups"
+      :selected-group-slug="selectedGroupSlug"
+      :filters="filters"
+      :filter-groups="filterGroups"
+      :active-count="activeCount"
+      @open-filters="drawerOpen = true"
+      @toggle="toggleFilter"
+      @clear="clearFilters"
     />
   </section>
 </template>
 
 <script setup lang="ts">
 import { computed, ref } from 'vue'
+import EmptyState from '../components/explore/EmptyState.vue'
 import FiltersDrawer from '../components/explore/FiltersDrawer.vue'
 import GroupMap from '../components/map/GroupMap.client.vue'
 import GroupQuickView from '../components/explore/GroupQuickView.vue'
 import MapToolbar from '../components/explore/MapToolbar.vue'
+import MobileSheet from '../components/explore/MobileSheet.vue'
 import ResultsCarousel from '../components/explore/ResultsCarousel.vue'
 import { useGroupFilters } from '../composables/useGroupFilters'
 import { useGroups } from '../composables/useGroups'
