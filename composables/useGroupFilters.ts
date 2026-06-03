@@ -14,10 +14,6 @@ export function useGroupFilters(groups: Ref<Group[]>) {
   const filteredGroups = computed(() => filterGroups(groups.value, filters.value))
   const activeCount = computed(() => countActiveFilters(filters.value))
 
-  function updateFilters(nextFilters: GroupFilters) {
-    filters.value = nextFilters
-  }
-
   function setQuery(query: string) {
     filters.value = { ...filters.value, query }
   }
@@ -48,7 +44,6 @@ export function useGroupFilters(groups: Ref<Group[]>) {
     filters,
     filteredGroups,
     activeCount,
-    updateFilters,
     setQuery,
     toggleFilter,
     clearFilters,
