@@ -5,8 +5,6 @@ import type { Group, GroupFilters } from '../types/group'
 /** Filter categories that toggle on/off via chips (single selection each). */
 type ToggleableKey = 'day' | 'effort' | 'distanceRange' | 'period' | 'rhythm'
 
-const clearedValue = (key: ToggleableKey) => (key === 'distanceRange' ? undefined : '')
-
 export function useGroupFilters(groups: Ref<Group[]>) {
   const filters = ref<GroupFilters>(createEmptyGroupFilters())
 
@@ -22,10 +20,11 @@ export function useGroupFilters(groups: Ref<Group[]>) {
   }
 
   /** Set the category to `value`, or clear it when it already holds that value. */
-  function toggleFilter(key: ToggleableKey, value: string) {
-    const next = filters.value[key] === value ? clearedValue(key) : value
-    // value is validated upstream (chip data); cast keeps the union types intact
-    filters.value = { ...filters.value, [key]: next } as GroupFilters
+  function toggleFilter<K extends ToggleableKey>(key: K, value: NonNullable<GroupFilters[K]>) {
+    const next: GroupFilters = { ...filters.value }
+    // the canonical "empty" value per field carries the correct type for `key`
+    next[key] = next[key] === value ? createEmptyGroupFilters()[key] : value
+    filters.value = next
   }
 
   function clearFilters() {

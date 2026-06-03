@@ -4,7 +4,7 @@ import { ICON_PATHS, type IconName } from '../../lib/icons'
 
 const props = withDefaults(
   defineProps<{
-    name: IconName | string
+    name: IconName
     size?: number
     stroke?: number
   }>(),
@@ -14,8 +14,8 @@ const props = withDefaults(
   },
 )
 
-// static, trusted paths — fall back to `info` when the name is unknown
-const innerHtml = computed(() => ICON_PATHS[props.name as IconName] ?? ICON_PATHS.info)
+// static, trusted paths keyed by a typed icon name
+const innerHtml = computed(() => ICON_PATHS[props.name])
 </script>
 
 <template>

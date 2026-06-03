@@ -6,9 +6,15 @@
         v-for="group in groups"
         :key="group.id"
         :lat-lng="[group.departureLocation.latitude, group.departureLocation.longitude]"
-        :icon="group.slug === selectedGroupSlug ? selectedIcon : defaultIcon"
         @click="$emit('select', group.slug)"
       >
+        <LIcon
+          :icon-size="group.slug === selectedGroupSlug ? selectedSize : defaultSize"
+          :icon-anchor="group.slug === selectedGroupSlug ? selectedAnchor : defaultAnchor"
+          class-name=""
+        >
+          <div class="marker-pin" :class="{ 'marker-pin--selected': group.slug === selectedGroupSlug }" />
+        </LIcon>
         <LTooltip>{{ group.name }}</LTooltip>
       </LMarker>
     </LMap>
@@ -16,7 +22,7 @@
 </template>
 
 <script setup lang="ts">
-import L from 'leaflet'
+import type { PointTuple } from 'leaflet'
 import type { Group } from '../../types/group'
 import MapTileLayer from './MapTileLayer.vue'
 
@@ -29,27 +35,16 @@ defineEmits<{
   select: [slug: string]
 }>()
 
-const center: [number, number] = [-23.55, -46.623798]
-const maxBounds: [[number, number], [number, number]] = [
+const center: PointTuple = [-23.55, -46.623798]
+const maxBounds: [PointTuple, PointTuple] = [
   [-23.36, -46.84],
   [-24.0, -46.36],
 ]
 
-// vue-leaflet types the marker `icon` prop as Icon; divIcon returns the
-// DivIcon subtype, so cast to keep the toolchain happy (runtime is unaffected).
-const defaultIcon = L.divIcon({
-  className: '',
-  html: `<div class="marker-pin"></div>`,
-  iconSize: [20, 20],
-  iconAnchor: [10, 10],
-}) as L.Icon
-
-const selectedIcon = L.divIcon({
-  className: '',
-  html: `<div class="marker-pin marker-pin--selected"></div>`,
-  iconSize: [28, 28],
-  iconAnchor: [14, 14],
-}) as L.Icon
+const defaultSize: PointTuple = [20, 20]
+const defaultAnchor: PointTuple = [10, 10]
+const selectedSize: PointTuple = [28, 28]
+const selectedAnchor: PointTuple = [14, 14]
 </script>
 
 <style>
