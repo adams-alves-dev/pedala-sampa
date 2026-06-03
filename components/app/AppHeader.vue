@@ -1,122 +1,205 @@
 <template>
-  <header class="app-header">
-    <NuxtLink class="brand" to="/" aria-label="Pedala Sampa - mapa de grupos">
-      <svg class="brand-icon" width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-        <circle cx="14" cy="14" r="6" fill="var(--color-sun)"/>
-        <path d="M14 3v3M14 22v3M3 14h3M22 14h3M5.5 5.5l2 2M20.5 20.5l2 2M5.5 22.5l2-2M20.5 7.5l2-2" stroke="var(--color-sun)" stroke-width="2" stroke-linecap="round"/>
-      </svg>
-      <span class="brand-text">Pedala Sampa</span>
-      <span class="brand-badge">mapa colaborativo</span>
+  <header class="ps-header">
+    <NuxtLink class="ps-brand" to="/" aria-label="Pedala Sampa — início">
+      <img src="/brand-logo.svg" width="38" height="44" alt="" >
+      <span class="ps-brand__text">Pedala Sampa</span>
+      <span class="ps-brand__badge">mapa colaborativo</span>
     </NuxtLink>
-    <nav class="nav" aria-label="Navegação principal">
-      <NuxtLink to="/" :aria-current="route.path === '/' ? 'page' : undefined">Mapa</NuxtLink>
-      <NuxtLink to="/sobre" :aria-current="route.path === '/sobre' ? 'page' : undefined">Sobre</NuxtLink>
-      <ContributionLink class="desktop-cta" :href="contributionFormUrl" context="new-group" />
+
+    <nav class="ps-nav" aria-label="Navegação principal">
+      <span class="nav-desktop">
+        <NuxtLink to="/" :aria-current="route.path === '/' ? 'page' : undefined">Mapa</NuxtLink>
+        <NuxtLink to="/sobre" :aria-current="route.path === '/sobre' ? 'page' : undefined">Sobre</NuxtLink>
+      </span>
+
+      <button
+        class="ps-theme-toggle"
+        type="button"
+        aria-label="Alternar entre tema claro e escuro"
+        title="Tema claro / escuro"
+        @click="toggleTheme"
+      >
+        <ClientOnly>
+          <PsIcon :name="colorMode.value === 'noturno' ? 'sun' : 'moon'" :size="18" />
+          <template #fallback><span class="toggle-ph" /></template>
+        </ClientOnly>
+      </button>
+
+      <ContributionLink
+        class="desktop-cta"
+        :href="contributionFormUrl"
+        context="new-group"
+        icon="plus"
+      />
+
+      <button
+        ref="burgerRef"
+        class="ps-burger"
+        type="button"
+        :aria-expanded="menuOpen"
+        aria-label="Menu"
+        @click="menuOpen = !menuOpen"
+      >
+        ≡
+      </button>
     </nav>
+
+    <div v-show="menuOpen" ref="menuRef" class="menu" @click="menuOpen = false">
+      <NuxtLink to="/">Mapa</NuxtLink>
+      <NuxtLink to="/sobre">Sobre</NuxtLink>
+      <a
+        v-if="contributionFormUrl"
+        :href="contributionFormUrl"
+        target="_blank"
+        rel="noopener noreferrer"
+      >+ Sugerir grupo</a>
+    </div>
   </header>
 </template>
 
 <script setup lang="ts">
-import ContributionLink from '../contribution/ContributionLink.vue'
+import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
 defineProps<{
   contributionFormUrl?: string
 }>()
 
 const route = useRoute()
+const colorMode = useColorMode()
+
+const menuOpen = ref(false)
+const burgerRef = ref<HTMLElement | null>(null)
+const menuRef = ref<HTMLElement | null>(null)
+
+function toggleTheme() {
+  colorMode.preference = colorMode.value === 'noturno' ? 'ciclovia' : 'noturno'
+}
+
+// close the dropdown when navigating
+watch(() => route.path, () => {
+  menuOpen.value = false
+})
+
+// close the dropdown when clicking outside the burger/menu
+function onDocumentClick(event: MouseEvent) {
+  if (!menuOpen.value || !(event.target instanceof Node)) {
+    return
+  }
+  if (burgerRef.value?.contains(event.target) || menuRef.value?.contains(event.target)) {
+    return
+  }
+  menuOpen.value = false
+}
+
+onMounted(() => document.addEventListener('click', onDocumentClick))
+onBeforeUnmount(() => document.removeEventListener('click', onDocumentClick))
 </script>
 
 <style scoped>
-.app-header {
-  align-items: center;
-  background: var(--color-asphalt);
-  display: flex;
-  gap: var(--space-5);
-  height: var(--header-height);
-  justify-content: space-between;
-  padding: 0 var(--space-6);
+.ps-header {
   position: sticky;
   top: 0;
   z-index: 1000;
-  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 32px) 100%, 0 100%);
 }
 
-.brand {
+.nav-desktop {
+  display: inline-flex;
   align-items: center;
-  display: flex;
-  gap: var(--space-2);
-  text-decoration: none;
-  color: var(--color-concrete);
-}
-
-.brand-icon {
-  flex-shrink: 0;
-}
-
-.brand-text {
-  font-family: var(--font-display);
-  font-size: var(--text-lg);
-  font-weight: 800;
-  letter-spacing: -0.02em;
-}
-
-.brand-badge {
-  display: none;
-  font-size: var(--text-xs);
-  color: var(--color-sun);
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  border-left: 2px solid rgb(255 179 0 / 25%);
-  padding-left: var(--space-2);
-}
-
-.nav {
-  align-items: center;
-  display: flex;
   gap: var(--space-4);
-}
-
-.nav a {
-  font-family: var(--font-body);
-  font-weight: 800;
-  text-decoration: none;
-  font-size: var(--text-sm);
-  color: rgb(232 224 208 / 75%);
-  transition: color var(--duration-fast) var(--ease-out);
-}
-
-.nav a:hover {
-  color: var(--color-concrete);
-}
-
-.nav a[aria-current='page'] {
-  color: var(--color-sun);
 }
 
 .desktop-cta {
   margin-left: var(--space-2);
 }
 
-@media (min-width: 721px) {
-  .brand-badge {
-    display: inline;
-  }
+/* Round theme toggle (moon when light / sun when dark) */
+.ps-theme-toggle {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  flex: 0 0 auto;
+  border: 2px solid color-mix(in srgb, var(--header-fg) 40%, transparent);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--header-fg);
+  cursor: pointer;
+  transition: border-color var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out);
 }
 
-@media (max-width: 720px) {
-  .app-header {
+.ps-theme-toggle:hover {
+  border-color: var(--header-fg);
+  color: var(--color-sign-yellow);
+}
+
+.toggle-ph {
+  width: 18px;
+  height: 18px;
+}
+
+/* Burger (mobile only) */
+.ps-burger {
+  display: none;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 2px solid var(--header-fg);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--header-fg);
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+/* Mobile dropdown menu */
+.menu {
+  position: absolute;
+  z-index: 1100;
+  top: var(--header-height);
+  right: var(--space-4);
+  min-width: 200px;
+  display: grid;
+  gap: 2px;
+  padding: var(--space-2);
+  background: var(--color-paper);
+  border: 2px solid var(--color-asphalt);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-panel);
+}
+
+.menu a {
+  padding: 10px 12px;
+  text-decoration: none;
+  font-weight: 800;
+  font-size: var(--text-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-asphalt);
+  border-radius: var(--radius-sm);
+}
+
+.menu a:hover {
+  background: var(--color-concrete);
+}
+
+@media (max-width: 760px) {
+  .ps-header {
     padding: 0 var(--space-4);
-    height: 64px;
     clip-path: none;
   }
 
-  .brand-text {
-    font-size: var(--text-md);
-  }
-
+  .nav-desktop,
   .desktop-cta {
     display: none;
+  }
+
+  .ps-brand__badge {
+    display: none;
+  }
+
+  .ps-burger {
+    display: grid;
   }
 }
 </style>

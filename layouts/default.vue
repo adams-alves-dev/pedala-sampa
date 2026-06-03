@@ -5,10 +5,7 @@
     <footer v-if="showFooter" class="app-footer">
       <div class="footer-inner">
         <div class="footer-brand">
-          <svg width="20" height="20" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-            <circle cx="14" cy="14" r="6" fill="var(--color-sun)"/>
-            <path d="M14 3v3M14 22v3M3 14h3M22 14h3M5.5 5.5l2 2M20.5 20.5l2 2M5.5 22.5l2-2M20.5 7.5l2-2" stroke="var(--color-sun)" stroke-width="2" stroke-linecap="round"/>
-          </svg>
+          <img src="/brand-logo.svg" width="22" height="26" alt="" >
           <span>Pedala Sampa</span>
         </div>
         <p class="footer-text">Mapa colaborativo de grupos de pedal em São Paulo.</p>
@@ -37,8 +34,8 @@ const showFooter = route.path !== '/'
 }
 
 .app-footer {
-  background: var(--color-asphalt);
-  color: var(--color-concrete);
+  background: var(--header-bg);
+  color: var(--header-fg);
   padding: var(--space-10) var(--space-6);
   border-top: 4px solid var(--color-sun);
 }
@@ -63,7 +60,7 @@ const showFooter = route.path !== '/'
 .footer-text {
   font-size: var(--text-sm);
   margin: 0;
-  color: rgb(232 224 208 / 55%);
+  color: color-mix(in srgb, var(--header-fg) 55%, transparent);
 }
 
 .footer-nav {

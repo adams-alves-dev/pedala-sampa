@@ -8,6 +8,7 @@
     rel="noopener noreferrer"
     :aria-label="label + ' (abre em nova aba)'"
   >
+    <PsIcon v-if="icon" :name="icon" :size="15" />
     <span>{{ label }}</span>
     <svg v-if="fab" class="cta-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
       <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -21,17 +22,20 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { getContributionLinkState } from '../../lib/contribution'
+import type { IconName } from '../../lib/icons'
 
 const props = withDefaults(
   defineProps<{
     href?: string
     context?: 'new-group' | 'correction'
     fab?: boolean
+    icon?: IconName
   }>(),
   {
     href: '',
     context: 'new-group',
     fab: false,
+    icon: undefined,
   },
 )
 
