@@ -34,6 +34,9 @@ export type DistanceRange = 'up-to-20' | '20-to-40' | 'over-40'
 export type Period = 'morning' | 'afternoon' | 'night'
 export type Rhythm = 'light' | 'moderate' | 'strong'
 
+/** Filter categories with single selection (chips). */
+export type FilterCategory = 'day' | 'effort' | 'distanceRange' | 'period' | 'rhythm'
+
 export type GroupFilters = {
   query: string
   day: string // '' = all

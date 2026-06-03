@@ -1,9 +1,12 @@
 import { computed, ref } from 'vue'
+import { DISTANCE_RANGES, PERIODS, RHYTHMS } from '../lib/filter-options'
 import { countActiveFilters, createEmptyGroupFilters, filterGroups } from '../lib/group-filters'
-import type { Group, GroupFilters } from '../types/group'
+import type { FilterCategory, Group, GroupFilters } from '../types/group'
 
-/** Filter categories that toggle on/off via chips (single selection each). */
-type ToggleableKey = 'day' | 'effort' | 'distanceRange' | 'period' | 'rhythm'
+/** Narrow a raw string to a typed union member (cast-free), or undefined. */
+function findUnion<T extends string>(values: T[], value: string): T | undefined {
+  return values.find((candidate) => candidate === value)
+}
 
 export function useGroupFilters(groups: Ref<Group[]>) {
   const filters = ref<GroupFilters>(createEmptyGroupFilters())
@@ -20,11 +23,18 @@ export function useGroupFilters(groups: Ref<Group[]>) {
   }
 
   /** Set the category to `value`, or clear it when it already holds that value. */
-  function toggleFilter<K extends ToggleableKey>(key: K, value: NonNullable<GroupFilters[K]>) {
-    const next: GroupFilters = { ...filters.value }
-    // the canonical "empty" value per field carries the correct type for `key`
-    next[key] = next[key] === value ? createEmptyGroupFilters()[key] : value
-    filters.value = next
+  function toggleFilter(key: FilterCategory, value: string) {
+    const current = filters.value
+    const isActive = current[key] === value
+    filters.value = {
+      ...current,
+      day: key === 'day' ? (isActive ? '' : value) : current.day,
+      effort: key === 'effort' ? (isActive ? '' : value) : current.effort,
+      distanceRange:
+        key === 'distanceRange' ? (isActive ? undefined : findUnion(DISTANCE_RANGES, value)) : current.distanceRange,
+      period: key === 'period' ? (isActive ? '' : findUnion(PERIODS, value) ?? '') : current.period,
+      rhythm: key === 'rhythm' ? (isActive ? '' : findUnion(RHYTHMS, value) ?? '') : current.rhythm,
+    }
   }
 
   function clearFilters() {
