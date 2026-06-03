@@ -1,69 +1,114 @@
 <template>
   <div class="group-map">
-    <LMap ref="mapRef" :zoom="12" :center="center" :min-zoom="10" :max-bounds="maxBounds" :use-global-leaflet="false">
+    <LMap
+      ref="mapRef"
+      :zoom="ZOOM"
+      :center="CENTER"
+      :use-global-leaflet="false"
+      :options="{ zoomControl: false }"
+      @ready="onMapReady"
+      @click="$emit('clear-selection')"
+    >
+      <LControlZoom position="bottomright" />
       <MapTileLayer />
       <LMarker
-        v-for="group in groups"
-        :key="group.id"
+        v-for="(group, index) in groups"
+        :key="`${group.id}${group.slug === selectedGroupSlug ? '-selected' : ''}`"
         :lat-lng="[group.departureLocation.latitude, group.departureLocation.longitude]"
-        @click="$emit('select', group.slug)"
+        :z-index-offset="group.slug === selectedGroupSlug ? 1000 : 0"
+        @click="onMarkerClick(group.slug, $event)"
       >
         <LIcon
           :icon-size="group.slug === selectedGroupSlug ? selectedSize : defaultSize"
           :icon-anchor="group.slug === selectedGroupSlug ? selectedAnchor : defaultAnchor"
-          class-name=""
+          class-name="pin-wrap"
         >
-          <div class="marker-pin" :class="{ 'marker-pin--selected': group.slug === selectedGroupSlug }" />
+          <div class="ps-pin" :class="{ 'ps-pin--selected': group.slug === selectedGroupSlug }">
+            <span>{{ index + 1 }}</span>
+          </div>
         </LIcon>
-        <LTooltip>{{ group.name }}</LTooltip>
       </LMarker>
     </LMap>
   </div>
 </template>
 
 <script setup lang="ts">
-import type { PointTuple } from 'leaflet'
+import type { LeafletMouseEvent, Map as LeafletMap, PointTuple } from 'leaflet'
+import { watch } from 'vue'
 import type { Group } from '../../types/group'
 import MapTileLayer from './MapTileLayer.vue'
 
-defineProps<{
+const props = defineProps<{
   groups: Group[]
   selectedGroupSlug?: string | null
 }>()
 
-defineEmits<{
+const emit = defineEmits<{
   select: [slug: string]
+  'clear-selection': []
 }>()
 
-const center: PointTuple = [-23.55, -46.623798]
-const maxBounds: [PointTuple, PointTuple] = [
-  [-23.36, -46.84],
-  [-24.0, -46.36],
-]
+// aligns with the prototype (PS.CENTER / PS.ZOOM)
+const CENTER: PointTuple = [-23.576, -46.655]
+const ZOOM = 12
 
-const defaultSize: PointTuple = [20, 20]
-const defaultAnchor: PointTuple = [10, 10]
-const selectedSize: PointTuple = [28, 28]
-const selectedAnchor: PointTuple = [14, 14]
-</script>
+const defaultSize: PointTuple = [28, 28]
+const defaultAnchor: PointTuple = [14, 26]
+const selectedSize: PointTuple = [36, 36]
+const selectedAnchor: PointTuple = [18, 34]
 
-<style>
-.marker-pin {
-  width: 20px;
-  height: 20px;
-  background: var(--color-forest, #00796B);
-  transform: rotate(45deg);
-  border: 2.5px solid white;
-  box-shadow: 0 2px 6px rgb(0 0 0 / 30%);
-  transition: all var(--duration-fast) var(--ease-out);
+let mapInstance: LeafletMap | null = null
+
+const prefersReducedMotion = () =>
+  typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+function onMapReady(map: LeafletMap) {
+  mapInstance = map
+  // the map often mounts before its container has its final size
+  setTimeout(() => map.invalidateSize(), 60)
 }
 
-.marker-pin--selected {
-  width: 28px;
-  height: 28px;
-  background: var(--color-sun, #FFB300);
-  border-width: 3px;
-  box-shadow: 0 0 0 4px rgb(255 179 0 / 30%);
+function onMarkerClick(slug: string, event: LeafletMouseEvent) {
+  // keep the click from also reaching the map (which would clear the selection)
+  event.originalEvent.stopPropagation()
+  emit('select', slug)
+}
+
+// fly to the selected group whenever the selection changes (card or pin)
+watch(
+  () => props.selectedGroupSlug,
+  (slug) => {
+    if (!mapInstance || !slug) {
+      return
+    }
+    const group = props.groups.find((candidate) => candidate.slug === slug)
+    if (!group) {
+      return
+    }
+    const target: PointTuple = [group.departureLocation.latitude, group.departureLocation.longitude]
+    if (prefersReducedMotion()) {
+      mapInstance.setView(target, 14)
+    } else {
+      mapInstance.flyTo(target, 14, { duration: 0.6 })
+    }
+  },
+)
+</script>
+
+<!-- Leaflet renders markers/containers outside the scoped tree, so these are global -->
+<style>
+.pin-wrap {
+  overflow: visible;
+}
+
+.leaflet-container {
+  font-family: var(--font-body);
+  background: var(--color-concrete);
+}
+
+.leaflet-control-attribution {
+  font-size: 10px;
+  background: rgb(255 248 238 / 80%);
 }
 </style>
 
