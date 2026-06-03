@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { filterGroups, createEmptyGroupFilters } from '../../lib/group-filters'
+import { countActiveFilters, filterGroups, createEmptyGroupFilters } from '../../lib/group-filters'
 import type { Group } from '../../types/group'
 
 const groups: Group[] = [
@@ -27,10 +27,11 @@ describe('group filters', () => {
   it('cria filtro vazio', () => {
     expect(createEmptyGroupFilters()).toEqual({
       query: '',
-      days: [],
-      efforts: [],
-      periods: [],
-      rhythms: [],
+      day: '',
+      effort: '',
+      distanceRange: undefined,
+      period: '',
+      rhythm: '',
     })
   })
 
@@ -47,16 +48,30 @@ describe('group filters', () => {
     ])
   })
 
-  it('filtra por dia, nível, distância, período e ritmo', () => {
+  it('filtra por dia, nível, distância, período e ritmo (seleção única)', () => {
     const result = filterGroups(groups, {
       query: '',
-      days: ['Sábado'],
-      efforts: ['Iniciante'],
+      day: 'Sábado',
+      effort: 'Iniciante',
       distanceRange: 'up-to-20',
-      periods: ['morning'],
-      rhythms: ['light'],
+      period: 'morning',
+      rhythm: 'light',
     })
 
     expect(result.map((group) => group.slug)).toEqual(['iniciantes-zona-oeste'])
+  })
+
+  it('conta categorias ativas mais a busca', () => {
+    expect(countActiveFilters(createEmptyGroupFilters())).toBe(0)
+    expect(countActiveFilters({ ...createEmptyGroupFilters(), query: 'pedal' })).toBe(1)
+    expect(
+      countActiveFilters({
+        ...createEmptyGroupFilters(),
+        query: 'pedal',
+        day: 'Sábado',
+        distanceRange: 'up-to-20',
+        rhythm: 'light',
+      }),
+    ).toBe(4)
   })
 })

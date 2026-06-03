@@ -35,19 +35,21 @@ const maxBounds: [[number, number], [number, number]] = [
   [-24.0, -46.36],
 ]
 
+// vue-leaflet types the marker `icon` prop as Icon; divIcon returns the
+// DivIcon subtype, so cast to keep the toolchain happy (runtime is unaffected).
 const defaultIcon = L.divIcon({
   className: '',
   html: `<div class="marker-pin"></div>`,
   iconSize: [20, 20],
   iconAnchor: [10, 10],
-})
+}) as L.Icon
 
 const selectedIcon = L.divIcon({
   className: '',
   html: `<div class="marker-pin marker-pin--selected"></div>`,
   iconSize: [28, 28],
   iconAnchor: [14, 14],
-})
+}) as L.Icon
 </script>
 
 <style>

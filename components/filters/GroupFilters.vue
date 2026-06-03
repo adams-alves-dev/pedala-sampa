@@ -8,7 +8,7 @@
     <div class="filter-row">
       <label class="filter-group">
         <span class="filter-label">Dia</span>
-        <select v-model="selectedDay" @change="syncDay">
+        <select v-model="localFilters.day" @change="emitChange">
           <option value="">Todos</option>
           <option v-for="day in days" :key="day" :value="day">{{ day }}</option>
         </select>
@@ -16,7 +16,7 @@
 
       <label class="filter-group">
         <span class="filter-label">Nível</span>
-        <select v-model="selectedEffort" @change="syncEffort">
+        <select v-model="localFilters.effort" @change="emitChange">
           <option value="">Todos</option>
           <option v-for="effort in efforts" :key="effort" :value="effort">{{ effort }}</option>
         </select>
@@ -36,7 +36,7 @@
     <div class="filter-row">
       <label class="filter-group">
         <span class="filter-label">Período</span>
-        <select v-model="selectedPeriod" @change="syncPeriod">
+        <select v-model="localFilters.period" @change="emitChange">
           <option value="">Todos</option>
           <option value="morning">Manhã</option>
           <option value="afternoon">Tarde</option>
@@ -46,7 +46,7 @@
 
       <label class="filter-group">
         <span class="filter-label">Ritmo</span>
-        <select v-model="selectedRhythm" @change="syncRhythm">
+        <select v-model="localFilters.rhythm" @change="emitChange">
           <option value="">Todos</option>
           <option value="light">Leve</option>
           <option value="moderate">Moderado</option>
@@ -60,8 +60,8 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref, watch } from 'vue'
-import type { GroupFilters, Period, Rhythm } from '../../types/group'
+import { reactive, watch } from 'vue'
+import type { GroupFilters } from '../../types/group'
 
 const props = defineProps<{
   modelValue: GroupFilters
@@ -75,44 +75,16 @@ const emit = defineEmits<{
 }>()
 
 const localFilters = reactive<GroupFilters>({ ...props.modelValue })
-const selectedDay = ref(props.modelValue.days[0] || '')
-const selectedEffort = ref(props.modelValue.efforts[0] || '')
-const selectedPeriod = ref<Period | ''>(props.modelValue.periods[0] || '')
-const selectedRhythm = ref<Rhythm | ''>(props.modelValue.rhythms[0] || '')
 
 watch(
   () => props.modelValue,
   (filters) => {
     Object.assign(localFilters, filters)
-    selectedDay.value = filters.days[0] || ''
-    selectedEffort.value = filters.efforts[0] || ''
-    selectedPeriod.value = filters.periods[0] || ''
-    selectedRhythm.value = filters.rhythms[0] || ''
   },
 )
 
 function emitChange() {
   emit('update:modelValue', { ...localFilters })
-}
-
-function syncDay() {
-  localFilters.days = selectedDay.value ? [selectedDay.value] : []
-  emitChange()
-}
-
-function syncEffort() {
-  localFilters.efforts = selectedEffort.value ? [selectedEffort.value] : []
-  emitChange()
-}
-
-function syncPeriod() {
-  localFilters.periods = selectedPeriod.value ? [selectedPeriod.value] : []
-  emitChange()
-}
-
-function syncRhythm() {
-  localFilters.rhythms = selectedRhythm.value ? [selectedRhythm.value] : []
-  emitChange()
 }
 </script>
 

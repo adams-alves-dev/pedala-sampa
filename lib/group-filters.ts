@@ -4,10 +4,11 @@ import { getPeriodFromHour, getRhythmCategory } from './time'
 export function createEmptyGroupFilters(): GroupFilters {
   return {
     query: '',
-    days: [],
-    efforts: [],
-    periods: [],
-    rhythms: [],
+    day: '',
+    effort: '',
+    distanceRange: undefined,
+    period: '',
+    rhythm: '',
   }
 }
 
@@ -54,16 +55,24 @@ export function filterGroups(groups: Group[], filters: GroupFilters) {
       return false
     }
 
+    // Single selection per category; a group passes when one of its schedules
+    // satisfies every active category at once.
     return group.schedules.some((schedule) => {
-      const matchesDay = filters.days.length === 0 || filters.days.includes(schedule.day)
-      const matchesEffort = filters.efforts.length === 0 || filters.efforts.includes(schedule.effort)
+      const matchesDay = !filters.day || schedule.day === filters.day
+      const matchesEffort = !filters.effort || schedule.effort === filters.effort
       const matchesDistance = isInDistanceRange(schedule.distanceKm, filters.distanceRange)
-      const matchesPeriod =
-        filters.periods.length === 0 || filters.periods.includes(getPeriodFromHour(schedule.startHour))
-      const matchesRhythm =
-        filters.rhythms.length === 0 || filters.rhythms.includes(getRhythmCategory(schedule.rhythmKmH))
+      const matchesPeriod = !filters.period || getPeriodFromHour(schedule.startHour) === filters.period
+      const matchesRhythm = !filters.rhythm || getRhythmCategory(schedule.rhythmKmH) === filters.rhythm
 
       return matchesDay && matchesEffort && matchesDistance && matchesPeriod && matchesRhythm
     })
   })
+}
+
+/** Number of active filter categories, plus the search query when present. */
+export function countActiveFilters(filters: GroupFilters): number {
+  const categories: Array<keyof GroupFilters> = ['day', 'effort', 'distanceRange', 'period', 'rhythm']
+  const activeCategories = categories.filter((key) => Boolean(filters[key])).length
+
+  return activeCategories + (filters.query ? 1 : 0)
 }

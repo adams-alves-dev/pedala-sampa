@@ -36,9 +36,9 @@ export type Rhythm = 'light' | 'moderate' | 'strong'
 
 export type GroupFilters = {
   query: string
-  days: string[]
-  efforts: string[]
+  day: string // '' = all
+  effort: string // '' = all
   distanceRange?: DistanceRange
-  periods: Period[]
-  rhythms: Rhythm[]
+  period: Period | '' // '' = all
+  rhythm: Rhythm | '' // '' = all
 }
