@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48" fill="none" role="img" aria-label="Pedala Sampa">
+  <path d="M24 4C13.5 4 5 12.5 5 23c0 10.4 9.5 19 19 29 9.5-10 19-18.6 19-29C43 12.5 34.5 4 24 4Z" fill="#F2B33A" stroke="#D99A2B" stroke-width="1"/>
+  <g transform="translate(13.8,12) scale(0.85)" fill="none" stroke="#1A120B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="6" cy="17" r="3.4"/>
+    <circle cx="18" cy="17" r="3.4"/>
+    <path d="M6 17l4.5-8H14M9 9h6l2.5 8M14 9l-2 4.5h-6"/>
+  </g>
+</svg>

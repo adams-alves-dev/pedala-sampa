@@ -1,26 +1,24 @@
 <template>
-  <LTileLayer v-if="mapboxUrl" :url="mapboxUrl" :attribution="mapboxAttribution" />
-  <LTileLayer v-else url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" :attribution="osmAttribution" />
+  <LTileLayer
+    :key="tileVariant"
+    :url="tileUrl"
+    :attribution="attribution"
+    :subdomains="'abcd'"
+    :max-zoom="19"
+  />
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue'
 
-const config = useRuntimeConfig()
+// CARTO basemap, light/dark per theme (ciclovia → light, noturno → dark).
+const colorMode = useColorMode()
 
-const osmAttribution = '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
-const mapboxAttribution =
-  '© <a href="https://apps.mapbox.com/feedback/">Mapbox</a> © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+const attribution =
+  '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> &middot; &copy; <a href="https://carto.com/attributions">CARTO</a>'
 
-const mapboxUrl = computed(() => {
-  const userId = config.public.mapboxUserId
-  const styleId = config.public.mapboxStyleId
-  const apiKey = config.public.mapboxApiKey
-
-  if (!userId || !styleId || !apiKey) {
-    return ''
-  }
-
-  return `https://api.mapbox.com/styles/v1/${userId}/${styleId}/tiles/256/{z}/{x}/{y}@2x?access_token=${apiKey}`
-})
+const tileVariant = computed(() => (colorMode.value === 'noturno' ? 'dark_all' : 'light_all'))
+const tileUrl = computed(
+  () => `https://{s}.basemaps.cartocdn.com/${tileVariant.value}/{z}/{x}/{y}{r}.png`,
+)
 </script>

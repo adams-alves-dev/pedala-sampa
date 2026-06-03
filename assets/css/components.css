@@ -1,0 +1,347 @@
+/* ============================================================
+   Pedala Sampa — Component layer (design system)
+   Global `ps-*` classes reused across several Vue components.
+   Ported from the handoff (components.css + type classes from colors_and_type.css).
+   View-specific layout styles stay scoped in each .vue.
+   ============================================================ */
+
+/* ---------- Semantic typography ---------- */
+.ps-h1 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: var(--text-3xl);
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+.ps-h2 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: var(--text-xl);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+.ps-h3 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--text-lg);
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+.ps-lead {
+  font-family: var(--font-body);
+  font-size: var(--text-lg);
+  line-height: 1.6;
+}
+.ps-body {
+  font-family: var(--font-body);
+  font-size: var(--text-md);
+  line-height: 1.55;
+}
+.ps-eyebrow {
+  font-family: var(--font-body);
+  font-weight: 900;
+  font-size: var(--text-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-bike-green);
+}
+.ps-label {
+  font-family: var(--font-body);
+  font-weight: 800;
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-asphalt-55);
+}
+.ps-data {
+  font-family: var(--font-body);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- App header (asphalt bar, angular cut corner) ---------- */
+.ps-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-5);
+  height: var(--header-height);
+  padding: 0 var(--space-6);
+  background: var(--header-bg);
+  color: var(--header-fg);
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 32px) 100%, 0 100%);
+}
+.ps-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  text-decoration: none;
+  color: var(--header-fg);
+}
+.ps-brand__text {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.ps-brand__badge {
+  font-size: var(--text-xs);
+  color: var(--color-sun);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-left: 2px solid rgb(255 179 0 / 25%);
+  padding-left: var(--space-2);
+}
+.ps-nav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+.ps-nav a {
+  font-family: var(--font-body);
+  font-weight: 800;
+  text-decoration: none;
+  font-size: var(--text-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: color-mix(in srgb, var(--header-fg) 75%, transparent);
+  cursor: pointer;
+  transition: color var(--duration-fast) var(--ease-out);
+}
+.ps-nav a:hover { color: var(--header-fg); }
+.ps-nav a[aria-current='page'] { color: var(--color-sun); }
+
+/* ---------- Yellow signage CTA (parallelogram + hard shadow) ---------- */
+.ps-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: 42px;
+  padding: 0 var(--space-5);
+  background: var(--color-sun);
+  color: var(--color-asphalt);
+  border: 0;
+  font-family: var(--font-body);
+  font-weight: 800;
+  font-size: var(--text-sm);
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  white-space: nowrap;
+  clip-path: polygon(var(--space-1) 0, 100% 0, calc(100% - var(--space-1)) 100%, 0 100%);
+  transition: transform var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out);
+}
+.ps-cta:hover { transform: translate(-1px, -1px); box-shadow: var(--shadow-hard); }
+.ps-cta--disabled { opacity: 0.45; cursor: not-allowed; clip-path: none; }
+.ps-cta--disabled:hover { transform: none; box-shadow: none; }
+
+/* ---------- Outline / solid / ghost buttons ---------- */
+.ps-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: 42px;
+  padding: 0 var(--space-4);
+  background: var(--color-paper);
+  color: var(--color-asphalt);
+  border: 2px solid var(--color-asphalt);
+  font-family: var(--font-body);
+  font-weight: 800;
+  font-size: var(--text-sm);
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: transform var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out),
+              background var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out);
+}
+.ps-btn:hover { transform: translate(-1px, -1px); box-shadow: var(--shadow-hard); }
+.ps-btn--solid { background: var(--color-asphalt); color: var(--color-concrete); }
+.ps-btn--solid:hover { box-shadow: 4px 4px 0 var(--color-bike-green); }
+.ps-btn--ghost { border-color: var(--color-border); background: transparent; }
+.ps-btn--ghost:hover { border-color: var(--color-asphalt); box-shadow: none; transform: none; }
+.ps-btn--sm { min-height: 34px; padding: 0 var(--space-3); }
+.ps-btn--block { width: 100%; }
+
+/* ---------- Badges (day / departure / level / distance / rhythm) ---------- */
+.ps-badges { display: flex; flex-wrap: wrap; gap: var(--space-2); margin: 0; padding: 0; }
+.ps-badge {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 60px;
+  border: 1px solid var(--color-border);
+  background: var(--color-concrete);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+}
+.ps-badge__ic {
+  display: grid;
+  place-items: center;
+  width: 26px; height: 26px;
+  flex: 0 0 auto;
+  border-radius: var(--radius-sm);
+  background: var(--color-paper);
+  border: 1px solid var(--color-border);
+  color: var(--color-bike-green);
+}
+.ps-badge dt, .ps-badge .ps-badge__k {
+  color: var(--color-asphalt-55);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0;
+}
+.ps-badge dd, .ps-badge .ps-badge__v {
+  margin: 1px 0 0;
+  font-weight: 800;
+  font-size: var(--text-sm);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Chips (filter tags) ---------- */
+.ps-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 2px solid var(--color-asphalt);
+  background: var(--color-paper);
+  color: var(--color-asphalt);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background var(--duration-fast) var(--ease-out), transform var(--duration-fast) var(--ease-out);
+}
+.ps-chip:hover { transform: translateY(-1px); }
+.ps-chip--active { background: var(--color-bike-green); color: var(--color-paper); border-color: var(--color-asphalt); }
+.ps-chip--count { background: var(--color-sun); }
+
+/* ---------- Group card (accent rail + meta) ---------- */
+.ps-card {
+  display: grid;
+  grid-template-columns: 5px 1fr;
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-paper);
+  color: var(--color-asphalt);
+  overflow: hidden;
+  text-align: left;
+  cursor: pointer;
+  width: 100%;
+  padding: 0;
+  font: inherit;
+  transition: border-color var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out),
+              transform var(--duration-fast) var(--ease-out);
+}
+.ps-card__rail { background: var(--color-border); transition: background var(--duration-fast) var(--ease-out); }
+.ps-card__body { padding: var(--space-4); display: grid; gap: var(--space-1); }
+.ps-card:hover { border-color: var(--color-bike-green); transform: translateY(-1px); }
+.ps-card:hover .ps-card__rail { background: var(--color-bike-green); }
+.ps-card--selected { border-color: var(--color-asphalt); box-shadow: var(--shadow-hard); }
+.ps-card--selected .ps-card__rail { background: var(--color-bike-green); }
+.ps-card__tag {
+  font-size: var(--text-xs);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-bike-green);
+}
+.ps-card__name { font-family: var(--font-display); font-size: var(--text-lg); font-weight: 700; letter-spacing: -0.02em; }
+.ps-card__loc { font-size: var(--text-base); color: var(--color-asphalt-55); margin-bottom: var(--space-1); }
+
+/* ---------- Form fields ---------- */
+.ps-field-group { display: grid; gap: var(--space-1); }
+.ps-fieldlabel {
+  font-size: var(--text-xs);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-asphalt-55);
+}
+.ps-input, .ps-select {
+  min-height: 42px;
+  width: 100%;
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-paper-2);
+  padding: 0 var(--space-3);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  font-weight: 600;
+  color: var(--color-asphalt);
+  transition: border-color var(--duration-fast) var(--ease-out);
+}
+.ps-input::placeholder { color: var(--color-asphalt-45); font-weight: 600; }
+.ps-input:focus, .ps-select:focus { border-color: var(--color-asphalt); outline: none; }
+.ps-search {
+  display: flex; align-items: center; gap: var(--space-2);
+  min-height: 46px; padding: 0 var(--space-3);
+  border: 2px solid var(--color-asphalt); border-radius: var(--radius-sm);
+  background: var(--color-paper);
+}
+.ps-search input {
+  border: 0; background: transparent; outline: none; width: 100%;
+  font-family: var(--font-body); font-size: var(--text-md); font-weight: 600; color: var(--color-asphalt);
+}
+.ps-search input::placeholder { color: var(--color-asphalt-45); }
+
+/* ---------- Results count header ---------- */
+.ps-count__eyebrow {
+  font-size: var(--text-xs); font-weight: 800; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--color-asphalt-45); margin: 0;
+}
+.ps-count__num { font-family: var(--font-display); font-size: var(--text-xl); font-weight: 800; line-height: 1; }
+
+/* ---------- Map pin (teardrop) ---------- */
+.ps-pin {
+  display: grid; place-items: center;
+  width: 28px; height: 28px;
+  background: var(--color-paper);
+  border: 2.5px solid var(--color-asphalt);
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  font-family: var(--font-body); font-weight: 800;
+  box-shadow: 0 4px 10px rgb(26 18 11 / 25%);
+  transition: transform var(--duration-fast) var(--ease-out), background var(--duration-fast) var(--ease-out);
+}
+.ps-pin > * { transform: rotate(45deg); font-size: var(--text-sm); }
+.ps-pin--selected { background: var(--color-sun); width: 36px; height: 36px; box-shadow: 4px 4px 0 var(--color-asphalt); }
+.ps-pin--selected > * { font-size: var(--text-md); }
+
+/* ---------- States (empty / error) ---------- */
+.ps-state {
+  border: 2px dashed var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-6) var(--space-4);
+  text-align: center;
+  display: grid; gap: var(--space-3); justify-items: center;
+}
+.ps-state--error { border-color: var(--color-alert-red); }
+.ps-state__msg { color: var(--color-asphalt-55); font-weight: 600; }
+
+/* ---------- Quick view (floating QV2) ---------- */
+.ps-quickview {
+  position: relative; overflow: hidden;
+  background: var(--color-paper);
+  border: 2px solid var(--color-asphalt);
+  border-radius: var(--radius-md);
+  display: grid; gap: var(--space-3);
+  padding: var(--space-5);
+  box-shadow: var(--shadow-panel);
+}
+.ps-quickview__sun {
+  position: absolute; top: -24px; right: -24px; width: 90px; height: 90px;
+  background: radial-gradient(circle, rgb(255 179 0 / 22%) 0%, transparent 70%);
+  border-radius: 50%; pointer-events: none;
+}

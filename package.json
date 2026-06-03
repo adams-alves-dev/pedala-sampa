@@ -21,7 +21,9 @@
     "vue": "latest"
   },
   "devDependencies": {
+    "@nuxt/eslint": "^1.15.2",
     "@nuxt/test-utils": "latest",
+    "@nuxtjs/color-mode": "^4.0.0",
     "@vitejs/plugin-vue": "latest",
     "@vue/test-utils": "latest",
     "eslint": "latest",

@@ -2,7 +2,7 @@
   <form class="filters" @submit.prevent>
     <label class="filter-group">
       <span class="filter-label">Buscar</span>
-      <input v-model="localFilters.query" type="search" placeholder="Nome, bairro, dia ou nível" @input="emitChange" />
+      <input v-model="localFilters.query" type="search" placeholder="Nome, bairro, dia ou nível" @input="emitChange" >
     </label>
 
     <div class="filter-row">
