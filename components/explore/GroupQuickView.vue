@@ -1,17 +1,37 @@
 <template>
-  <Transition name="quickview">
-    <section v-if="group" class="quick-view" aria-label="Detalhe rápido do grupo" aria-live="polite">
-      <button type="button" class="close" @click="$emit('close')">Fechar</button>
-      <div class="quick-view__sun" aria-hidden="true" />
-      <h2>{{ group.name }}</h2>
-      <p class="quick-view__location">{{ group.region || group.departureAddress || 'Ponto de saída no mapa' }}</p>
-      <GroupMetaBadges v-if="primarySchedule" :schedule="primarySchedule" />
-      <p v-if="primarySchedule" class="quick-view__duration">Tempo médio: {{ duration }}</p>
-      <div class="actions">
-        <NuxtLink :to="`/grupo/${group.slug}`" class="action-link">Página completa</NuxtLink>
-        <ContributionLink :href="contributionFormUrl" context="correction" />
+  <Transition name="qv">
+    <div v-if="group" class="qv" aria-live="polite">
+      <div class="ps-quickview">
+        <button class="qv__close" type="button" @click="$emit('close')">
+          <PsIcon name="x" :size="14" /> Fechar
+        </button>
+        <span class="ps-quickview__sun" aria-hidden="true" />
+        <h2 class="qv__name">{{ group.name }}</h2>
+        <p class="qv__loc">
+          <PsIcon name="pin" :size="15" /> {{ group.region || group.departureAddress || 'Ponto de saída no mapa' }}
+        </p>
+        <GroupMetaBadges v-if="primarySchedule" :schedule="primarySchedule" />
+        <p v-if="primarySchedule" class="qv__dur">
+          <PsIcon name="compass" :size="16" /> Tempo médio da volta: <strong>{{ duration }}</strong>
+        </p>
+        <div class="qv__actions">
+          <NuxtLink class="ps-btn ps-btn--sm ps-btn--solid" :to="`/grupo/${group.slug}`">
+            Página completa <PsIcon name="chevronRight" :size="14" />
+          </NuxtLink>
+          <a
+            v-if="group.link?.url"
+            class="ps-btn ps-btn--sm"
+            :href="group.link.url"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <PsIcon name="chat" :size="15" /> {{ group.link.label || 'Contato' }} <PsIcon name="arrowUR" :size="14" />
+          </a>
+          <span v-else class="ps-btn ps-btn--sm ps-btn--ghost qv__nolink">Sem link</span>
+          <ContributionLink :href="contributionFormUrl" context="correction" icon="pencil" />
+        </div>
       </div>
-    </section>
+    </div>
   </Transition>
 </template>
 
@@ -43,67 +63,31 @@ const duration = computed(() =>
 </script>
 
 <style scoped>
-.quickview-enter-active {
-  transition: all var(--duration-normal) var(--ease-out);
-}
-
-.quickview-leave-active {
-  transition: all var(--duration-fast) var(--ease-in-out);
-}
-
-.quickview-enter-from {
-  opacity: 0;
-  transform: translateY(16px);
-}
-
-.quickview-leave-to {
-  opacity: 0;
-  transform: translateY(-8px);
-}
-
-.quick-view {
-  background: var(--color-paper);
-  border: 2px solid var(--color-asphalt);
-  display: grid;
-  gap: var(--space-3);
-  padding: var(--space-5);
-  position: relative;
-  overflow: hidden;
-}
-
-.quick-view__sun {
+.qv {
   position: absolute;
-  top: -24px;
-  right: -24px;
-  width: 80px;
-  height: 80px;
-  background: radial-gradient(circle, rgb(255 179 0 / 10%) 0%, transparent 70%);
-  border-radius: 50%;
-  pointer-events: none;
+  z-index: 600;
+  right: var(--space-4);
+  bottom: 120px;
+  width: 380px;
+  max-width: calc(100vw - 32px);
 }
 
-.quick-view h2 {
-  font-family: var(--font-display);
-  font-size: var(--text-xl);
-  font-weight: 800;
-  margin: 0;
-  letter-spacing: -0.02em;
+.qv-enter-active,
+.qv-leave-active {
+  transition: transform var(--duration-normal) var(--ease-out), opacity var(--duration-normal) var(--ease-out);
 }
 
-.quick-view__location {
-  font-size: var(--text-sm);
-  color: rgb(26 18 11 / 55%);
-  margin: 0;
+.qv-enter-from,
+.qv-leave-to {
+  transform: translateY(12px);
+  opacity: 0;
 }
 
-.quick-view__duration {
-  font-size: var(--text-sm);
-  font-weight: 600;
-  margin: 0;
-}
-
-.close {
+.qv__close {
   justify-self: end;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   background: none;
   border: 2px solid var(--color-border);
   padding: var(--space-1) var(--space-3);
@@ -112,35 +96,53 @@ const duration = computed(() =>
   text-transform: uppercase;
   letter-spacing: 0.05em;
   cursor: pointer;
-  transition: border-color var(--duration-fast) var(--ease-out);
+  border-radius: var(--radius-sm);
+  color: var(--color-asphalt);
 }
 
-.close:hover {
+.qv__close:hover {
   border-color: var(--color-asphalt);
 }
 
-.actions {
+.qv__name {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+.qv__loc,
+.qv__dur {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--text-sm);
+  margin: 0;
+}
+
+.qv__loc {
+  color: var(--color-asphalt-55);
+}
+
+.qv__dur {
+  font-weight: 700;
+}
+
+.qv__actions {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-2);
-  margin-top: var(--space-1);
 }
 
-.action-link {
-  display: inline-flex;
-  align-items: center;
-  padding: 0 var(--space-4);
-  min-height: 42px;
-  border: 2px solid var(--color-asphalt);
-  font-weight: 800;
-  font-size: var(--text-sm);
-  text-decoration: none;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  transition: transform var(--duration-fast) var(--ease-out);
+.qv__nolink {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
-.action-link:hover {
-  transform: translate(-1px, -1px);
+@media (max-width: 760px) {
+  .qv {
+    display: none;
+  }
 }
 </style>

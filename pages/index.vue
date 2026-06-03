@@ -30,6 +30,18 @@
       @clear="clearFilters"
       @close="drawerOpen = false"
     />
+
+    <ResultsCarousel
+      :groups="filteredGroups"
+      :selected-group-slug="selectedGroupSlug"
+      @select="selectGroup"
+    />
+
+    <GroupQuickView
+      :group="selectedGroup"
+      :contribution-form-url="contributionFormUrl"
+      @close="clearSelectedGroup"
+    />
   </section>
 </template>
 
@@ -37,17 +49,22 @@
 import { computed, ref } from 'vue'
 import FiltersDrawer from '../components/explore/FiltersDrawer.vue'
 import GroupMap from '../components/map/GroupMap.client.vue'
+import GroupQuickView from '../components/explore/GroupQuickView.vue'
 import MapToolbar from '../components/explore/MapToolbar.vue'
+import ResultsCarousel from '../components/explore/ResultsCarousel.vue'
 import { useGroupFilters } from '../composables/useGroupFilters'
 import { useGroups } from '../composables/useGroups'
 import { useSelectedGroup } from '../composables/useSelectedGroup'
 import { buildFilterGroups } from '../lib/filter-options'
 
+const config = useRuntimeConfig()
+const contributionFormUrl = config.public.contributionFormUrl
+
 const { data } = await useGroups()
 const groups = computed(() => data.value || [])
 
 const { filters, filteredGroups, activeCount, setQuery, toggleFilter, clearFilters } = useGroupFilters(groups)
-const { selectedGroupSlug, selectGroup, clearSelectedGroup } = useSelectedGroup(groups)
+const { selectedGroupSlug, selectedGroup, selectGroup, clearSelectedGroup } = useSelectedGroup(groups)
 
 const drawerOpen = ref(false)
 

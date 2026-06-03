@@ -1,62 +1,29 @@
 <template>
-  <dl class="badges" aria-label="Resumo do grupo">
-    <div class="badge">
-      <dt>Dia</dt>
-      <dd>{{ schedule.day }}</dd>
+  <div class="ps-badges" aria-label="Resumo do grupo">
+    <div v-for="badge in badges" :key="badge.key" class="ps-badge">
+      <span class="ps-badge__ic"><PsIcon :name="BADGE_ICON[badge.key]" :size="15" /></span>
+      <div>
+        <div class="ps-badge__k">{{ BADGE_LABEL[badge.key] }}</div>
+        <div class="ps-badge__v">{{ badge.value }}</div>
+      </div>
     </div>
-    <div class="badge">
-      <dt>Saída</dt>
-      <dd>{{ schedule.startHour }}</dd>
-    </div>
-    <div class="badge">
-      <dt>Nível</dt>
-      <dd>{{ schedule.effort }}</dd>
-    </div>
-    <div class="badge">
-      <dt>Distância</dt>
-      <dd>{{ schedule.distanceKm }} km</dd>
-    </div>
-    <div class="badge">
-      <dt>Ritmo</dt>
-      <dd>{{ schedule.rhythmKmH }} km/h</dd>
-    </div>
-  </dl>
+  </div>
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
+import { BADGE_ICON, BADGE_LABEL, type BadgeKey } from '../../lib/icons'
 import type { GroupSchedule } from '../../types/group'
 
-defineProps<{
+const props = defineProps<{
   schedule: GroupSchedule
 }>()
+
+const badges = computed<Array<{ key: BadgeKey; value: string }>>(() => [
+  { key: 'day', value: props.schedule.day },
+  { key: 'departure', value: props.schedule.startHour },
+  { key: 'level', value: props.schedule.effort },
+  { key: 'distance', value: `${props.schedule.distanceKm} km` },
+  { key: 'rhythm', value: `${props.schedule.rhythmKmH} km/h` },
+])
 </script>
-
-<style scoped>
-.badges {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2);
-  margin: 0;
-}
-
-.badge {
-  min-width: 64px;
-  border: 1px solid var(--color-border);
-  background: var(--color-concrete);
-  padding: var(--space-1) var(--space-2);
-}
-
-dt {
-  color: rgb(26 18 11 / 55%);
-  font-size: var(--text-xs);
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-dd {
-  margin: 1px 0 0;
-  font-weight: 800;
-  font-size: var(--text-sm);
-}
-</style>
