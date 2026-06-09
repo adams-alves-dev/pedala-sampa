@@ -1,36 +1,21 @@
 <template>
-  <div>
-    <Header />
-    <div>
-      <Nuxt />
-    </div>
+  <div class="app-layout">
+    <AppHeader :contribution-form-url="contributionFormUrl" />
+    <slot />
   </div>
 </template>
 
-<script>
-import Header from '@/components/Header'
-export default {
-  components: { Header },
-}
+<script setup lang="ts">
+import AppHeader from '../components/app/AppHeader.vue'
+
+const config = useRuntimeConfig()
+const contributionFormUrl = config.public.contributionFormUrl
 </script>
 
-<style lang="scss">
-html {
-  font-family: 'Montserrat', 'Source Sans Pro', -apple-system,
-    BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  font-size: 16px;
-  word-spacing: 1px;
-  -ms-text-size-adjust: 100%;
-  -webkit-text-size-adjust: 100%;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-font-smoothing: antialiased;
-  box-sizing: border-box;
-}
-
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-  margin: 0;
+<style scoped>
+.app-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 </style>

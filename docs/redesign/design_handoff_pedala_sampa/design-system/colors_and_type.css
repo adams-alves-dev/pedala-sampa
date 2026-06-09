@@ -1,0 +1,126 @@
+/* ============================================================
+   Pedala Sampa — Design System · Colors & Type
+   Tokens lifted from the Nuxt 3 redesign branch (assets/css/main.css)
+   and extended with semantic roles + a few harmonious derived shades.
+   Fonts: Syne (display) + Sora (body) — load via Google Fonts <link>.
+   ============================================================ */
+
+:root {
+  /* ---- Core palette (canonical, from the redesign branch) ---- */
+  --color-asphalt:      #1A120B;  /* near-black, warm — ink + dark surfaces */
+  --color-concrete:     #E8E0D0;  /* light concrete — app background       */
+  --color-paper:        #FFF8EE;  /* warm white — cards, panels, surfaces  */
+  --color-bike-green:   #00796B;  /* ciclovia green — primary brand accent */
+  --color-sign-yellow:  #FFB300;  /* signage yellow — CTAs, highlights     */
+  --color-alert-red:    #E53935;  /* alert red — errors, destructive       */
+  --color-transit-blue: #1565C0;  /* transit blue — links, info, rivers    */
+  --color-border:       #C8BFA8;  /* warm concrete border                  */
+
+  /* aliases used across the original components */
+  --color-sun:    var(--color-sign-yellow);
+  --color-forest: var(--color-bike-green);
+
+  /* ---- Derived / supporting shades (harmonious, oklch-tuned) ---- */
+  --color-asphalt-80:   rgb(26 18 11 / 80%);
+  --color-asphalt-55:   rgb(26 18 11 / 55%);  /* muted body text           */
+  --color-asphalt-45:   rgb(26 18 11 / 45%);  /* eyebrows / faint labels   */
+  --color-green-dark:   #015C50;  /* hover/pressed green                   */
+  --color-green-tint:   #DDEAE6;  /* green wash — selected rows, park fill  */
+  --color-yellow-tint:  #FBEBC4;  /* yellow wash — highlight backgrounds    */
+  --color-paper-2:      #F7EEDF;  /* secondary paper — sunken fields        */
+  --color-concrete-dk:  #D9CFB8;  /* darker concrete — dividers, tracks     */
+
+  /* ---- Typography families (default pairing: Sinal) ---- */
+  --font-display: 'Archivo', ui-sans-serif, system-ui, sans-serif;
+  --font-body:    'Hanken Grotesk', ui-sans-serif, system-ui, sans-serif;
+
+  /* ---- Type scale ---- */
+  --text-xs:   0.6875rem; /* 11px */
+  --text-sm:   0.75rem;   /* 12px */
+  --text-base: 0.875rem;  /* 14px */
+  --text-md:   1rem;      /* 16px */
+  --text-lg:   1.25rem;   /* 20px */
+  --text-xl:   1.75rem;   /* 28px */
+  --text-2xl:  clamp(2rem, 6vw, 3.5rem);
+  --text-3xl:  clamp(2.25rem, 8vw, 5rem);
+
+  /* ---- Spacing scale (4px base) ---- */
+  --space-1: 4px;   --space-2: 8px;   --space-3: 12px;  --space-4: 16px;
+  --space-5: 20px;  --space-6: 24px;  --space-8: 32px;  --space-10: 40px;
+  --space-12: 48px; --space-16: 64px;
+
+  /* ---- Motion ---- */
+  --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --duration-fast:   150ms;
+  --duration-normal: 250ms;
+  --duration-slow:   400ms;
+
+  /* ---- Elevation & radius ---- */
+  --shadow-panel: 0 18px 50px rgb(26 18 11 / 18%);
+  --shadow-hard:  4px 4px 0 var(--color-asphalt);  /* signage offset block */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+
+  --header-height: 72px;
+}
+
+/* ============================================================
+   Base type — semantic element defaults
+   ============================================================ */
+.ps-type-base { font-family: var(--font-body); color: var(--color-asphalt); }
+
+.ps-h1, h1.ps {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: var(--text-3xl);
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+.ps-h2, h2.ps {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: var(--text-xl);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+.ps-h3, h3.ps {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--text-lg);
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+.ps-lead {
+  font-family: var(--font-body);
+  font-size: var(--text-lg);
+  line-height: 1.6;
+}
+.ps-body {
+  font-family: var(--font-body);
+  font-size: var(--text-md);
+  line-height: 1.55;
+}
+.ps-eyebrow {
+  font-family: var(--font-body);
+  font-weight: 900;
+  font-size: var(--text-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-bike-green);
+}
+.ps-label {
+  font-family: var(--font-body);
+  font-weight: 800;
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-asphalt-55);
+}
+.ps-data {
+  font-family: var(--font-body);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}

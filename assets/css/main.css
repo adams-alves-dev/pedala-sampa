@@ -1,0 +1,168 @@
+/* ============================================================
+   Pedala Sampa — Design tokens + themes
+   Ported from the handoff (colors_and_type.css + themes.css).
+   Required themes: Ciclovia (light, default) + Noturno (dark).
+   Applied via [data-theme] on <html> by @nuxtjs/color-mode.
+   ============================================================ */
+
+:root {
+  /* ---- Core palette (canonical base) ---- */
+  --color-asphalt:      #1A120B;
+  --color-concrete:     #E8E0D0;
+  --color-paper:        #FFF8EE;
+  --color-bike-green:   #00796B;
+  --color-sign-yellow:  #FFB300;
+  --color-alert-red:    #E53935;
+  --color-transit-blue: #1565C0;
+  --color-border:       #C8BFA8;
+
+  /* legacy aliases (avoid breaking references during the migration) */
+  --color-sun:    var(--color-sign-yellow);
+  --color-forest: var(--color-bike-green);
+
+  /* ---- Derived / supporting shades ---- */
+  --color-asphalt-80:  rgb(26 18 11 / 80%);
+  --color-asphalt-55:  rgb(26 18 11 / 55%);
+  --color-asphalt-45:  rgb(26 18 11 / 45%);
+  --color-green-dark:  #015C50;
+  --color-green-tint:  #DDEAE6;
+  --color-yellow-tint: #FBEBC4;
+  --color-paper-2:     #F7EEDF;
+  --color-concrete-dk: #D9CFB8;
+
+  /* ---- Header surface tokens (decoupled for dark mode) ---- */
+  --header-bg: var(--color-asphalt);
+  --header-fg: var(--color-concrete);
+
+  /* ---- Map basemap variant (CARTO light/dark per theme) ---- */
+  --tile-url: 'light';
+
+  /* ---- Typography families (Sinal pairing) ---- */
+  --font-display: 'Archivo', ui-sans-serif, system-ui, sans-serif;
+  --font-body:    'Hanken Grotesk', ui-sans-serif, system-ui, sans-serif;
+
+  /* ---- Type scale ---- */
+  --text-xs:   0.6875rem;
+  --text-sm:   0.75rem;
+  --text-base: 0.875rem;
+  --text-md:   1rem;
+  --text-lg:   1.25rem;
+  --text-xl:   1.75rem;
+  --text-2xl:  clamp(2rem, 6vw, 3.5rem);
+  --text-3xl:  clamp(2.25rem, 8vw, 5rem);
+
+  /* ---- Spacing scale (4px base) ---- */
+  --space-1: 4px;   --space-2: 8px;   --space-3: 12px;  --space-4: 16px;
+  --space-5: 20px;  --space-6: 24px;  --space-8: 32px;  --space-10: 40px;
+  --space-12: 48px; --space-16: 64px;
+
+  /* ---- Motion ---- */
+  --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --duration-fast:   150ms;
+  --duration-normal: 250ms;
+  --duration-slow:   400ms;
+
+  /* ---- Elevation & radius ---- */
+  --shadow-panel: 0 18px 50px rgb(26 18 11 / 18%);
+  --shadow-hard:  4px 4px 0 var(--color-asphalt); /* signage offset block (no blur) */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+
+  --header-height: 72px;
+
+  color: var(--color-asphalt);
+  background: var(--color-concrete);
+  font-family: var(--font-body);
+}
+
+/* ============================================================
+   Themes — redefine the core palette + derived shades
+   ============================================================ */
+
+/* Ciclovia (light, default) */
+[data-theme='ciclovia'] {
+  --color-asphalt: #11271C; --color-concrete: #DCE7DA; --color-paper: #F4F9F0;
+  --color-bike-green: #1F8A4C; --color-sign-yellow: #F2B33A;
+  --color-alert-red: #D8432F; --color-transit-blue: #1E7A9E; --color-border: #BBCDB6;
+  --color-asphalt-80: rgb(17 39 28 / 80%); --color-asphalt-55: rgb(17 39 28 / 58%); --color-asphalt-45: rgb(17 39 28 / 46%);
+  --color-green-dark: #136636; --color-green-tint: #D7EBD6; --color-yellow-tint: #F8EAC4;
+  --color-paper-2: #EAF2E4; --color-concrete-dk: #CCD9C7;
+  --header-bg: #11271C; --header-fg: #DCE7DA;
+  --tile-url: 'light';
+}
+
+/* Noturno (dark) — the asphalt token becomes light ink on a dark surface */
+[data-theme='noturno'] {
+  --color-asphalt: #F3EEE2; --color-concrete: #14130E; --color-paper: #211F18;
+  --color-bike-green: #2FCB7E; --color-sign-yellow: #FFC83D;
+  --color-alert-red: #FF6B5E; --color-transit-blue: #5AA9FF; --color-border: #3A3730;
+  --color-asphalt-80: rgb(243 238 226 / 82%); --color-asphalt-55: rgb(243 238 226 / 62%); --color-asphalt-45: rgb(243 238 226 / 46%);
+  --color-green-dark: #28B870; --color-green-tint: #1C3A2C; --color-yellow-tint: #3A3320;
+  --color-paper-2: #1A1812; --color-concrete-dk: #2A2820;
+  --header-bg: #0E0D09; --header-fg: #F3EEE2;
+  --tile-url: 'dark';
+}
+[data-theme='noturno'] .ps-input,
+[data-theme='noturno'] .ps-search { background: #1A1812; }
+[data-theme='noturno'] .ps-cta { color: #1A120B; }
+[data-theme='noturno'] .leaflet-control-attribution { background: rgba(20, 19, 14, 0.8); color: #9c978b; }
+[data-theme='noturno'] .leaflet-control-attribution a { color: #b9b3a6; }
+
+/* ============================================================
+   Base resets
+   ============================================================ */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  background: var(--color-concrete);
+}
+
+a {
+  color: inherit;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+::selection {
+  background: var(--color-sign-yellow);
+  color: var(--color-asphalt);
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-sign-yellow);
+  outline-offset: 3px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

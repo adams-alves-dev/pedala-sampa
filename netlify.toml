@@ -1,4 +1,10 @@
-# The following redirect is intended for use with most SPA's that handles routing internally.
+[build]
+  command = "yarn generate"
+  publish = ".output/public"
+
+[build.environment]
+  NODE_VERSION = "22"
+
 [[redirects]]
   from = "/*"
   to = "/index.html"

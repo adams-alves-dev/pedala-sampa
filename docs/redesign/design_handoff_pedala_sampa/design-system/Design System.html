@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="asfalto" data-font="sinal" data-icons="on">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Pedala Sampa — Design System</title>
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Space+Grotesk:wght@500;700&family=Hanken+Grotesk:wght@400;600;800&family=Bricolage+Grotesque:wght@700;800&family=IBM+Plex+Sans:wght@400;600;700&family=Public+Sans:wght@400;600;800&family=Unbounded:wght@700;800&family=Syne:wght@700;800&family=Sora:wght@400;600;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="colors_and_type.css" />
+<link rel="stylesheet" href="components.css" />
+<link rel="stylesheet" href="themes.css" />
+<style>
+  body { margin: 0; background: var(--color-concrete); font-family: var(--font-body); color: var(--color-asphalt);
+    -webkit-font-smoothing: antialiased;
+    background-image: radial-gradient(circle at 20% 20%, rgb(255 179 0 / 4%), transparent 55%),
+                      radial-gradient(circle at 80% 80%, rgb(0 121 107 / 4%), transparent 55%); }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px 96px; }
+  .hero { background: var(--color-asphalt); color: var(--color-concrete); padding: 64px 0 56px; margin-bottom: 56px;
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 22px), calc(100% - 64px) 100%, 0 100%); }
+  .hero .wrap { padding-bottom: 0; }
+  .hero h1 { font-family: var(--font-display); font-weight: 800; font-size: clamp(2.5rem, 8vw, 5rem); line-height: 0.92;
+    letter-spacing: -0.03em; margin: 0; }
+  .hero .sun { color: var(--color-sun); }
+  .hero p { font-size: var(--text-lg); max-width: 620px; color: rgb(232 224 208 / 80%); margin: 20px 0 0; }
+  .hero .brandrow { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
+  .hero .brandrow span { font-family: var(--font-display); font-weight: 800; letter-spacing: -0.02em; font-size: var(--text-lg); }
+
+  section { margin-bottom: 64px; }
+  .sec-label { display: flex; align-items: baseline; gap: 14px; margin-bottom: 24px;
+    border-bottom: 2px solid var(--color-asphalt); padding-bottom: 10px; }
+  .sec-label .n { font-family: var(--font-display); font-weight: 800; font-size: var(--text-md); color: var(--color-bike-green); }
+  .sec-label h2 { font-family: var(--font-display); font-weight: 800; font-size: var(--text-xl); letter-spacing: -0.02em; margin: 0; }
+  .sec-label .hint { margin-left: auto; font-size: var(--text-sm); color: var(--color-asphalt-55); font-weight: 600; }
+
+  .swatches { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .swatch { border: 2px solid var(--color-asphalt); border-radius: var(--radius-md); overflow: hidden; background: var(--color-paper); }
+  .swatch .chip { height: 84px; }
+  .swatch .meta { padding: 10px 12px; }
+  .swatch .name { font-weight: 800; font-size: var(--text-base); }
+  .swatch .hex { font-size: var(--text-sm); color: var(--color-asphalt-55); font-variant-numeric: tabular-nums; text-transform: uppercase; }
+
+  .panel { background: var(--color-paper); border: 2px solid var(--color-border); border-radius: var(--radius-md); padding: 28px; }
+  .typerow { display: flex; align-items: baseline; gap: 18px; padding: 14px 0; border-bottom: 1px dashed var(--color-border); }
+  .typerow:last-child { border-bottom: 0; }
+  .typerow .tag { flex: 0 0 110px; font-size: var(--text-xs); font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-asphalt-45); }
+
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+  .demo { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
+  .stack { display: grid; gap: 14px; }
+  .cap { font-size: var(--text-sm); color: var(--color-asphalt-55); font-weight: 600; margin: 14px 0 8px; }
+
+  .spacing-row { display: flex; align-items: flex-end; gap: 12px; }
+  .spacing-row .bar { background: var(--color-bike-green); }
+  .spacing-row .bar span { display: block; text-align: center; font-size: 10px; color: var(--color-asphalt-55); margin-top: 4px; }
+
+  @media (max-width: 760px) { .swatches { grid-template-columns: repeat(2,1fr); } .grid2 { grid-template-columns: 1fr; } }
+
+  .iconwrap { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 10px; }
+  .ico { display: grid; gap: 8px; justify-items: center; padding: 14px 8px; border: 2px solid var(--color-border);
+    border-radius: var(--radius-md); background: var(--color-paper); color: var(--color-asphalt); }
+  .ico svg { color: var(--color-bike-green); }
+  .ico .nm { font-size: 11px; color: var(--color-asphalt-55); font-weight: 600; }
+  .fontwrap { display: grid; gap: 0; }
+  .fontrow { display: flex; align-items: baseline; gap: 18px; padding: 14px 0; border-bottom: 1px dashed var(--color-border); }
+  .fontrow:last-child { border-bottom: 0; }
+  .fontrow .tag { flex: 0 0 150px; font-size: var(--text-xs); font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-asphalt-45); }
+  .fontrow .ex { font-weight: 800; font-size: var(--text-lg); }
+  .fontrow .ex small { display: block; font-weight: 600; font-size: var(--text-base); color: var(--color-asphalt-55); }
+  .themewrap { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 12px; }
+  .theme { border: 2px solid var(--color-asphalt); border-radius: var(--radius-md); overflow: hidden; }
+  .theme .bars { display: flex; height: 56px; }
+  .theme .bars i { flex: 1; }
+  .theme .nm { padding: 8px 12px; font-weight: 800; font-size: var(--text-base); background: var(--color-paper); }
+  @media (max-width: 760px) { .themewrap { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="hero">
+  <div class="wrap">
+    <div class="brandrow"><img src="assets/brand-logo.svg" width="32" height="37" alt="" /><span>Pedala Sampa</span></div>
+    <h1>Design <span class="sun">System</span></h1>
+    <p>Sinalização urbana para um mapa colaborativo dos grupos de pedal de São Paulo. Asfalto, concreto, verde de ciclovia e amarelo de placa.</p>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- COLOR -->
+  <section>
+    <div class="sec-label"><span class="n">01</span><h2>Cor</h2><span class="hint">paleta + 6 temas trocáveis</span></div>
+    <div class="swatches" id="swatches"></div>
+    <p class="cap">Temas completos (Tweaks · painel)</p>
+    <div class="themewrap" id="themewrap"></div>
+  </section>
+
+  <!-- ICONS -->
+  <section>
+    <div class="sec-label"><span class="n">02</span><h2>Ícones</h2><span class="hint">linha 1.75 · currentColor</span></div>
+    <div class="panel"><div class="iconwrap" id="iconwrap"></div></div>
+  </section>
+
+  <!-- TYPE -->
+  <section>
+    <div class="sec-label"><span class="n">03</span><h2>Tipografia</h2><span class="hint">5 pares · trocáveis</span></div>
+    <div class="panel" style="margin-bottom:18px">
+      <div id="fontwrap" class="fontwrap"></div>
+    </div>
+    <div class="panel">
+      <div class="typerow"><span class="tag">H1 / Display</span><span class="ps-h1" style="font-size:var(--text-2xl)">Encontre seu pedal</span></div>
+      <div class="typerow"><span class="tag">H2</span><span class="ps-h2">Rolê Zona Sul</span></div>
+      <div class="typerow"><span class="tag">H3</span><span class="ps-h3">Ponto de saída</span></div>
+      <div class="typerow"><span class="tag">Lead</span><span class="ps-lead">Por região, dia, nível, distância e ritmo.</span></div>
+      <div class="typerow"><span class="tag">Body</span><span class="ps-body">Os grupos são mantidos pela comunidade — qualquer pessoa pode sugerir um novo.</span></div>
+      <div class="typerow"><span class="tag">Eyebrow</span><span class="ps-eyebrow">Mapa colaborativo</span></div>
+      <div class="typerow"><span class="tag">Label</span><span class="ps-label">Ritmo médio</span></div>
+      <div class="typerow"><span class="tag">Data</span><span class="ps-data" style="font-size:var(--text-lg)">24 km/h · 02h:15m</span></div>
+    </div>
+  </section>
+
+  <!-- BUTTONS -->
+  <section>
+    <div class="sec-label"><span class="n">04</span><h2>Botões &amp; CTAs</h2><span class="hint">placa amarela + sombra dura</span></div>
+    <div class="panel demo">
+      <a class="ps-cta">+ Sugerir grupo</a>
+      <button class="ps-btn ps-btn--solid">Página completa</button>
+      <button class="ps-btn">Contato ↗</button>
+      <button class="ps-btn ps-btn--ghost">Sugerir correção</button>
+      <button class="ps-btn ps-btn--sm">Pequeno</button>
+    </div>
+  </section>
+
+  <!-- CHIPS + BADGES -->
+  <section>
+    <div class="sec-label"><span class="n">05</span><h2>Chips &amp; Badges</h2><span class="hint">filtros + resumo do grupo</span></div>
+    <div class="grid2">
+      <div class="panel">
+        <p class="cap" style="margin-top:0">Chips de filtro</p>
+        <div class="demo">
+          <button class="ps-chip ps-chip--active">Sábado</button>
+          <button class="ps-chip">Manhã</button>
+          <button class="ps-chip ps-chip--active">Leve</button>
+          <button class="ps-chip">Até 20 km</button>
+          <span class="ps-chip ps-chip--count"><strong>9</strong>&nbsp;grupos</span>
+        </div>
+      </div>
+      <div class="panel">
+        <p class="cap" style="margin-top:0">Badges de metadado</p>
+        <dl class="ps-badges">
+          <div class="ps-badge"><div class="ps-badge__k">Dia</div><div class="ps-badge__v">Domingo</div></div>
+          <div class="ps-badge"><div class="ps-badge__k">Saída</div><div class="ps-badge__v">07:00</div></div>
+          <div class="ps-badge"><div class="ps-badge__k">Nível</div><div class="ps-badge__v">Forte</div></div>
+          <div class="ps-badge"><div class="ps-badge__k">Distância</div><div class="ps-badge__v">54 km</div></div>
+          <div class="ps-badge"><div class="ps-badge__k">Ritmo</div><div class="ps-badge__v">24 km/h</div></div>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <!-- CARDS + PINS -->
+  <section>
+    <div class="sec-label"><span class="n">06</span><h2>Card de grupo &amp; Pin</h2><span class="hint">trilho de destaque + marcador</span></div>
+    <div class="grid2">
+      <div class="stack">
+        <button class="ps-card">
+          <span class="ps-card__rail"></span>
+          <span class="ps-card__body">
+            <span class="ps-card__name">Ciclo Pinheiros</span>
+            <span class="ps-card__loc">Pinheiros · Largo da Batata</span>
+            <dl class="ps-badges"><div class="ps-badge"><div class="ps-badge__k">Dia</div><div class="ps-badge__v">Terça</div></div><div class="ps-badge"><div class="ps-badge__k">Nível</div><div class="ps-badge__v">Moderado</div></div><div class="ps-badge"><div class="ps-badge__k">Dist.</div><div class="ps-badge__v">26 km</div></div></dl>
+          </span>
+        </button>
+        <button class="ps-card ps-card--selected">
+          <span class="ps-card__rail"></span>
+          <span class="ps-card__body">
+            <span class="ps-card__tag">● Selecionado</span>
+            <span class="ps-card__name">Rolê Zona Sul</span>
+            <span class="ps-card__loc">Santo Amaro</span>
+            <dl class="ps-badges"><div class="ps-badge"><div class="ps-badge__k">Dia</div><div class="ps-badge__v">Domingo</div></div><div class="ps-badge"><div class="ps-badge__k">Nível</div><div class="ps-badge__v">Forte</div></div><div class="ps-badge"><div class="ps-badge__k">Dist.</div><div class="ps-badge__v">54 km</div></div></dl>
+          </span>
+        </button>
+      </div>
+      <div class="panel" style="display:grid;place-items:center;background:var(--color-concrete-dk)">
+        <div style="display:flex;gap:36px;align-items:flex-end">
+          <div style="text-align:center"><span class="ps-pin"><span>3</span></span><p class="cap">padrão</p></div>
+          <div style="text-align:center"><span class="ps-pin ps-pin--selected"><span>1</span></span><p class="cap">selecionado</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FIELDS -->
+  <section>
+    <div class="sec-label"><span class="n">07</span><h2>Campos</h2><span class="hint">busca + select</span></div>
+    <div class="grid2">
+      <div class="ps-search"><svg width="18" height="18" viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="5" stroke="#1A120B" stroke-width="2"/><path d="M11 11l4 4" stroke="#1A120B" stroke-width="2" stroke-linecap="round"/></svg><input type="text" placeholder="Nome, bairro, dia ou nível" /></div>
+      <div class="ps-field-group"><span class="ps-fieldlabel">Período</span><select class="ps-select"><option>Manhã</option><option>Tarde</option><option>Noite</option></select></div>
+    </div>
+  </section>
+
+  <!-- SPACING -->
+  <section>
+    <div class="sec-label"><span class="n">08</span><h2>Espaçamento &amp; Raio</h2><span class="hint">base 4px</span></div>
+    <div class="panel">
+      <div class="spacing-row" id="spacing"></div>
+      <p class="cap">Raios: <strong>4px</strong> (sm) · <strong>6px</strong> (md). Sombra de placa: <strong>4px 4px 0</strong> (sem blur).</p>
+    </div>
+  </section>
+
+</div>
+
+<script src="proto-icons.js"></script>
+<script>
+  const COLORS = [
+    ['Asphalt', '#1A120B'], ['Concrete', '#E8E0D0'], ['Paper', '#FFF8EE'], ['Bike Green', '#00796B'],
+    ['Sign Yellow', '#FFB300'], ['Alert Red', '#E53935'], ['Transit Blue', '#1565C0'], ['Border', '#C8BFA8'],
+  ];
+  document.getElementById('swatches').innerHTML = COLORS.map(([n, h]) =>
+    `<div class="swatch"><div class="chip" style="background:${h}"></div><div class="meta"><div class="name">${n}</div><div class="hex">${h}</div></div></div>`).join('');
+  const STEPS = [4, 8, 12, 16, 24, 32, 48];
+  document.getElementById('spacing').innerHTML = STEPS.map((s) =>
+    `<div class="bar" style="width:${s}px;height:${s}px"><span>${s}</span></div>`).join('');
+
+  // Icons
+  const ICO = ['calendar','clock','gauge','route','speed','pin','search','sliders','arrowUR','bike','sun','compass','chat','pencil','users','layers','map','flag','check','plus','x','info','sparkle','chevronRight'];
+  document.getElementById('iconwrap').innerHTML = ICO.map((n) =>
+    `<div class="ico">${PS.icon(n,{size:26})}<span class="nm">${n}</span></div>`).join('');
+
+  // Font pairings
+  const FONTS = [['sinal','Sinal — Archivo + Hanken'],['grotesca','Grotesca — Space Grotesk + IBM Plex'],['editorial','Editorial — Bricolage + Public Sans'],['geo','Geo — Unbounded + Hanken'],['classica','Clássica — Syne + Sora']];
+  document.getElementById('fontwrap').innerHTML = FONTS.map(([k,l]) =>
+    `<div class="fontrow" data-font="${k}"><span class="tag">${l.split(' — ')[0]}</span><span class="ex" style="font-family:var(--font-display)">Rolê Zona Sul <small style="font-family:var(--font-body)">Domingo · 07:00 · 54 km · ${l.split(' — ')[1]}</small></span></div>`).join('');
+
+  // Themes
+  const THEMES = [['Asfalto',['#1A120B','#00796B','#FFB300','#E8E0D0']],['Ciclovia',['#11271C','#1F8A4C','#F2B33A','#DCE7DA']],['Pôr do Sol',['#2A1714','#D9542B','#F2A23C','#F0E2D2']],['Metrô SP',['#14223B','#1565C0','#FFB300','#E1E6EC']],['Coral & Teal',['#1E2A2B','#0E8F86','#FF5A5F','#E9E4DE']],['Noturno',['#14130E','#2FCB7E','#FFC83D','#211F18']]];
+  document.getElementById('themewrap').innerHTML = THEMES.map(([nm,sw]) =>
+    `<div class="theme"><div class="bars">${sw.map((c)=>`<i style="background:${c}"></i>`).join('')}</div><div class="nm">${nm}</div></div>`).join('');
+</script>
+</body>
+</html>

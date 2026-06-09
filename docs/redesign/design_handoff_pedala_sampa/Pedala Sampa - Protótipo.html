@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="ciclovia" data-font="sinal" data-icons="on" data-density="compact">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+<title>Pedala Sampa — Grupos de pedal em São Paulo</title>
+<meta name="description" content="Encontre grupos de pedal em São Paulo por região, dia, horário, nível, distância e ritmo." />
+<meta name="theme-color" content="#FFB300" />
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Space+Grotesk:wght@500;700&family=Hanken+Grotesk:wght@400;600;800&family=Bricolage+Grotesque:wght@700;800&family=IBM+Plex+Sans:wght@400;600;700&family=Public+Sans:wght@400;600;800&family=Unbounded:wght@700;800&family=Syne:wght@700;800&family=Sora:wght@400;600;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+<link rel="stylesheet" href="colors_and_type.css" />
+<link rel="stylesheet" href="components.css" />
+<link rel="stylesheet" href="themes.css" />
+<link rel="stylesheet" href="proto.css" />
+<style>
+  .pin-wrap { overflow: visible; }
+  .leaflet-container { font-family: var(--font-body); background: var(--color-concrete); }
+  .leaflet-control-attribution { font-size: 10px; background: rgba(255,248,238,.8); }
+  .menu { position: absolute; z-index: 1100; top: var(--header-height); right: var(--space-4); background: var(--color-paper);
+    border: 2px solid var(--color-asphalt); border-radius: var(--radius-md); box-shadow: var(--shadow-panel);
+    padding: var(--space-2); display: none; min-width: 200px; }
+  .menu.open { display: grid; gap: 2px; }
+  .menu a { padding: 10px 12px; text-decoration: none; font-weight: 800; font-size: var(--text-sm); text-transform: uppercase;
+    letter-spacing: 0.04em; color: var(--color-asphalt); border-radius: var(--radius-sm); }
+  .menu a:hover { background: var(--color-concrete); }
+  .ps-burger { width: 40px; height: 40px; border: 2px solid var(--header-fg); border-radius: var(--radius-sm);
+    background: transparent; color: var(--header-fg); font-size: 20px; cursor: pointer; place-items: center; }
+  .ps-theme-toggle { display: grid; place-items: center; width: 40px; height: 40px; flex: 0 0 auto;
+    border: 2px solid color-mix(in srgb, var(--header-fg) 40%, transparent); border-radius: 50%;
+    background: transparent; color: var(--header-fg); cursor: pointer;
+    transition: border-color var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out); }
+  .ps-theme-toggle:hover { border-color: var(--header-fg); color: var(--color-sign-yellow); }
+</style>
+</head>
+<body>
+<div id="app">
+  <header class="ps-header">
+    <a class="ps-brand" href="#/" aria-label="Pedala Sampa — início">
+      <img src="assets/brand-logo.svg" width="38" height="44" alt="" />
+      <span class="ps-brand__text">Pedala Sampa</span>
+      <span class="ps-brand__badge">mapa colaborativo</span>
+    </a>
+    <nav class="ps-nav" aria-label="Navegação principal">
+      <span class="nav-desktop" style="display:inline-flex;gap:var(--space-4);align-items:center">
+        <a data-route="#/" href="#/" aria-current="page">Mapa</a>
+        <a data-route="#/sobre" href="#/sobre" aria-current="false">Sobre</a>
+      </span>
+      <button class="ps-theme-toggle" id="themeToggle" aria-label="Alternar tema claro e escuro" title="Tema claro / escuro"></button>
+      <a class="ps-cta desktop-cta" data-icon="plus" data-icon-size="15" href="https://example.com/sugerir" target="_blank" rel="noopener noreferrer">Sugerir grupo</a>
+      <button class="ps-burger" id="burger" aria-label="Menu">≡</button>
+    </nav>
+  </header>
+  <div class="menu" id="menu">
+    <a href="#/">Mapa</a>
+    <a href="#/sobre">Sobre</a>
+    <a href="https://example.com/sugerir" target="_blank" rel="noopener noreferrer">+ Sugerir grupo</a>
+  </div>
+  <div id="tweaks-root"></div>
+
+  <!-- ============ HOME (map focus) ============ -->
+  <section class="view" id="homeView" aria-label="Explorar grupos de pedal">
+    <div id="map"></div>
+
+    <div class="toolbar">
+      <div class="ps-search">
+        <span data-icon="search" data-icon-size="18" style="display:inline-flex;color:var(--color-asphalt)"></span>
+        <input id="search" type="search" placeholder="Nome, bairro, dia ou nível" aria-label="Buscar grupos" />
+      </div>
+      <button class="ps-btn ps-btn--solid filters-btn" id="filtersBtn" data-icon="sliders" data-icon-size="16">
+        Filtros <span class="count-pill">0</span>
+      </button>
+    </div>
+
+    <div class="scrim" id="scrim"></div>
+    <aside class="drawer" id="drawer" aria-label="Filtros">
+      <div class="drawer__head">
+        <span class="drawer__title">Filtros</span>
+        <button class="drawer__close" id="drawerClose" aria-label="Fechar filtros">×</button>
+      </div>
+      <div class="drawer__body" id="drawerBody"></div>
+      <div class="drawer__foot">
+        <button class="ps-btn ps-btn--ghost ps-btn--block" id="clearBtn">Limpar</button>
+        <button class="ps-cta ps-btn--block" id="applyBtn" style="flex:1">Ver <span id="applyCount">9</span> grupos</button>
+      </div>
+    </aside>
+
+    <div class="carousel">
+      <div class="carousel__meta">
+        <span class="ps-chip ps-chip--count"><strong id="carCount">9</strong>&nbsp;grupos</span>
+      </div>
+      <div class="carousel__row">
+        <button class="carousel__nav carousel__nav--prev" id="carPrev" data-icon="chevronRight" data-icon-size="20" aria-label="Grupos anteriores"></button>
+        <div class="carousel__track"></div>
+        <button class="carousel__nav carousel__nav--next" id="carNext" data-icon="chevronRight" data-icon-size="20" aria-label="Próximos grupos"></button>
+      </div>
+    </div>
+
+    <div class="empty" id="empty">
+      <span class="empty__ic" data-icon="search" data-icon-size="30" style="display:inline-flex;color:var(--color-asphalt-45)"></span>
+      <strong class="ps-h3">Nenhum grupo encontrado com esses filtros.</strong>
+      <p class="ps-body ps-state__msg" style="margin:0">Tente afrouxar os filtros — ou ajude a comunidade cadastrando um grupo novo.</p>
+      <div style="display:flex;gap:var(--space-2);flex-wrap:wrap">
+        <button class="ps-btn" id="emptyClear">Limpar filtros</button>
+        <a class="ps-cta" data-icon="plus" data-icon-size="15" href="https://example.com/sugerir" target="_blank" rel="noopener noreferrer">Sugerir grupo</a>
+      </div>
+    </div>
+
+    <div class="qv" id="qv" aria-live="polite"></div>
+
+    <!-- mobile bottom sheet -->
+    <div class="sheet" id="sheet" data-snap="half">
+      <div class="sheet__grab" id="sheetGrab" role="button" tabindex="0" aria-label="Arraste para expandir ou recolher a lista"></div>
+      <div class="sheet__head">
+        <div class="sheet__headrow">
+          <span class="ps-chip ps-chip--count sheet__countchip"><strong id="sheetCount">9</strong>&nbsp;grupos</span>
+          <button class="ps-btn ps-btn--sm sheet__filtros" id="sheetFiltros" data-icon="sliders" data-icon-size="15">Filtros <span class="count-pill" id="sheetFilterCount">0</span></button>
+        </div>
+        <div class="sheet__chips" id="sheetChips"></div>
+      </div>
+      <div class="sheet__body">
+        <div class="sheet__list" id="sheetList"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ GROUP PAGE ============ -->
+  <section class="view" id="groupView" hidden aria-label="Página do grupo">
+    <div class="doc" id="groupDoc"></div>
+  </section>
+
+  <!-- ============ SOBRE ============ -->
+  <section class="view" id="sobreView" hidden aria-label="Sobre o Pedala Sampa">
+    <div class="doc">
+      <div class="doc__inner">
+        <a class="back-link" href="#/">‹ Voltar ao mapa</a>
+        <p class="ps-eyebrow" style="margin:24px 0 8px">Mapa colaborativo</p>
+        <h1 class="ps-h1">Um mapa colaborativo dos grupos de pedal de São Paulo.</h1>
+        <p class="ps-lead" style="max-width:680px;margin-top:16px">O Pedala Sampa ajuda ciclistas a descobrir grupos por região, dia, horário, nível, distância e ritmo — perto de casa ou do trabalho.</p>
+        <div class="about-grid">
+          <div class="about-card"><span class="num" data-aic="layers">01</span><h2 class="ps-h3">Como funciona</h2><p class="ps-body" style="margin:0;color:var(--color-asphalt-55)">Os grupos cadastrados aparecem no mapa e na lista. Cada um traz ponto de saída, agenda e dados práticos do pedal.</p></div>
+          <div class="about-card"><span class="num" data-aic="users">02</span><h2 class="ps-h3">Colaboração</h2><p class="ps-body" style="margin:0;color:var(--color-asphalt-55)">As informações mudam. A comunidade mantém o mapa vivo sugerindo grupos e correções.</p></div>
+          <div class="about-card"><span class="num" data-aic="pencil">03</span><h2 class="ps-h3">Como contribuir</h2><p class="ps-body" style="margin:0;color:var(--color-asphalt-55)">Sugira um grupo novo ou corrija dados desatualizados por um formulário rápido.</p></div>
+        </div>
+        <div style="display:flex;gap:var(--space-3);flex-wrap:wrap">
+          <a class="ps-cta" data-icon="plus" data-icon-size="15" href="https://example.com/sugerir" target="_blank" rel="noopener noreferrer">Sugerir grupo</a>
+          <a class="ps-btn" data-icon="pencil" data-icon-size="15" href="https://example.com/sugerir" target="_blank" rel="noopener noreferrer">Sugerir correção</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script src="proto-icons.js"></script>
+<script src="proto-data.js"></script>
+<script src="proto-app.js"></script>
+
+<!-- Tweaks panel (React, mounted into a corner) -->
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+<script type="text/babel" src="proto-tweaks.jsx"></script>
+</body>
+</html>
