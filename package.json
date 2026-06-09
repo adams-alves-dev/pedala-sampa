@@ -31,5 +31,9 @@
     "typescript": "latest",
     "vitest": "latest",
     "vue-tsc": "latest"
+  },
+  "resolutions": {
+    "cross-spawn": "^7.0.6",
+    "browserslist": "^4.16.5"
   }
 }
