@@ -86,7 +86,7 @@ const quickChips = computed(() =>
 
 // mobile: tapping a card navigates straight to the group page (spec §8.1)
 function onCardSelect(slug: string) {
-  navigateTo(`/grupo/${slug}`)
+  navigateTo(`/group/${slug}`)
 }
 
 // ---- Snap + drag ----

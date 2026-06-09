@@ -10,7 +10,7 @@
         </div>
         <p class="footer-text">Mapa colaborativo de grupos de pedal em São Paulo.</p>
         <nav class="footer-nav" aria-label="Rodapé">
-          <NuxtLink to="/sobre">Sobre</NuxtLink>
+          <NuxtLink to="/about">Sobre</NuxtLink>
         </nav>
       </div>
     </footer>

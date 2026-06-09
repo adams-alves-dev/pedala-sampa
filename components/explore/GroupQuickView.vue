@@ -15,7 +15,7 @@
           <PsIcon name="compass" :size="16" /> Tempo médio da volta: <strong>{{ duration }}</strong>
         </p>
         <div class="qv__actions">
-          <NuxtLink class="ps-btn ps-btn--sm ps-btn--solid" :to="`/grupo/${group.slug}`">
+          <NuxtLink class="ps-btn ps-btn--sm ps-btn--solid" :to="`/group/${group.slug}`">
             Página completa <PsIcon name="chevronRight" :size="14" />
           </NuxtLink>
           <a

@@ -9,7 +9,7 @@
     <nav class="ps-nav" aria-label="Navegação principal">
       <span class="nav-desktop">
         <NuxtLink to="/" :aria-current="route.path === '/' ? 'page' : undefined">Mapa</NuxtLink>
-        <NuxtLink to="/sobre" :aria-current="route.path === '/sobre' ? 'page' : undefined">Sobre</NuxtLink>
+        <NuxtLink to="/about" :aria-current="route.path === '/about' ? 'page' : undefined">Sobre</NuxtLink>
       </span>
 
       <button
@@ -46,7 +46,7 @@
 
     <div v-show="menuOpen" ref="menuRef" class="menu" @click="menuOpen = false">
       <NuxtLink to="/">Mapa</NuxtLink>
-      <NuxtLink to="/sobre">Sobre</NuxtLink>
+      <NuxtLink to="/about">Sobre</NuxtLink>
       <a
         v-if="contributionFormUrl"
         :href="contributionFormUrl"
