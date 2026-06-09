@@ -58,6 +58,7 @@
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue'
 import type { FilterGroup } from '../../lib/filter-options'
+import { scrollBehavior } from '../../lib/motion'
 import type { FilterCategory, Group, GroupFilters } from '../../types/group'
 import GroupCard from '../group/GroupCard.vue'
 
@@ -181,7 +182,7 @@ watch(
       const index = props.groups.findIndex((group) => group.slug === slug)
       const card = body && index >= 0 ? body.children[index] : null
       if (card instanceof HTMLElement) {
-        card.scrollIntoView({ block: 'nearest', behavior: 'smooth' })
+        card.scrollIntoView({ block: 'nearest', behavior: scrollBehavior() })
       }
     })
   },

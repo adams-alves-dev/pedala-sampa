@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="scrim" :class="{ open }" @click="$emit('close')" />
-    <aside class="drawer" :class="{ open }" aria-label="Filtros">
+    <aside class="drawer" :class="{ open }" :inert="!open" aria-label="Filtros">
       <div class="drawer__head">
         <span class="drawer__title">Filtros</span>
         <button class="drawer__close" type="button" aria-label="Fechar filtros" @click="$emit('close')">×</button>
@@ -116,8 +116,8 @@ onBeforeUnmount(() => document.removeEventListener('keydown', onKeydown))
 .drawer__close {
   display: grid;
   place-items: center;
-  width: 34px;
-  height: 34px;
+  width: 44px;
+  height: 44px;
   cursor: pointer;
   border: 2px solid var(--color-asphalt);
   background: var(--color-paper);

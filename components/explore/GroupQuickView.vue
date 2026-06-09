@@ -24,6 +24,7 @@
             :href="group.link.url"
             target="_blank"
             rel="noopener noreferrer"
+            :aria-label="(group.link.label || 'Contato') + ' (abre em nova aba)'"
           >
             <PsIcon name="chat" :size="15" /> {{ group.link.label || 'Contato' }} <PsIcon name="arrowUR" :size="14" />
           </a>

@@ -37,21 +37,24 @@
         class="ps-burger"
         type="button"
         :aria-expanded="menuOpen"
-        aria-label="Menu"
+        :aria-label="menuOpen ? 'Fechar menu' : 'Abrir menu'"
+        aria-haspopup="true"
+        aria-controls="app-menu"
         @click="menuOpen = !menuOpen"
       >
         ≡
       </button>
     </nav>
 
-    <div v-show="menuOpen" ref="menuRef" class="menu" @click="menuOpen = false">
-      <NuxtLink to="/">Mapa</NuxtLink>
-      <NuxtLink to="/about">Sobre</NuxtLink>
+    <div v-show="menuOpen" id="app-menu" ref="menuRef" class="menu" @click="menuOpen = false">
+      <NuxtLink to="/" :aria-current="route.path === '/' ? 'page' : undefined">Mapa</NuxtLink>
+      <NuxtLink to="/about" :aria-current="route.path === '/about' ? 'page' : undefined">Sobre</NuxtLink>
       <a
         v-if="contributionFormUrl"
         :href="contributionFormUrl"
         target="_blank"
         rel="noopener noreferrer"
+        aria-label="Sugerir grupo (abre em nova aba)"
       >+ Sugerir grupo</a>
     </div>
   </header>

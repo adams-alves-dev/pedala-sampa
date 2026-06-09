@@ -35,6 +35,7 @@
 <script setup lang="ts">
 import type { LeafletMouseEvent, Map as LeafletMap, PointTuple } from 'leaflet'
 import { watch } from 'vue'
+import { prefersReducedMotion } from '../../lib/motion'
 import type { Group } from '../../types/group'
 import MapTileLayer from './MapTileLayer.vue'
 
@@ -58,9 +59,6 @@ const selectedSize: PointTuple = [36, 36]
 const selectedAnchor: PointTuple = [18, 34]
 
 let mapInstance: LeafletMap | null = null
-
-const prefersReducedMotion = () =>
-  typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
 function onMapReady(map: LeafletMap) {
   mapInstance = map

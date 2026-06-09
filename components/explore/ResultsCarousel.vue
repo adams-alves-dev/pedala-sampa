@@ -37,6 +37,7 @@
 
 <script setup lang="ts">
 import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { scrollBehavior } from '../../lib/motion'
 import type { Group } from '../../types/group'
 import GroupCard from '../group/GroupCard.vue'
 
@@ -68,7 +69,7 @@ function scroll(direction: number) {
   if (!track) {
     return
   }
-  track.scrollBy({ left: direction * track.clientWidth * 0.8, behavior: 'smooth' })
+  track.scrollBy({ left: direction * track.clientWidth * 0.8, behavior: scrollBehavior() })
 }
 
 function scrollToSelected() {
@@ -79,7 +80,7 @@ function scrollToSelected() {
   const index = props.groups.findIndex((group) => group.slug === props.selectedGroupSlug)
   const card = index >= 0 ? track.children[index] : null
   if (card instanceof HTMLElement) {
-    track.scrollTo({ left: card.offsetLeft - 8, behavior: 'smooth' })
+    track.scrollTo({ left: card.offsetLeft - 8, behavior: scrollBehavior() })
   }
 }
 
