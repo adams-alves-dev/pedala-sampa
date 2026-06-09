@@ -41,6 +41,7 @@ describe('group normalizers', () => {
       },
       link: {
         label: 'Instagram',
+        url: 'https://example.com',
         html: '<p><a href="https://example.com">Instagram</a></p>',
       },
       schedules: [
@@ -55,6 +56,22 @@ describe('group normalizers', () => {
         },
       ],
     })
+  })
+
+  it('não preenche link.url quando o html não tem href', () => {
+    const result = normalizeGroup({
+      ...group,
+      link: { text: 'Contato', html: '<p>Fale com a gente no evento</p>' },
+    })
+    expect(result?.link?.url).toBeUndefined()
+  })
+
+  it('limpa sequências de escape do rótulo do link', () => {
+    const result = normalizeGroup({
+      ...group,
+      link: { text: '\\nFúria Norte Bikers\\n', html: '<p><a href="https://x.com">x</a></p>' },
+    })
+    expect(result?.link?.label).toBe('Fúria Norte Bikers')
   })
 
   it('retorna null para grupo sem coordenadas válidas', () => {

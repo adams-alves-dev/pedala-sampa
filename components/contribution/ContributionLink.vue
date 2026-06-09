@@ -2,7 +2,7 @@
   <a
     v-if="state.isEnabled"
     class="contribution-link"
-    :class="{ 'contribution-link--fab': fab }"
+    :class="{ 'contribution-link--fab': fab, 'contribution-link--ghost': variant === 'ghost' }"
     :href="state.href"
     target="_blank"
     rel="noopener noreferrer"
@@ -30,12 +30,14 @@ const props = withDefaults(
     context?: 'new-group' | 'correction'
     fab?: boolean
     icon?: IconName
+    variant?: 'cta' | 'ghost'
   }>(),
   {
     href: '',
     context: 'new-group',
     fab: false,
     icon: undefined,
+    variant: 'cta',
   },
 )
 
@@ -65,6 +67,19 @@ const state = computed(() => getContributionLinkState(props.href))
 .contribution-link:hover {
   transform: translate(-1px, -1px);
   box-shadow: 4px 4px 0 var(--color-asphalt);
+}
+
+.contribution-link--ghost {
+  background: transparent;
+  color: var(--color-asphalt);
+  border: 2px solid var(--color-border);
+  clip-path: none;
+}
+
+.contribution-link--ghost:hover {
+  border-color: var(--color-asphalt);
+  transform: none;
+  box-shadow: none;
 }
 
 .contribution-link--disabled {

@@ -1,6 +1,27 @@
 import type { Group, GroupSchedule } from '../types/group'
 import type { HygraphGroup, HygraphGroupInfo } from '../types/hygraph'
 
+/** Pulls the first href out of the rich-text link HTML (e.g. `<p><a href="...">`). */
+function extractLinkUrl(html?: string | null): string | undefined {
+  if (!html) {
+    return undefined
+  }
+  const match = html.match(/href\s*=\s*["']([^"']+)["']/i)
+  return match ? match[1] : undefined
+}
+
+/** Hygraph stores the link label with stray escape sequences (e.g. `\nFúria\n`). */
+function cleanLinkLabel(text?: string | null): string | undefined {
+  if (!text) {
+    return undefined
+  }
+  const cleaned = text
+    .replace(/\\[rnt]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+  return cleaned || undefined
+}
+
 function normalizeSchedule(info: HygraphGroupInfo): GroupSchedule {
   return {
     id: info.id,
@@ -33,7 +54,8 @@ export function normalizeGroup(group: HygraphGroup): Group | null {
     departureLocation: { latitude, longitude },
     link: group.link
       ? {
-          label: group.link.text || undefined,
+          label: cleanLinkLabel(group.link.text),
+          url: extractLinkUrl(group.link.html),
           html: group.link.html || undefined,
         }
       : undefined,

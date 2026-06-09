@@ -1,12 +1,24 @@
 <template>
-  <div>
-    <main class="group-page">
-      <NuxtLink to="/" class="back-link">Voltar para o mapa</NuxtLink>
-      <p v-if="pending">Carregando grupo...</p>
-      <p v-else-if="error || !group">Grupo não encontrado.</p>
+  <main class="doc">
+    <div class="doc__inner">
+      <NuxtLink to="/" class="back-link">
+        <PsIcon name="chevronRight" :size="15" class="flip" /> Voltar ao mapa
+      </NuxtLink>
+
+      <p v-if="pending" class="ps-body group-status">Carregando grupo…</p>
+
+      <template v-else-if="error || !group">
+        <h1 class="ps-h1 group-notfound">Grupo não encontrado</h1>
+        <p class="ps-lead">
+          Esse grupo pode ter sido removido.
+          <NuxtLink to="/" class="group-notfound__link">Volte ao mapa</NuxtLink>
+          para explorar os demais.
+        </p>
+      </template>
+
       <GroupDetails v-else :group="group" :contribution-form-url="contributionFormUrl" />
-    </main>
-  </div>
+    </div>
+  </main>
 </template>
 
 <script setup lang="ts">
@@ -19,25 +31,35 @@ const contributionFormUrl = config.public.contributionFormUrl
 const slug = String(route.params.slug)
 const { data: group, pending, error } = await useGroup(slug)
 
+const title = () =>
+  group.value ? `${group.value.name} - Pedala Sampa` : 'Grupo não encontrado - Pedala Sampa'
+const description = () =>
+  group.value
+    ? `Veja ponto de saída, horário, nível, distância e ritmo do grupo ${group.value.name} em São Paulo.`
+    : 'Grupo de pedal não encontrado no Pedala Sampa.'
+
 useSeoMeta({
-  title: () => (group.value ? `${group.value.name} - Pedala Sampa` : 'Grupo não encontrado - Pedala Sampa'),
-  description: () =>
-    group.value
-      ? `Veja ponto de saída, horário, nível, distância e ritmo do grupo ${group.value.name} em São Paulo.`
-      : 'Grupo de pedal não encontrado no Pedala Sampa.',
+  title,
+  description,
+  ogTitle: title,
+  ogDescription: description,
+  ogType: 'website',
+  twitterCard: 'summary',
 })
 </script>
 
 <style scoped>
-.group-page {
-  display: grid;
-  gap: var(--space-5);
-  margin: 0 auto;
-  max-width: 980px;
-  padding: var(--space-8) var(--space-5);
+.group-status {
+  margin-top: var(--space-6);
+  color: var(--color-asphalt-55);
 }
 
-.back-link {
+.group-notfound {
+  margin-top: var(--space-6);
+}
+
+.group-notfound__link {
+  text-decoration: underline;
   font-weight: 800;
 }
 </style>
