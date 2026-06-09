@@ -64,6 +64,13 @@ function onInput(event: Event) {
   box-shadow: var(--shadow-panel);
 }
 
+/* scoped (higher specificity) so the signage hover wins over the resting panel
+   shadow — otherwise the global .ps-btn--solid:hover is overridden */
+.filters-btn:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 var(--color-bike-green);
+}
+
 .count-pill {
   display: none;
   align-items: center;

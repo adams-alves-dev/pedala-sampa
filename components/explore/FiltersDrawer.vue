@@ -4,7 +4,9 @@
     <aside class="drawer" :class="{ open }" :inert="!open" aria-label="Filtros">
       <div class="drawer__head">
         <span class="drawer__title">Filtros</span>
-        <button class="drawer__close" type="button" aria-label="Fechar filtros" @click="$emit('close')">×</button>
+        <button class="drawer__close" type="button" aria-label="Fechar filtros" @click="$emit('close')">
+          <PsIcon name="x" :size="16" :stroke="3" />
+        </button>
       </div>
 
       <div class="drawer__body">
@@ -114,17 +116,23 @@ onBeforeUnmount(() => document.removeEventListener('keydown', onKeydown))
 }
 
 .drawer__close {
+  position: relative;
   display: grid;
   place-items: center;
-  width: 44px;
-  height: 44px;
+  width: 34px;
+  height: 34px;
   cursor: pointer;
   border: 2px solid var(--color-asphalt);
   background: var(--color-paper);
   border-radius: 50%;
-  font-size: 18px;
-  font-weight: 800;
   color: var(--color-asphalt);
+}
+
+/* keep a ≥44px touch target without enlarging the 34px visual (matches handoff) */
+.drawer__close::before {
+  content: '';
+  position: absolute;
+  inset: -5px;
 }
 
 .drawer__body {
