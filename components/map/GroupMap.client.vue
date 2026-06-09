@@ -58,7 +58,23 @@ const defaultAnchor: PointTuple = [14, 26]
 const selectedSize: PointTuple = [36, 36]
 const selectedAnchor: PointTuple = [18, 34]
 
+const FLY_ZOOM = 14
+
 let mapInstance: LeafletMap | null = null
+
+// mobile: the bottom sheet covers the lower half, so a centred pin lands behind
+// it — shift the map centre down so the pin sits in the visible upper area.
+const isMobileViewport = () =>
+  typeof window !== 'undefined' && window.matchMedia('(max-width: 760px)').matches
+
+function flyTarget(map: LeafletMap, latlng: PointTuple): PointTuple {
+  if (!isMobileViewport()) {
+    return latlng
+  }
+  const point = map.project(latlng, FLY_ZOOM)
+  const center = map.unproject([point.x, point.y + map.getSize().y * 0.25], FLY_ZOOM)
+  return [center.lat, center.lng]
+}
 
 function onMapReady(map: LeafletMap) {
   mapInstance = map
@@ -83,11 +99,12 @@ watch(
     if (!group) {
       return
     }
-    const target: PointTuple = [group.departureLocation.latitude, group.departureLocation.longitude]
+    const latlng: PointTuple = [group.departureLocation.latitude, group.departureLocation.longitude]
+    const target = flyTarget(mapInstance, latlng)
     if (prefersReducedMotion()) {
-      mapInstance.setView(target, 14)
+      mapInstance.setView(target, FLY_ZOOM)
     } else {
-      mapInstance.flyTo(target, 14, { duration: 0.6 })
+      mapInstance.flyTo(target, FLY_ZOOM, { duration: 0.6 })
     }
   },
 )

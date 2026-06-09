@@ -181,8 +181,10 @@ watch(
       const body = bodyRef.value
       const index = props.groups.findIndex((group) => group.slug === slug)
       const card = body && index >= 0 ? body.children[index] : null
-      if (card instanceof HTMLElement) {
-        card.scrollIntoView({ block: 'nearest', behavior: scrollBehavior() })
+      if (body && card instanceof HTMLElement) {
+        // align the card's top with the top of the list (clamps near the end)
+        const delta = card.getBoundingClientRect().top - body.getBoundingClientRect().top
+        body.scrollTo({ top: body.scrollTop + delta, behavior: scrollBehavior() })
       }
     })
   },
