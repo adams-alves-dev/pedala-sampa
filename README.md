@@ -95,7 +95,7 @@ Quer adicionar um grupo ou corrigir uma informação? Use o formulário de contr
 ## Desenvolvedor :computer:
 
 - **Adams Alves** — [github.com/adamsalves](https://github.com/adamsalves)
-- Contato: contato@adamsalves.com.br
+- Contato: [linkedin.com/in/adams-alves](https://www.linkedin.com/in/adams-alves/)
 
 ## Apoie no Ko-fi :raised_hands: :coffee:
 
