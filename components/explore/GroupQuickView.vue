@@ -1,6 +1,13 @@
 <template>
   <Transition name="qv">
-    <div v-if="group" class="qv" aria-live="polite">
+    <div
+      v-if="group"
+      ref="panelRef"
+      class="qv"
+      tabindex="-1"
+      aria-live="polite"
+      @keydown.esc="$emit('close')"
+    >
       <div class="ps-quickview">
         <button class="qv__close" type="button" @click="$emit('close')">
           <PsIcon name="x" :size="14" /> Fechar
@@ -8,7 +15,7 @@
         <span class="ps-quickview__sun" aria-hidden="true" />
         <h2 class="qv__name">{{ group.name }}</h2>
         <p class="qv__loc">
-          <PsIcon name="pin" :size="15" /> {{ group.region || group.departureAddress || 'Ponto de saída no mapa' }}
+          <PsIcon name="pin" :size="15" /> {{ group.departureAddress || 'Ponto de saída no mapa' }}
         </p>
         <GroupMetaBadges v-if="primarySchedule" :schedule="primarySchedule" />
         <p v-if="primarySchedule" class="qv__dur">
@@ -37,7 +44,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, nextTick, ref, watch } from 'vue'
 import { getEstimatedLapDuration } from '../../lib/time'
 import type { Group } from '../../types/group'
 import ContributionLink from '../contribution/ContributionLink.vue'
@@ -51,6 +58,18 @@ const props = defineProps<{
 defineEmits<{
   close: []
 }>()
+
+// move focus into the floating panel when it opens so keyboard users land
+// here and can dismiss it with Escape (paridade com o drawer)
+const panelRef = ref<HTMLElement | null>(null)
+watch(
+  () => props.group,
+  (group) => {
+    if (group) {
+      nextTick(() => panelRef.value?.focus())
+    }
+  },
+)
 
 const primarySchedule = computed(() => props.group?.schedules[0])
 const duration = computed(() =>

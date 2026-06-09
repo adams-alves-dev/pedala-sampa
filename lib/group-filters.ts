@@ -43,7 +43,6 @@ export function filterGroups(groups: Group[], filters: GroupFilters) {
     const searchable = normalizeSearchText(
       [
         group.name,
-        group.region,
         group.departureAddress,
         ...group.schedules.flatMap((schedule) => [schedule.day, schedule.effort]),
       ]

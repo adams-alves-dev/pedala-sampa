@@ -23,7 +23,6 @@ export type Group = {
   id: string
   name: string
   slug: string
-  region?: string
   departureAddress?: string
   departureLocation: GeoPoint
   link?: GroupLink

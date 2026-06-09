@@ -91,7 +91,7 @@ const props = defineProps<{
 
 const primarySchedule = computed(() => props.group.schedules[0])
 const departure = computed(
-  () => props.group.departureAddress || props.group.region || 'Ponto de saída no mapa',
+  () => props.group.departureAddress || 'Ponto de saída no mapa',
 )
 const duration = computed(() =>
   primarySchedule.value

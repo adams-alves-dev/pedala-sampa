@@ -12,7 +12,7 @@
       <span class="ps-card__name">{{ group.name }}</span>
       <span class="ps-card__loc">
         <PsIcon name="pin" :size="14" />
-        {{ group.region || group.departureAddress || 'Ponto de saída no mapa' }}
+        {{ group.departureAddress || 'Ponto de saída no mapa' }}
       </span>
       <GroupMetaBadges v-if="primarySchedule" :schedule="primarySchedule" />
     </span>

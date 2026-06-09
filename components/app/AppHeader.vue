@@ -42,7 +42,7 @@
         aria-controls="app-menu"
         @click="menuOpen = !menuOpen"
       >
-        ≡
+        <span aria-hidden="true">≡</span>
       </button>
     </nav>
 

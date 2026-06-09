@@ -5,6 +5,7 @@
       role="button"
       tabindex="0"
       :aria-label="snap === 'full' ? 'Recolher lista' : 'Expandir lista'"
+      :aria-expanded="snap !== 'peek'"
       @pointerdown="onPointerDown"
       @keydown="onGrabKeydown"
     />

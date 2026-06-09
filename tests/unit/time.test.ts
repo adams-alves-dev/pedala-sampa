@@ -7,6 +7,16 @@ describe('time helpers', () => {
     expect(getEstimatedLapDuration({ distanceKm: 20, rhythmKmH: 18 })).toBe('01h:07m')
   })
 
+  it('retorna zero quando ritmo ou distância são inválidos', () => {
+    expect(getEstimatedLapDuration({ distanceKm: 30, rhythmKmH: 0 })).toBe('00h:00m')
+    expect(getEstimatedLapDuration({ distanceKm: 0, rhythmKmH: 18 })).toBe('00h:00m')
+    expect(getEstimatedLapDuration({ distanceKm: 30, rhythmKmH: -5 })).toBe('00h:00m')
+  })
+
+  it('classifica hora inválida como noite', () => {
+    expect(getPeriodFromHour('sem-hora')).toBe('night')
+  })
+
   it('classifica período por horário', () => {
     expect(getPeriodFromHour('07:30')).toBe('morning')
     expect(getPeriodFromHour('14:00')).toBe('afternoon')
