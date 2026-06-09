@@ -4,19 +4,99 @@
 
 > :bicyclist: Descubra os grupos de pedal perto de você na cidade de São Paulo :mountain_bicyclist:
 
-> **Pedala Sampa** é um mapa colaborativo que visa ajudar os ciclistas da cidade de **São Paulo** a encontrar grupos de pedal próximos da sua casa ou trabalho.
+**Pedala Sampa** é um mapa colaborativo que ajuda ciclistas de **São Paulo** a encontrar grupos de pedal por região, dia, horário, nível, distância e ritmo — perto de casa ou do trabalho.
 
-> #bike #micromobilidade #mapacolaborativo #app  
+🔗 **Produção:** [pedalasampa.netlify.app](https://pedalasampa.netlify.app)
+
+> `#bike` `#micromobilidade` `#mapacolaborativo`
+
+## Sobre
+
+O projeto passou por uma **migração para Nuxt 3** e um **redesign completo** (direção *wayfinding* — inspirada na sinalização urbana). Principais características:
+
+- 🗺️ **Mapa-foco** — mapa interativo (Leaflet) com os pontos de saída dos grupos.
+- 🔎 **Filtros** — explore por região, dia, horário, nível, distância e ritmo.
+- 📄 **Página de grupo** — detalhes de cada grupo (agenda, ponto de saída, métricas).
+- 🎨 **Dois temas** — *Ciclovia* (claro, padrão) e *Noturno* (escuro).
+- ♿ **Acessibilidade** — foco visível, navegação por teclado e `prefers-reduced-motion`.
+- 🤝 **Colaborativo** — qualquer pessoa pode sugerir novos grupos ou correções.
+
+## Stack
+
+- [Nuxt 3](https://nuxt.com/) + [Vue 3](https://vuejs.org/) + TypeScript
+- [Leaflet](https://leafletjs.com/) (`@nuxtjs/leaflet`) para o mapa
+- [Hygraph](https://hygraph.com/) (GraphQL) como CMS dos grupos, via `graphql-request`
+- [`@nuxtjs/color-mode`](https://color-mode.nuxtjs.org/) para os temas
+- [Vitest](https://vitest.dev/) + [`@nuxt/test-utils`](https://nuxt.com/docs/getting-started/testing) para testes
+- ESLint (`@nuxt/eslint`) e `vue-tsc` para qualidade/tipos
+- Deploy estático no [Netlify](https://www.netlify.com/)
+
+## Como rodar
+
+> Requer **Node 22** (≥ 20.19) e [Yarn](https://yarnpkg.com/).
+
+```bash
+# instalar dependências
+yarn install
+
+# ambiente de desenvolvimento (http://localhost:3000)
+yarn dev
+```
+
+### Variáveis de ambiente
+
+Crie um arquivo `.env` na raiz:
+
+```env
+# Endpoint GraphQL do Hygraph (já tem um fallback público no nuxt.config)
+HYGRAPH_ENDPOINT=
+# Token do Hygraph (apenas se o conteúdo for protegido)
+GRAPHQL_TOKEN=
+# URL do formulário de contribuição (novo grupo / correção)
+NUXT_PUBLIC_CONTRIBUTION_FORM_URL=
+```
+
+## Scripts
+
+| Comando | Descrição |
+|---|---|
+| `yarn dev` | Servidor de desenvolvimento |
+| `yarn build` | Build de produção (SSR/Nitro) |
+| `yarn generate` | Geração estática (usado no deploy) |
+| `yarn preview` | Preview do build local |
+| `yarn lint` | ESLint |
+| `yarn test` | Testes (Vitest) |
+
+## Estrutura
+
+```
+components/   # UI por domínio (app, map, explore, group, contribution, ui)
+composables/  # lógica reutilizável (filtros, fetch de grupos)
+pages/        # rotas: / (mapa), /about, /group/[slug]
+layouts/      # layout padrão (header)
+queries/      # queries GraphQL do Hygraph
+lib/ types/   # utilitários e tipos
+assets/css/   # estilos globais e de componentes
+tests/        # testes unitários (Vitest)
+docs/redesign/# spec e handoff do redesign
+```
+
+## Deploy
+
+Deploy contínuo no **Netlify** a partir da branch de produção:
+
+- Comando: `yarn generate` · Publicação: `.output/public`
+- `NODE_VERSION = "22"` fixado no `netlify.toml`
+
+## Contribuir
+
+Quer adicionar um grupo ou corrigir uma informação? Use o formulário de contribuição no próprio site (botões *Sugerir grupo* / *Sugerir correção*).
 
 ## Desenvolvedor :computer:
 
-*  **Adams Alves** - [https://github.com/adamsalves](https://github.com/adamsalves)
-*  Quer contribuir? Entre em contato comigo pelo e-mail contato@adamsalves.com.br :)
+- **Adams Alves** — [github.com/adamsalves](https://github.com/adamsalves)
+- Contato: [linkedin.com/in/adams-alves](https://www.linkedin.com/in/adams-alves/)
 
-## Gostou do projeto, me apoie no Ko-fi :raised_hands: :coffee:
+## Apoie no Ko-fi :raised_hands: :coffee:
 
-- [https://ko-fi.com/adamsalves](https://ko-fi.com/adamsalves)
-
-## Status
-
-> :construction: Em desenvolvimento :building_construction:
+- [ko-fi.com/adamsalves](https://ko-fi.com/adamsalves)
