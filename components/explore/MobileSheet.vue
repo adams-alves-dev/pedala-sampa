@@ -97,7 +97,7 @@ const PEEK_OFFSET = 132
 
 const sheetRef = ref<HTMLElement | null>(null)
 const bodyRef = ref<HTMLElement | null>(null)
-const snap = ref<Snap>('half')
+const snap = ref<Snap>('peek')
 const dragging = ref(false)
 
 let startY = 0
@@ -125,8 +125,14 @@ function onPointerDown(event: PointerEvent) {
   moved = false
   startY = event.clientY
   startTop = sheet.getBoundingClientRect().top
+  // garante que o stream de pointer events continue chegando mesmo se o dedo
+  // sair do handle durante o arraste
+  if (event.target instanceof Element) {
+    event.target.setPointerCapture(event.pointerId)
+  }
   window.addEventListener('pointermove', onPointerMove, { passive: false })
   window.addEventListener('pointerup', onPointerUp)
+  window.addEventListener('pointercancel', onPointerUp)
 }
 
 function onPointerMove(event: PointerEvent) {
@@ -150,6 +156,7 @@ function onPointerMove(event: PointerEvent) {
 function onPointerUp() {
   window.removeEventListener('pointermove', onPointerMove)
   window.removeEventListener('pointerup', onPointerUp)
+  window.removeEventListener('pointercancel', onPointerUp)
   dragging.value = false
 
   const sheet = sheetRef.value
@@ -194,6 +201,7 @@ watch(
 onBeforeUnmount(() => {
   window.removeEventListener('pointermove', onPointerMove)
   window.removeEventListener('pointerup', onPointerUp)
+  window.removeEventListener('pointercancel', onPointerUp)
 })
 </script>
 
@@ -238,13 +246,25 @@ onBeforeUnmount(() => {
   }
 
   .sheet__grab {
+    position: relative;
+    width: 100%;
+    height: 28px;
+    flex: 0 0 auto;
+    cursor: grab;
+    touch-action: none;
+  }
+
+  /* barrinha visual (48×5) centralizada — a hit area é o .sheet__grab inteiro */
+  .sheet__grab::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     width: 48px;
     height: 5px;
     border-radius: 3px;
     background: var(--color-border);
-    margin: 10px auto 8px;
-    flex: 0 0 auto;
-    cursor: grab;
   }
 
   .sheet__grab:active {
