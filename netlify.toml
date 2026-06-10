@@ -5,6 +5,13 @@
 [build.environment]
   NODE_VERSION = "22"
 
+# Branch deploys (ex.: staging da `develop`) não devem ser indexados pelo Google.
+# O Netlify não suporta headers por contexto direto no toml ([[headers]] é global),
+# então neste contexto copiamos um arquivo _headers só com X-Robots-Tag: noindex
+# para o diretório publicado. Produção (main) não recebe esse arquivo.
+[context.branch-deploy]
+  command = "yarn generate && cp ./netlify/_branch_headers .output/public/_headers"
+
 [[redirects]]
   from = "/*"
   to = "/index.html"
