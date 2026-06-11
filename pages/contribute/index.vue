@@ -5,25 +5,25 @@
         <PsIcon name="chevronRight" :size="15" class="flip" /> Voltar ao mapa
       </NuxtLink>
 
-      <p class="ps-eyebrow contribuir-eyebrow">Mapa colaborativo</p>
+      <p class="ps-eyebrow contribute-eyebrow">Mapa colaborativo</p>
       <h1 class="ps-h1">Sugerir um grupo novo</h1>
-      <p class="ps-lead contribuir-lead">
+      <p class="ps-lead contribute-lead">
         Conhece um pedal que ainda não está no mapa? Preencha o que souber — a sugestão passa por
         revisão antes de ir ao ar.
       </p>
 
-      <SugestaoCreateForm />
+      <SuggestionCreateForm />
 
-      <p class="ps-body contribuir-alt">
+      <p class="ps-body contribute-alt">
         Quer corrigir um grupo que já existe?
-        <NuxtLink to="/contribuir/correcao">Sugerir correção</NuxtLink>
+        <NuxtLink to="/contribute/correction">Sugerir correção</NuxtLink>
       </p>
     </div>
   </main>
 </template>
 
 <script setup lang="ts">
-import SugestaoCreateForm from '../../components/contribution/SugestaoCreateForm.vue'
+import SuggestionCreateForm from '../../components/contribution/SuggestionCreateForm.vue'
 
 useSeoMeta({
   title: 'Sugerir grupo - Pedala Sampa',
@@ -32,16 +32,16 @@ useSeoMeta({
 </script>
 
 <style scoped>
-.contribuir-eyebrow {
+.contribute-eyebrow {
   margin: var(--space-6) 0 var(--space-2);
 }
 
-.contribuir-lead {
+.contribute-lead {
   max-width: 680px;
   margin: var(--space-4) 0 var(--space-8);
 }
 
-.contribuir-alt {
+.contribute-alt {
   margin-top: var(--space-8);
   color: var(--color-asphalt-55);
 }

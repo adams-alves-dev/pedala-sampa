@@ -1,82 +1,82 @@
 <template>
   <p v-if="pending" class="ps-body" role="status">Carregando dados do grupo…</p>
 
-  <div v-else-if="!registro" class="sugestao-notfound">
+  <div v-else-if="!record" class="suggestion-notfound">
     <p class="ps-body">Não encontramos esse grupo. Ele pode ter sido removido.</p>
     <NuxtLink class="ps-btn" to="/">Voltar ao mapa</NuxtLink>
   </div>
 
   <div v-else>
-    <p class="ps-body sugestao-intro">
+    <p class="ps-body suggestion-intro">
       Os campos abaixo mostram o que está publicado para
-      <strong>{{ registro.name }}</strong>. Altere só o que precisa corrigir — enviamos para
+      <strong>{{ record.name }}</strong>. Altere só o que precisa corrigir — enviamos para
       revisão apenas o que mudou.
     </p>
 
-    <SugestaoFormBase
+    <SuggestionFormBase
       submit-label="Enviar correção"
-      justificativa-hint="Conte de onde veio a informação corrigida (ex.: sou do grupo, o ponto mudou)."
+      justification-hint="Conte de onde veio a informação corrigida (ex.: sou do grupo, o ponto mudou)."
       :build-request="buildRequest"
     >
-      <SugestaoGroupFields v-model="fields" />
-    </SugestaoFormBase>
+      <SuggestionGroupFields v-model="fields" />
+    </SuggestionFormBase>
 
-    <p class="ps-body sugestao-remocao">
+    <p class="ps-body suggestion-removal">
       O grupo não existe mais ou não quer aparecer no site?
-      <NuxtLink :to="`/contribuir/remocao/${registro.slug}`">Solicitar remoção</NuxtLink>
+      <NuxtLink :to="`/contribute/removal/${record.slug}`">Solicitar remoção</NuxtLink>
     </p>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-import { diffPayload, emptyFields, fieldsFromRegistro } from '../../lib/sugestao-form'
-import type { SugestaoRequest } from '../../types/sugestao'
-import SugestaoFormBase from './SugestaoFormBase.vue'
-import SugestaoGroupFields from './SugestaoGroupFields.vue'
+import { diffPayload, emptyFields, fieldsFromRecord } from '../../lib/suggestion-form'
+import type { SuggestionRequest } from '../../types/suggestion'
+import SuggestionFormBase from './SuggestionFormBase.vue'
+import SuggestionGroupFields from './SuggestionGroupFields.vue'
 
 const props = defineProps<{
   slug: string
 }>()
 
-const { buscarRegistro } = useSugestoes()
+const { fetchGroupRecord } = useSuggestions()
 
 // busca só no client: a página é prerenderizada como casca estática
-const { data: registro, pending } = useAsyncData(
-  `registro:${props.slug}`,
-  () => buscarRegistro(props.slug).catch(() => null),
+const { data: record, pending } = useAsyncData(
+  `record:${props.slug}`,
+  () => fetchGroupRecord(props.slug).catch(() => null),
   { server: false, default: () => null },
 )
 
 const fields = ref(emptyFields())
 watch(
-  registro,
+  record,
   (value) => {
     if (value) {
-      fields.value = fieldsFromRegistro(value)
+      fields.value = fieldsFromRecord(value)
     }
   },
   { immediate: true },
 )
 
 function buildRequest(common: {
-  justificativa: string
-  contatoEmail: string
+  justification: string
+  contactEmail: string
   turnstileToken: string
   website: string
-}): SugestaoRequest | { error: string } {
-  if (!registro.value) {
+}): SuggestionRequest | { error: string } {
+  if (!record.value) {
     return { error: 'Grupo não carregado. Recarregue a página.' }
   }
 
-  const payload = diffPayload(fields.value, registro.value)
+  const payload = diffPayload(fields.value, record.value)
   if (Object.keys(payload).length === 0) {
     return { error: 'Nenhum campo foi alterado. Mude o que precisa corrigir antes de enviar.' }
   }
 
   return {
-    tipo: 'UPDATE',
-    alvoId: registro.value.id,
+    type: 'UPDATE',
+    targetId: record.value.id,
     payload,
     ...common,
   }
@@ -84,18 +84,18 @@ function buildRequest(common: {
 </script>
 
 <style scoped>
-.sugestao-intro {
+.suggestion-intro {
   max-width: 560px;
   margin-bottom: var(--space-5);
 }
 
-.sugestao-notfound {
+.suggestion-notfound {
   display: grid;
   gap: var(--space-3);
   justify-items: start;
 }
 
-.sugestao-remocao {
+.suggestion-removal {
   max-width: 560px;
   margin-top: var(--space-6);
   color: var(--color-asphalt-55);

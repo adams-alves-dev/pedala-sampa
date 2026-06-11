@@ -2,16 +2,16 @@ export type ContributionContext = 'new-group' | 'correction' | 'removal'
 
 /**
  * Rotas internas dos fluxos de contribuição. Correção/remoção sem slug caem
- * na página de escolha de grupo (/contribuir/correcao).
+ * na página de escolha de grupo (/contribute/correction).
  */
 export function getContributionRoute(context: ContributionContext, slug?: string): string {
   if (context === 'correction') {
-    return slug ? `/contribuir/correcao/${slug}` : '/contribuir/correcao'
+    return slug ? `/contribute/correction/${slug}` : '/contribute/correction'
   }
   if (context === 'removal') {
-    return slug ? `/contribuir/remocao/${slug}` : '/contribuir/correcao'
+    return slug ? `/contribute/removal/${slug}` : '/contribute/correction'
   }
-  return '/contribuir'
+  return '/contribute'
 }
 
 export function getContributionLabel(context: ContributionContext): string {

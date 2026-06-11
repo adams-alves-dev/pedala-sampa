@@ -1,5 +1,5 @@
-import { SugestaoError, criarSugestao } from '../../lib/sugestao-service'
-import type { SugestaoRequest } from '../../types/sugestao'
+import { SuggestionError, createSuggestion } from '../../lib/suggestion-service'
+import type { SuggestionRequest } from '../../types/suggestion'
 
 type TurnstileVerifyResponse = {
   success: boolean
@@ -31,7 +31,7 @@ async function verifyTurnstile(token: string | undefined, ip: string): Promise<b
 }
 
 export default defineEventHandler(async (event) => {
-  const body = await readBody<SugestaoRequest>(event)
+  const body = await readBody<SuggestionRequest>(event)
   const ip =
     getRequestHeader(event, 'x-nf-client-connection-ip') ||
     getRequestHeader(event, 'x-forwarded-for')?.split(',')[0]?.trim() ||
@@ -60,9 +60,9 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    return await criarSugestao(body, hygraphRequest)
+    return await createSuggestion(body, hygraphRequest)
   } catch (error) {
-    if (error instanceof SugestaoError) {
+    if (error instanceof SuggestionError) {
       throw createError({
         statusCode: error.statusCode,
         message: error.message,

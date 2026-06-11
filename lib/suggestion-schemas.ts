@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { SUGESTAO_TIPOS } from '../types/sugestao'
+import { SUGGESTION_TYPES } from '../types/suggestion'
 
 /**
  * Limites geográficos generosos da Grande São Paulo — pontos de saída em
@@ -20,26 +20,26 @@ export function sanitizeText(value: string): string {
     .trim()
 }
 
-const textoCurto = (max: number) =>
+const shortText = (max: number) =>
   z.string().transform(sanitizeText).pipe(z.string().max(max, `Máximo de ${max} caracteres`))
 
-const horaSchema = z
+const hourSchema = z
   .string()
   .trim()
   .regex(/^([01]\d|2[0-3]):[0-5]\d$/, 'Horário inválido (use o formato HH:MM)')
 
 export const payloadSchema = z
   .object({
-    name: textoCurto(120).pipe(z.string().min(2, 'Nome muito curto')),
+    name: shortText(120).pipe(z.string().min(2, 'Nome muito curto')),
     linkUrl: z
       .string()
       .trim()
       .url('Link inválido (inclua https://)')
       .max(500, 'Link longo demais'),
-    address: textoCurto(200),
-    day: textoCurto(40),
-    startHour: horaSchema,
-    effort: textoCurto(40),
+    address: shortText(200),
+    day: shortText(40),
+    startHour: hourSchema,
+    effort: shortText(40),
     distanceKm: z
       .number('Distância deve ser um número')
       .positive('Distância deve ser maior que zero')
@@ -60,52 +60,52 @@ export const payloadSchema = z
   .partial()
 
 const baseSchema = z.object({
-  tipo: z.enum(SUGESTAO_TIPOS, 'Tipo de sugestão inválido'),
-  alvoId: z.string().trim().min(1).max(64).optional(),
+  type: z.enum(SUGGESTION_TYPES, 'Tipo de sugestão inválido'),
+  targetId: z.string().trim().min(1).max(64).optional(),
   payload: payloadSchema.optional(),
-  justificativa: textoCurto(1000).pipe(
+  justification: shortText(1000).pipe(
     z.string().min(10, 'Conte um pouco mais — mínimo de 10 caracteres'),
   ),
-  contatoEmail: z.union([z.literal(''), z.email('E-mail inválido').max(200)]).optional(),
+  contactEmail: z.union([z.literal(''), z.email('E-mail inválido').max(200)]).optional(),
   turnstileToken: z.string().max(4096).optional(),
   website: z.string().max(500).optional(),
 })
 
-/** Regras condicionais por tipo: alvo para UPDATE/DELETE, payload para CREATE/UPDATE. */
-export const sugestaoSchema = baseSchema.superRefine((data, ctx) => {
-  const precisaDeAlvo = data.tipo === 'UPDATE' || data.tipo === 'DELETE'
-  const precisaDePayload = data.tipo === 'CREATE' || data.tipo === 'UPDATE'
-  const camposPreenchidos = Object.values(data.payload ?? {}).filter(
+/** Conditional rules per type: target required for UPDATE/DELETE, payload for CREATE/UPDATE. */
+export const suggestionSchema = baseSchema.superRefine((data, ctx) => {
+  const needsTarget = data.type === 'UPDATE' || data.type === 'DELETE'
+  const needsPayload = data.type === 'CREATE' || data.type === 'UPDATE'
+  const filledFieldCount = Object.values(data.payload ?? {}).filter(
     (value) => value !== undefined,
   ).length
 
-  if (precisaDeAlvo && !data.alvoId) {
+  if (needsTarget && !data.targetId) {
     ctx.addIssue({
       code: 'custom',
-      path: ['alvoId'],
+      path: ['targetId'],
       message: 'Informe o grupo alvo da sugestão',
     })
   }
 
-  if (precisaDePayload && camposPreenchidos === 0) {
+  if (needsPayload && filledFieldCount === 0) {
     ctx.addIssue({
       code: 'custom',
       path: ['payload'],
       message:
-        data.tipo === 'UPDATE'
+        data.type === 'UPDATE'
           ? 'Altere ao menos um campo para sugerir uma correção'
           : 'Preencha os dados do grupo',
     })
   }
 
-  if (data.tipo === 'CREATE') {
-    for (const campo of ['name', 'latitude', 'longitude'] as const) {
-      if (data.payload?.[campo] === undefined) {
+  if (data.type === 'CREATE') {
+    for (const field of ['name', 'latitude', 'longitude'] as const) {
+      if (data.payload?.[field] === undefined) {
         ctx.addIssue({
           code: 'custom',
-          path: ['payload', campo],
+          path: ['payload', field],
           message:
-            campo === 'name'
+            field === 'name'
               ? 'Nome do grupo é obrigatório'
               : 'Ponto de saída no mapa é obrigatório',
         })
@@ -113,7 +113,7 @@ export const sugestaoSchema = baseSchema.superRefine((data, ctx) => {
     }
   }
 
-  if (data.tipo === 'DELETE' && camposPreenchidos > 0) {
+  if (data.type === 'DELETE' && filledFieldCount > 0) {
     ctx.addIssue({
       code: 'custom',
       path: ['payload'],
@@ -122,4 +122,4 @@ export const sugestaoSchema = baseSchema.superRefine((data, ctx) => {
   }
 })
 
-export type SugestaoValidada = z.infer<typeof sugestaoSchema>
+export type ValidatedSuggestion = z.infer<typeof suggestionSchema>

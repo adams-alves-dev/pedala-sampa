@@ -1,8 +1,8 @@
 import type { HygraphGroup } from '../../../types/hygraph'
-import type { RegistroAtual } from '../../../types/sugestao'
+import type { GroupRecord } from '../../../types/suggestion'
 
-const GET_REGISTRO_QUERY = /* GraphQL */ `
-  query getRegistro($slug: String!) {
+const GET_GROUP_RECORD_QUERY = /* GraphQL */ `
+  query getGroupRecord($slug: String!) {
     group(where: { slug: $slug }) {
       id
       name
@@ -38,7 +38,7 @@ function normalizeHour(value?: string | null): string | undefined {
   return cleaned || undefined
 }
 
-export default defineEventHandler(async (event): Promise<RegistroAtual> => {
+export default defineEventHandler(async (event): Promise<GroupRecord> => {
   const slug = getRouterParam(event, 'slug')
 
   if (!slug) {
@@ -47,7 +47,7 @@ export default defineEventHandler(async (event): Promise<RegistroAtual> => {
 
   let data: { group: HygraphGroup | null }
   try {
-    data = await hygraphRequest<{ group: HygraphGroup | null }>(GET_REGISTRO_QUERY, { slug })
+    data = await hygraphRequest<{ group: HygraphGroup | null }>(GET_GROUP_RECORD_QUERY, { slug })
   } catch {
     throw createError({
       statusCode: 502,

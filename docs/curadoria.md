@@ -2,30 +2,30 @@
 
 Visitantes podem **sugerir um grupo novo**, **sugerir correção** de um grupo existente ou
 **solicitar a remoção** de um grupo (ex.: o organizador não quer o pedal exposto no site).
-Nada vai ao ar direto: toda ação vira uma entry `Sugestao` em **DRAFT** no Hygraph, que você
+Nada vai ao ar direto: toda ação vira uma entry `Suggestion` em **DRAFT** no Hygraph, que você
 revisa e aplica (ou rejeita) manualmente.
 
-## 1. Criar o model `Sugestao` no Hygraph (uma vez)
+## 1. Criar o model `Suggestion` no Hygraph (uma vez)
 
-No Hygraph, em **Schema**:
+No Hygraph, em **Schema** (nomes em inglês, consistentes com o model `Group`):
 
 1. Crie as **Enumerations**:
-   - `SugestaoTipo` com os valores `CREATE`, `UPDATE`, `DELETE`
-   - `SugestaoStatus` com os valores `PENDENTE`, `APROVADA`, `REJEITADA`
-2. Crie o **Model** `Sugestao` (API ID `Sugestao`, plural `sugestoes`) com os campos:
+   - `SuggestionType` com os valores `CREATE`, `UPDATE`, `DELETE`
+   - `SuggestionStatus` com os valores `PENDING`, `APPROVED`, `REJECTED`
+2. Crie o **Model** `Suggestion` (API ID `Suggestion`, plural `suggestions`) com os campos:
 
    | Campo | Tipo no Hygraph | Config |
    |---|---|---|
-   | `tipo` | Enumeration → `SugestaoTipo` | obrigatório |
+   | `type` | Enumeration → `SuggestionType` | obrigatório |
    | `payload` | JSON Editor | dados propostos pelo usuário; vazio em DELETE |
-   | `alvo` | Reference → `Group` (one-way, to one) | preenchido em UPDATE/DELETE |
-   | `justificativa` | Single line text (ou Multi line) | obrigatório |
-   | `contatoEmail` | Single line text | opcional |
-   | `status` | Enumeration → `SugestaoStatus` | **default `PENDENTE`** |
+   | `target` | Reference → `Group` (one-way, to one) | preenchido em UPDATE/DELETE |
+   | `justification` | Single line text (ou Multi line) | obrigatório |
+   | `contactEmail` | Single line text | opcional |
+   | `status` | Enumeration → `SuggestionStatus` | **default `PENDING`** |
 
 3. Em **Project settings → Access → Permanent Auth Tokens**, crie (ou ajuste) o token usado
    pelo site com **Content API permissions mínimas**:
-   - `Sugestao`: somente **Create** (stage Draft)
+   - `Suggestion`: somente **Create** (stage Draft)
    - `Group` e `GroupInfo`: somente **Read** (stage Published)
    - Nenhuma permissão de update, delete ou publish via API.
 
@@ -33,17 +33,17 @@ No Hygraph, em **Schema**:
 
 ## 2. Fluxo de revisão
 
-As sugestões chegam como entries `Sugestao` em DRAFT, com `status = PENDENTE`:
+As sugestões chegam como entries `Suggestion` em DRAFT, com `status = PENDING`:
 
 - **CREATE aprovada** — copie os campos do `payload` para uma entry nova no model `Group`
-  (e o agendamento para `GroupInfo`), publique, e marque a sugestão como `APROVADA`.
+  (e o agendamento para `GroupInfo`), publique, e marque a sugestão como `APPROVED`.
 - **UPDATE aprovada** — o `payload` contém **apenas os campos alterados** (diff). Aplique-os
-  na entry referenciada em `alvo`, publique, e marque `APROVADA`.
-- **DELETE aprovada** — despublique (ou arquive) a entry referenciada em `alvo` e marque
-  `APROVADA`. Pedidos do próprio organizador do pedal têm prioridade — o formulário orienta a
+  na entry referenciada em `target`, publique, e marque `APPROVED`.
+- **DELETE aprovada** — despublique (ou arquive) a entry referenciada em `target` e marque
+  `APPROVED`. Pedidos do próprio organizador do pedal têm prioridade — o formulário orienta a
   pessoa a se identificar na justificativa.
-- **Recusada** — marque `REJEITADA` (se quiser registrar o motivo, anote no fim da
-  `justificativa`). Se `contatoEmail` foi preenchido, dá para avisar a pessoa.
+- **Recusada** — marque `REJECTED` (se quiser registrar o motivo, anote no fim da
+  `justification`). Se `contactEmail` foi preenchido, dá para avisar a pessoa.
 
 Campos do `payload` (chaves possíveis): `name`, `linkUrl`, `address`, `day`, `startHour`,
 `effort`, `distanceKm`, `rhythmKmH`, `latitude`, `longitude`. O site só permite sugerir um
@@ -52,12 +52,12 @@ agendamento por vez — agendas múltiplas continuam sendo editadas direto no Hy
 ## 3. Notificação (opcional, recomendado)
 
 Em **Project settings → Webhooks**, crie um webhook disparado em **Entry created** do model
-`Sugestao` apontando para um serviço de notificação (ex.: Zapier/Make → e-mail, ou um webhook
+`Suggestion` apontando para um serviço de notificação (ex.: Zapier/Make → e-mail, ou um webhook
 do Slack). Assim você fica sabendo de cada sugestão sem precisar abrir o Hygraph.
 
 ## 4. Proteções ativas no site
 
-- **Validação** (Zod) e sanitização de HTML no server route `POST /api/sugestoes`.
+- **Validação** (Zod) e sanitização de HTML no server route `POST /api/suggestions`.
 - **Honeypot** no formulário (bots que preenchem o campo escondido são ignorados em silêncio).
 - **Rate limit** por IP em memória — em serverless vale por instância da function, é uma
   barreira contra rajadas, não uma garantia global (evolução: Upstash Redis).

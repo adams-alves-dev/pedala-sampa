@@ -5,21 +5,21 @@
         <PsIcon name="chevronRight" :size="15" class="flip" /> Voltar ao grupo
       </NuxtLink>
 
-      <p class="ps-eyebrow contribuir-eyebrow">Mapa colaborativo</p>
+      <p class="ps-eyebrow contribute-eyebrow">Mapa colaborativo</p>
       <h1 class="ps-h1">Sugerir correção</h1>
-      <p class="ps-lead contribuir-lead">
+      <p class="ps-lead contribute-lead">
         Encontrou um dado desatualizado? Corrija abaixo — a sugestão passa por revisão antes de ir
         ao ar.
       </p>
 
-      <SugestaoUpdateForm :slug="slug" />
+      <SuggestionUpdateForm :slug="slug" />
     </div>
   </main>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import SugestaoUpdateForm from '../../../components/contribution/SugestaoUpdateForm.vue'
+import SuggestionUpdateForm from '../../../components/contribution/SuggestionUpdateForm.vue'
 
 const route = useRoute()
 const slug = computed(() => {
@@ -34,11 +34,11 @@ useSeoMeta({
 </script>
 
 <style scoped>
-.contribuir-eyebrow {
+.contribute-eyebrow {
   margin: var(--space-6) 0 var(--space-2);
 }
 
-.contribuir-lead {
+.contribute-lead {
   max-width: 680px;
   margin: var(--space-4) 0 var(--space-8);
 }

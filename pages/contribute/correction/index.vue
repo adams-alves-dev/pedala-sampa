@@ -5,17 +5,17 @@
         <PsIcon name="chevronRight" :size="15" class="flip" /> Voltar ao mapa
       </NuxtLink>
 
-      <p class="ps-eyebrow contribuir-eyebrow">Mapa colaborativo</p>
+      <p class="ps-eyebrow contribute-eyebrow">Mapa colaborativo</p>
       <h1 class="ps-h1">Qual grupo você quer corrigir?</h1>
-      <p class="ps-lead contribuir-lead">
+      <p class="ps-lead contribute-lead">
         Escolha o grupo abaixo para abrir o formulário de correção com os dados atuais.
       </p>
 
-      <div class="ps-field-group contribuir-busca">
-        <label class="ps-fieldlabel" for="busca-grupo">Buscar grupo</label>
+      <div class="ps-field-group contribute-search">
+        <label class="ps-fieldlabel" for="group-search">Buscar grupo</label>
         <input
-          id="busca-grupo"
-          v-model="busca"
+          id="group-search"
+          v-model="searchQuery"
           class="ps-input"
           type="search"
           placeholder="Nome do grupo"
@@ -23,16 +23,16 @@
       </div>
 
       <p v-if="pending" class="ps-body" role="status">Carregando grupos…</p>
-      <ul v-else class="contribuir-lista">
-        <li v-for="group in gruposFiltrados" :key="group.id">
-          <NuxtLink class="contribuir-item" :to="`/contribuir/correcao/${group.slug}`">
+      <ul v-else class="contribute-list">
+        <li v-for="group in filteredGroups" :key="group.id">
+          <NuxtLink class="contribute-item" :to="`/contribute/correction/${group.slug}`">
             <strong>{{ group.name }}</strong>
-            <span v-if="group.departureAddress" class="contribuir-item__addr">
+            <span v-if="group.departureAddress" class="contribute-item__addr">
               {{ group.departureAddress }}
             </span>
           </NuxtLink>
         </li>
-        <li v-if="!gruposFiltrados.length" class="ps-body">Nenhum grupo encontrado.</li>
+        <li v-if="!filteredGroups.length" class="ps-body">Nenhum grupo encontrado.</li>
       </ul>
     </div>
   </main>
@@ -42,15 +42,15 @@
 import { computed, ref } from 'vue'
 
 const { data: groups, pending } = useGroups()
-const busca = ref('')
+const searchQuery = ref('')
 
-const gruposFiltrados = computed(() => {
-  const termo = busca.value.trim().toLocaleLowerCase('pt-BR')
-  const lista = groups.value ?? []
-  if (!termo) {
-    return lista
+const filteredGroups = computed(() => {
+  const searchTerm = searchQuery.value.trim().toLocaleLowerCase('pt-BR')
+  const list = groups.value ?? []
+  if (!searchTerm) {
+    return list
   }
-  return lista.filter((group) => group.name.toLocaleLowerCase('pt-BR').includes(termo))
+  return list.filter((group) => group.name.toLocaleLowerCase('pt-BR').includes(searchTerm))
 })
 
 useSeoMeta({
@@ -60,21 +60,21 @@ useSeoMeta({
 </script>
 
 <style scoped>
-.contribuir-eyebrow {
+.contribute-eyebrow {
   margin: var(--space-6) 0 var(--space-2);
 }
 
-.contribuir-lead {
+.contribute-lead {
   max-width: 680px;
   margin: var(--space-4) 0 var(--space-6);
 }
 
-.contribuir-busca {
+.contribute-search {
   max-width: 420px;
   margin-bottom: var(--space-5);
 }
 
-.contribuir-lista {
+.contribute-list {
   display: grid;
   gap: var(--space-2);
   max-width: 560px;
@@ -83,7 +83,7 @@ useSeoMeta({
   list-style: none;
 }
 
-.contribuir-item {
+.contribute-item {
   display: grid;
   gap: 2px;
   padding: var(--space-3) var(--space-4);
@@ -92,11 +92,11 @@ useSeoMeta({
   color: var(--color-asphalt);
 }
 
-.contribuir-item:hover {
+.contribute-item:hover {
   border-color: var(--color-asphalt);
 }
 
-.contribuir-item__addr {
+.contribute-item__addr {
   font-size: var(--text-sm);
   color: var(--color-asphalt-55);
 }

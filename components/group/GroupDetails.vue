@@ -60,7 +60,7 @@
             <ContributionLink context="correction" :slug="group.slug" icon="pencil" fab />
             <p class="ps-body group-removal">
               É quem organiza o pedal e não quer o grupo no site?
-              <NuxtLink :to="`/contribuir/remocao/${group.slug}`">Solicitar remoção</NuxtLink>
+              <NuxtLink :to="`/contribute/removal/${group.slug}`">Solicitar remoção</NuxtLink>
             </p>
           </div>
         </section>

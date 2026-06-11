@@ -1,8 +1,8 @@
 <template>
-  <fieldset class="sugestao-fields">
-    <legend class="ps-label sugestao-legend">Dados do grupo</legend>
+  <fieldset class="suggestion-fields">
+    <legend class="ps-label suggestion-legend">Dados do grupo</legend>
 
-    <div class="ps-field-group sugestao-span">
+    <div class="ps-field-group suggestion-span">
       <label class="ps-fieldlabel" :for="`${uid}-name`">Nome do grupo {{ required ? '*' : '' }}</label>
       <input
         :id="`${uid}-name`"
@@ -14,7 +14,7 @@
       >
     </div>
 
-    <div class="ps-field-group sugestao-span">
+    <div class="ps-field-group suggestion-span">
       <label class="ps-fieldlabel" :for="`${uid}-link`">Link de contato (Instagram, WhatsApp…)</label>
       <input
         :id="`${uid}-link`"
@@ -26,7 +26,7 @@
       >
     </div>
 
-    <div class="ps-field-group sugestao-span">
+    <div class="ps-field-group suggestion-span">
       <label class="ps-fieldlabel" :for="`${uid}-address`">Endereço do ponto de saída</label>
       <input
         :id="`${uid}-address`"
@@ -125,7 +125,7 @@
       >
     </div>
 
-    <p :id="`${uid}-coord-hint`" class="sugestao-hint sugestao-span">
+    <p :id="`${uid}-coord-hint`" class="suggestion-hint suggestion-span">
       Para pegar as coordenadas, clique com o botão direito no ponto de saída no Google Maps e
       copie os números.
     </p>
@@ -134,7 +134,7 @@
 
 <script setup lang="ts">
 import { useId } from 'vue'
-import type { SugestaoFormFields } from '../../lib/sugestao-form'
+import type { SuggestionFormFields } from '../../lib/suggestion-form'
 
 withDefaults(
   defineProps<{
@@ -144,12 +144,12 @@ withDefaults(
   { required: false },
 )
 
-const model = defineModel<SugestaoFormFields>({ required: true })
+const model = defineModel<SuggestionFormFields>({ required: true })
 const uid = useId()
 </script>
 
 <style scoped>
-.sugestao-fields {
+.suggestion-fields {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: var(--space-4);
@@ -158,23 +158,23 @@ const uid = useId()
   border: 0;
 }
 
-.sugestao-legend {
+.suggestion-legend {
   margin-bottom: var(--space-2);
   padding: 0;
 }
 
-.sugestao-span {
+.suggestion-span {
   grid-column: 1 / -1;
 }
 
-.sugestao-hint {
+.suggestion-hint {
   margin: 0;
   font-size: var(--text-xs);
   color: var(--color-asphalt-55);
 }
 
 @media (max-width: 560px) {
-  .sugestao-fields {
+  .suggestion-fields {
     grid-template-columns: 1fr;
   }
 }

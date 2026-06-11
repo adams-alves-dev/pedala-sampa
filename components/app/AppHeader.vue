@@ -44,7 +44,7 @@
     <div v-show="menuOpen" id="app-menu" ref="menuRef" class="menu" @click="menuOpen = false">
       <NuxtLink to="/" :aria-current="route.path === '/' ? 'page' : undefined">Mapa</NuxtLink>
       <NuxtLink to="/about" :aria-current="route.path === '/about' ? 'page' : undefined">Sobre</NuxtLink>
-      <NuxtLink to="/contribuir">+ Sugerir grupo</NuxtLink>
+      <NuxtLink to="/contribute">+ Sugerir grupo</NuxtLink>
     </div>
   </header>
 </template>

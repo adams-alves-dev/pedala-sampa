@@ -2,23 +2,23 @@ import { describe, expect, it } from 'vitest'
 import { getContributionLabel, getContributionRoute } from '../../lib/contribution'
 
 describe('contribution routes', () => {
-  it('aponta sugestão de grupo novo para /contribuir', () => {
-    expect(getContributionRoute('new-group')).toBe('/contribuir')
+  it('aponta sugestão de grupo novo para /contribute', () => {
+    expect(getContributionRoute('new-group')).toBe('/contribute')
   })
 
   it('aponta correção com slug para o form do grupo', () => {
     expect(getContributionRoute('correction', 'pedal-noturno')).toBe(
-      '/contribuir/correcao/pedal-noturno',
+      '/contribute/correction/pedal-noturno',
     )
   })
 
   it('aponta correção sem slug para a escolha de grupo', () => {
-    expect(getContributionRoute('correction')).toBe('/contribuir/correcao')
+    expect(getContributionRoute('correction')).toBe('/contribute/correction')
   })
 
   it('aponta remoção com slug para o form de remoção', () => {
     expect(getContributionRoute('removal', 'pedal-noturno')).toBe(
-      '/contribuir/remocao/pedal-noturno',
+      '/contribute/removal/pedal-noturno',
     )
   })
 

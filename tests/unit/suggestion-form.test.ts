@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest'
-import { diffPayload, emptyFields, fieldsFromRegistro, payloadFromFields } from '../../lib/sugestao-form'
-import type { RegistroAtual } from '../../types/sugestao'
+import { diffPayload, emptyFields, fieldsFromRecord, payloadFromFields } from '../../lib/suggestion-form'
+import type { GroupRecord } from '../../types/suggestion'
 
-const registro: RegistroAtual = {
+const record: GroupRecord = {
   id: 'grp-1',
   slug: 'pedal-da-se',
   name: 'Pedal da Sé',
@@ -26,32 +26,32 @@ describe('payloadFromFields', () => {
 
 describe('diffPayload', () => {
   it('retorna vazio quando nada mudou', () => {
-    expect(diffPayload(fieldsFromRegistro(registro), registro)).toEqual({})
+    expect(diffPayload(fieldsFromRecord(record), record)).toEqual({})
   })
 
   it('contém apenas os campos alterados', () => {
-    const fields = fieldsFromRegistro(registro)
+    const fields = fieldsFromRecord(record)
     fields.address = 'Praça da Sé, 100'
     fields.startHour = '06:30'
 
-    expect(diffPayload(fields, registro)).toEqual({
+    expect(diffPayload(fields, record)).toEqual({
       address: 'Praça da Sé, 100',
       startHour: '06:30',
     })
   })
 
   it('trata campo esvaziado como "sem alteração"', () => {
-    const fields = fieldsFromRegistro(registro)
+    const fields = fieldsFromRecord(record)
     fields.linkUrl = ''
 
-    expect(diffPayload(fields, registro)).toEqual({})
+    expect(diffPayload(fields, record)).toEqual({})
   })
 
   it('detecta mudança numérica sem falso positivo de formatação', () => {
-    const fields = fieldsFromRegistro(registro)
+    const fields = fieldsFromRecord(record)
     fields.distanceKm = '25,0'
     fields.rhythmKmH = '20'
 
-    expect(diffPayload(fields, registro)).toEqual({ rhythmKmH: 20 })
+    expect(diffPayload(fields, record)).toEqual({ rhythmKmH: 20 })
   })
 })
