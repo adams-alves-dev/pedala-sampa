@@ -18,7 +18,7 @@ No Hygraph, em **Schema** (nomes em inglês, consistentes com o model `Group`):
    |---|---|---|
    | `type` | Enumeration → `SuggestionType` | obrigatório |
    | `payload` | JSON Editor | dados propostos pelo usuário; vazio em DELETE |
-   | `target` | Reference → `Group` (one-way, to one) | preenchido em UPDATE/DELETE |
+   | `group` | Reference → `Group` (one-way, to one) | preenchido em UPDATE/DELETE |
    | `justification` | Single line text (ou Multi line) | obrigatório |
    | `contactEmail` | Single line text | opcional |
    | `reviewStatus` | Enumeration → `SuggestionStatus` | **default `PENDING`** (`status` é palavra reservada no Hygraph) |
@@ -38,8 +38,8 @@ As sugestões chegam como entries `Suggestion` em DRAFT, com `reviewStatus = PEN
 - **CREATE aprovada** — copie os campos do `payload` para uma entry nova no model `Group`
   (e o agendamento para `GroupInfo`), publique, e marque a sugestão como `APPROVED`.
 - **UPDATE aprovada** — o `payload` contém **apenas os campos alterados** (diff). Aplique-os
-  na entry referenciada em `target`, publique, e marque `APPROVED`.
-- **DELETE aprovada** — despublique (ou arquive) a entry referenciada em `target` e marque
+  na entry referenciada em `group`, publique, e marque `APPROVED`.
+- **DELETE aprovada** — despublique (ou arquive) a entry referenciada em `group` e marque
   `APPROVED`. Pedidos do próprio organizador do pedal têm prioridade — o formulário orienta a
   pessoa a se identificar na justificativa.
 - **Recusada** — marque `REJECTED` (se quiser registrar o motivo, anote no fim da

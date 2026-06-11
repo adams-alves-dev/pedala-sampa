@@ -40,9 +40,10 @@ const CREATE_SUGGESTION_MUTATION = /* GraphQL */ `
       data: {
         type: $type
         payload: $payload
-        target: { connect: $target }
+        group: { connect: $target }
         justification: $justification
         contactEmail: $contactEmail
+        reviewStatus: PENDING
       }
     ) {
       id
@@ -63,6 +64,7 @@ const CREATE_SUGGESTION_WITHOUT_TARGET_MUTATION = /* GraphQL */ `
         payload: $payload
         justification: $justification
         contactEmail: $contactEmail
+        reviewStatus: PENDING
       }
     ) {
       id
