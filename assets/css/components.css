@@ -61,7 +61,7 @@
   font-variant-numeric: tabular-nums;
 }
 
-/* ---------- App header (asphalt bar, angular cut corner) ---------- */
+/* ---------- App header (asphalt bar) ---------- */
 .ps-header {
   display: flex;
   align-items: center;
@@ -71,7 +71,6 @@
   padding: 0 var(--space-6);
   background: var(--header-bg);
   color: var(--header-fg);
-  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 32px) 100%, 0 100%);
 }
 .ps-brand {
   display: inline-flex;

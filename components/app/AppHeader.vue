@@ -189,7 +189,6 @@ onBeforeUnmount(() => document.removeEventListener('click', onDocumentClick))
 @media (max-width: 760px) {
   .ps-header {
     padding: 0 var(--space-4);
-    clip-path: none;
   }
 
   .nav-desktop,
