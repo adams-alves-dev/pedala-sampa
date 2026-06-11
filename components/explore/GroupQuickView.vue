@@ -36,7 +36,7 @@
             <PsIcon name="chat" :size="15" /> {{ group.link.label || 'Contato' }} <PsIcon name="arrowUR" :size="14" />
           </a>
           <span v-else class="ps-btn ps-btn--sm ps-btn--ghost qv__nolink">Sem link</span>
-          <ContributionLink :href="contributionFormUrl" context="correction" icon="pencil" />
+          <ContributionLink context="correction" :slug="group.slug" icon="pencil" />
         </div>
       </div>
     </div>
@@ -52,7 +52,6 @@ import GroupMetaBadges from '../group/GroupMetaBadges.vue'
 
 const props = defineProps<{
   group: Group | null
-  contributionFormUrl?: string
 }>()
 
 defineEmits<{

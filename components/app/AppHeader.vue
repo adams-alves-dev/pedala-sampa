@@ -25,12 +25,7 @@
         </ClientOnly>
       </button>
 
-      <ContributionLink
-        class="desktop-cta"
-        :href="contributionFormUrl"
-        context="new-group"
-        icon="plus"
-      />
+      <ContributionLink class="desktop-cta" context="new-group" icon="plus" />
 
       <button
         ref="burgerRef"
@@ -49,23 +44,13 @@
     <div v-show="menuOpen" id="app-menu" ref="menuRef" class="menu" @click="menuOpen = false">
       <NuxtLink to="/" :aria-current="route.path === '/' ? 'page' : undefined">Mapa</NuxtLink>
       <NuxtLink to="/about" :aria-current="route.path === '/about' ? 'page' : undefined">Sobre</NuxtLink>
-      <a
-        v-if="contributionFormUrl"
-        :href="contributionFormUrl"
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label="Sugerir grupo (abre em nova aba)"
-      >+ Sugerir grupo</a>
+      <NuxtLink to="/contribuir">+ Sugerir grupo</NuxtLink>
     </div>
   </header>
 </template>
 
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
-
-defineProps<{
-  contributionFormUrl?: string
-}>()
 
 const route = useRoute()
 const colorMode = useColorMode()

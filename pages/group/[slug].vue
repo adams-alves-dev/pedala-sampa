@@ -16,7 +16,7 @@
         </p>
       </template>
 
-      <GroupDetails v-else :group="group" :contribution-form-url="contributionFormUrl" />
+      <GroupDetails v-else :group="group" />
     </div>
   </main>
 </template>
@@ -26,8 +26,6 @@ import GroupDetails from '../../components/group/GroupDetails.vue'
 import { useGroup } from '../../composables/useGroup'
 
 const route = useRoute()
-const config = useRuntimeConfig()
-const contributionFormUrl = config.public.contributionFormUrl
 const slug = String(route.params.slug)
 const { data: group, pending, error } = await useGroup(slug)
 

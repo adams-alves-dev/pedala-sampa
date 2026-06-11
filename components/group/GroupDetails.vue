@@ -57,7 +57,11 @@
               <PsIcon name="arrowUR" :size="15" />
             </a>
             <p v-else class="ps-body group-muted">Este grupo ainda não tem link de contato cadastrado.</p>
-            <ContributionLink :href="contributionFormUrl" context="correction" icon="pencil" fab />
+            <ContributionLink context="correction" :slug="group.slug" icon="pencil" fab />
+            <p class="ps-body group-removal">
+              É quem organiza o pedal e não quer o grupo no site?
+              <NuxtLink :to="`/contribuir/remocao/${group.slug}`">Solicitar remoção</NuxtLink>
+            </p>
           </div>
         </section>
       </div>
@@ -86,7 +90,6 @@ import GroupMetaBadges from './GroupMetaBadges.vue'
 
 const props = defineProps<{
   group: Group
-  contributionFormUrl?: string
 }>()
 
 const primarySchedule = computed(() => props.group.schedules[0])
@@ -116,6 +119,17 @@ const duration = computed(() =>
 .group-muted {
   margin: 0;
   color: var(--color-asphalt-55);
+}
+
+.group-removal {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--color-asphalt-55);
+}
+
+.group-removal a {
+  color: inherit;
+  font-weight: 800;
 }
 
 .group-addr {

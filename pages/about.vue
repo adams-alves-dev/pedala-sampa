@@ -22,8 +22,8 @@
       </div>
 
       <div class="about-cta">
-        <ContributionLink :href="contributionFormUrl" context="new-group" icon="plus" />
-        <ContributionLink :href="contributionFormUrl" context="correction" icon="pencil" variant="ghost" />
+        <ContributionLink context="new-group" icon="plus" />
+        <ContributionLink context="correction" icon="pencil" variant="ghost" />
       </div>
     </div>
   </main>
@@ -32,9 +32,6 @@
 <script setup lang="ts">
 import ContributionLink from '../components/contribution/ContributionLink.vue'
 import type { IconName } from '../lib/icons'
-
-const config = useRuntimeConfig()
-const contributionFormUrl = config.public.contributionFormUrl
 
 const cards: Array<{ num: string; icon: IconName; title: string; text: string }> = [
   {

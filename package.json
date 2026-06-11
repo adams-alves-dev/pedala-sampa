@@ -18,7 +18,8 @@
     "graphql-request": "latest",
     "leaflet": "latest",
     "nuxt": "^3.19.3",
-    "vue": "latest"
+    "vue": "latest",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@nuxt/eslint": "^1.15.2",

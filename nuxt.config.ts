@@ -38,15 +38,23 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     hygraphToken: process.env.GRAPHQL_TOKEN || '',
+    turnstileSecretKey: process.env.TURNSTILE_SECRET_KEY || '',
+    turnstileEnabled: process.env.TURNSTILE_ENABLED === 'true',
     public: {
       hygraphEndpoint:
         process.env.HYGRAPH_ENDPOINT ||
         'https://api-us-east-1.graphcms.com/v2/cktlzsv381lsy01z0109u52uf/master',
-      contributionFormUrl: process.env.NUXT_PUBLIC_CONTRIBUTION_FORM_URL || '',
+      turnstileSiteKey: process.env.NUXT_PUBLIC_TURNSTILE_SITE_KEY || '',
     },
   },
+  // preset netlify: páginas continuam estáticas (prerender com crawl), mas as
+  // server routes em server/api/ viram Netlify Functions no deploy
   nitro: {
-    preset: 'static',
+    preset: 'netlify',
+    prerender: {
+      crawlLinks: true,
+      routes: ['/'],
+    },
   },
   typescript: {
     strict: true,
