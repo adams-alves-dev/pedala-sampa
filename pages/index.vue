@@ -118,7 +118,10 @@ useSeoMeta({
   height: calc(100vh - var(--header-height));
   /* clip (não hidden): hidden mantém o container rolável programaticamente,
      então focar algo do sheet abaixo da dobra (tap/teclado) rolava o .home e
-     empurrava a toolbar para fora da tela, sem como o usuário rolar de volta */
+     empurrava a toolbar para fora da tela, sem como o usuário rolar de volta.
+     clip exige Safari 16+ — o hidden logo acima é o fallback de cascade para
+     browsers antigos (não remover achando redundante) */
+  overflow: hidden;
   overflow: clip;
 }
 
