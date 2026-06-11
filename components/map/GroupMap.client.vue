@@ -33,8 +33,9 @@
 </template>
 
 <script setup lang="ts">
-import type { FitBoundsOptions, LatLngTuple, LeafletMouseEvent, Map as LeafletMap, PointTuple } from 'leaflet'
-import { watch } from 'vue'
+import type { LatLngTuple, LeafletMouseEvent, Map as LeafletMap, PointTuple } from 'leaflet'
+import { onBeforeUnmount, watch } from 'vue'
+import { FLY_ZOOM, SHEET_OVERLAP, buildFitOptions, groupsToPoints } from '../../lib/map-bounds'
 import { prefersReducedMotion } from '../../lib/motion'
 import type { Group } from '../../types/group'
 import MapTileLayer from './MapTileLayer.vue'
@@ -50,7 +51,7 @@ const emit = defineEmits<{
 }>()
 
 // aligns with the prototype (PS.CENTER / PS.ZOOM)
-const CENTER: PointTuple = [-23.576, -46.655]
+const CENTER: LatLngTuple = [-23.576, -46.655]
 const ZOOM = 12
 
 const defaultSize: PointTuple = [28, 28]
@@ -58,28 +59,42 @@ const defaultAnchor: PointTuple = [14, 26]
 const selectedSize: PointTuple = [36, 36]
 const selectedAnchor: PointTuple = [18, 34]
 
-const FLY_ZOOM = 14
+// debounce so typing in the search box doesn't fire one refit per keystroke
+const FIT_DEBOUNCE_MS = 300
 
 let mapInstance: LeafletMap | null = null
+let fitTimer: ReturnType<typeof setTimeout> | null = null
+// a filter change can land before the map is ready — remember it for onMapReady
+let pendingFit = false
 
 // mobile: the bottom sheet covers the lower half, so a centred pin lands behind
 // it — shift the map centre down so the pin sits in the visible upper area.
 const isMobileViewport = () =>
   typeof window !== 'undefined' && window.matchMedia('(max-width: 760px)').matches
 
-function flyTarget(map: LeafletMap, latlng: PointTuple): PointTuple {
+// half the sheet overlap puts the pin at the same height as a fitted single pin
+function flyTarget(map: LeafletMap, latlng: LatLngTuple): LatLngTuple {
   if (!isMobileViewport()) {
     return latlng
   }
   const point = map.project(latlng, FLY_ZOOM)
-  const center = map.unproject([point.x, point.y + map.getSize().y * 0.25], FLY_ZOOM)
+  const center = map.unproject(
+    [point.x, point.y + map.getSize().y * (SHEET_OVERLAP / 2)],
+    FLY_ZOOM,
+  )
   return [center.lat, center.lng]
 }
 
 function onMapReady(map: LeafletMap) {
   mapInstance = map
   // the map often mounts before its container has its final size
-  setTimeout(() => map.invalidateSize(), 60)
+  setTimeout(() => {
+    map.invalidateSize()
+    if (pendingFit) {
+      pendingFit = false
+      fitToGroups(map)
+    }
+  }, 60)
 }
 
 function onMarkerClick(slug: string, event: LeafletMouseEvent) {
@@ -90,19 +105,11 @@ function onMarkerClick(slug: string, event: LeafletMouseEvent) {
 
 // refit the map around the remaining pins whenever the filters change the list
 function fitToGroups(map: LeafletMap) {
-  const points: LatLngTuple[] = props.groups.map((group) => [
-    group.departureLocation.latitude,
-    group.departureLocation.longitude,
-  ])
+  const points = groupsToPoints(props.groups)
   if (!points.length) {
     return
   }
-  const options: FitBoundsOptions = {
-    paddingTopLeft: [48, 48],
-    // on mobile the bottom sheet covers the lower area, so pad it out of the fit
-    paddingBottomRight: [48, isMobileViewport() ? map.getSize().y * 0.4 : 48],
-    maxZoom: FLY_ZOOM,
-  }
+  const options = buildFitOptions(map.getSize().y, isMobileViewport())
   if (prefersReducedMotion()) {
     map.fitBounds(points, options)
   } else {
@@ -110,11 +117,39 @@ function fitToGroups(map: LeafletMap) {
   }
 }
 
-watch(
-  () => props.groups.map((group) => group.slug).join(','),
-  () => {
+function scheduleFit() {
+  if (fitTimer) {
+    clearTimeout(fitTimer)
+  }
+  fitTimer = setTimeout(() => {
+    fitTimer = null
     if (mapInstance) {
       fitToGroups(mapInstance)
+    } else {
+      pendingFit = true
+    }
+  }, FIT_DEBOUNCE_MS)
+}
+
+onBeforeUnmount(() => {
+  if (fitTimer) {
+    clearTimeout(fitTimer)
+  }
+})
+
+function sameGroupSet(next: Group[], prev: Group[]): boolean {
+  if (next.length !== prev.length) {
+    return false
+  }
+  const prevSlugs = new Set(prev.map((group) => group.slug))
+  return next.every((group) => prevSlugs.has(group.slug))
+}
+
+watch(
+  () => props.groups,
+  (next, prev) => {
+    if (!sameGroupSet(next, prev)) {
+      scheduleFit()
     }
   },
 )
@@ -130,7 +165,7 @@ watch(
     if (!group) {
       return
     }
-    const latlng: PointTuple = [group.departureLocation.latitude, group.departureLocation.longitude]
+    const latlng: LatLngTuple = [group.departureLocation.latitude, group.departureLocation.longitude]
     const target = flyTarget(mapInstance, latlng)
     if (prefersReducedMotion()) {
       mapInstance.setView(target, FLY_ZOOM)
