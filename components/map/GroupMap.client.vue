@@ -33,7 +33,7 @@
 </template>
 
 <script setup lang="ts">
-import type { LeafletMouseEvent, Map as LeafletMap, PointTuple } from 'leaflet'
+import type { FitBoundsOptions, LatLngTuple, LeafletMouseEvent, Map as LeafletMap, PointTuple } from 'leaflet'
 import { watch } from 'vue'
 import { prefersReducedMotion } from '../../lib/motion'
 import type { Group } from '../../types/group'
@@ -87,6 +87,37 @@ function onMarkerClick(slug: string, event: LeafletMouseEvent) {
   event.originalEvent.stopPropagation()
   emit('select', slug)
 }
+
+// refit the map around the remaining pins whenever the filters change the list
+function fitToGroups(map: LeafletMap) {
+  const points: LatLngTuple[] = props.groups.map((group) => [
+    group.departureLocation.latitude,
+    group.departureLocation.longitude,
+  ])
+  if (!points.length) {
+    return
+  }
+  const options: FitBoundsOptions = {
+    paddingTopLeft: [48, 48],
+    // on mobile the bottom sheet covers the lower area, so pad it out of the fit
+    paddingBottomRight: [48, isMobileViewport() ? map.getSize().y * 0.4 : 48],
+    maxZoom: FLY_ZOOM,
+  }
+  if (prefersReducedMotion()) {
+    map.fitBounds(points, options)
+  } else {
+    map.flyToBounds(points, { ...options, duration: 0.6 })
+  }
+}
+
+watch(
+  () => props.groups.map((group) => group.slug).join(','),
+  () => {
+    if (mapInstance) {
+      fitToGroups(mapInstance)
+    }
+  },
+)
 
 // fly to the selected group whenever the selection changes (card or pin)
 watch(
