@@ -21,7 +21,7 @@ No Hygraph, em **Schema** (nomes em inglês, consistentes com o model `Group`):
    | `target` | Reference → `Group` (one-way, to one) | preenchido em UPDATE/DELETE |
    | `justification` | Single line text (ou Multi line) | obrigatório |
    | `contactEmail` | Single line text | opcional |
-   | `status` | Enumeration → `SuggestionStatus` | **default `PENDING`** |
+   | `reviewStatus` | Enumeration → `SuggestionStatus` | **default `PENDING`** (`status` é palavra reservada no Hygraph) |
 
 3. Em **Project settings → Access → Permanent Auth Tokens**, crie (ou ajuste) o token usado
    pelo site com **Content API permissions mínimas**:
@@ -33,7 +33,7 @@ No Hygraph, em **Schema** (nomes em inglês, consistentes com o model `Group`):
 
 ## 2. Fluxo de revisão
 
-As sugestões chegam como entries `Suggestion` em DRAFT, com `status = PENDING`:
+As sugestões chegam como entries `Suggestion` em DRAFT, com `reviewStatus = PENDING`:
 
 - **CREATE aprovada** — copie os campos do `payload` para uma entry nova no model `Group`
   (e o agendamento para `GroupInfo`), publique, e marque a sugestão como `APPROVED`.
