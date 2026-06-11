@@ -116,7 +116,10 @@ useSeoMeta({
 .home {
   position: relative;
   height: calc(100vh - var(--header-height));
-  overflow: hidden;
+  /* clip (não hidden): hidden mantém o container rolável programaticamente,
+     então focar algo do sheet abaixo da dobra (tap/teclado) rolava o .home e
+     empurrava a toolbar para fora da tela, sem como o usuário rolar de volta */
+  overflow: clip;
 }
 
 .home__map {
