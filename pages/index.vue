@@ -63,7 +63,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import EmptyState from '../components/explore/EmptyState.vue'
 import FiltersDrawer from '../components/explore/FiltersDrawer.vue'
 import GroupMap from '../components/map/GroupMap.client.vue'
@@ -87,6 +87,17 @@ const { selectedGroupSlug, selectedGroup, selectGroup, clearSelectedGroup } = us
 
 const drawerOpen = ref(false)
 
+// a filter change can remove the selected group from the map/carousel — close
+// the quick view instead of leaving it pointing at a group that is not visible
+watch(filteredGroups, (visibleGroups) => {
+  if (
+    selectedGroupSlug.value &&
+    !visibleGroups.some((group) => group.slug === selectedGroupSlug.value)
+  ) {
+    clearSelectedGroup()
+  }
+})
+
 const days = computed(() => [
   ...new Set(groups.value.flatMap((group) => group.schedules.map((schedule) => schedule.day))),
 ])
@@ -105,7 +116,13 @@ useSeoMeta({
 .home {
   position: relative;
   height: calc(100vh - var(--header-height));
+  /* clip (não hidden): hidden mantém o container rolável programaticamente,
+     então focar algo do sheet abaixo da dobra (tap/teclado) rolava o .home e
+     empurrava a toolbar para fora da tela, sem como o usuário rolar de volta.
+     clip exige Safari 16+ — o hidden logo acima é o fallback de cascade para
+     browsers antigos (não remover achando redundante) */
   overflow: hidden;
+  overflow: clip;
 }
 
 .home__map {

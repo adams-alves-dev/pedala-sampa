@@ -37,7 +37,7 @@
       </div>
     </div>
 
-    <div ref="bodyRef" class="sheet__body">
+    <div ref="bodyRef" class="sheet__body" @focusin="onBodyFocusin">
       <template v-if="groups.length">
         <GroupCard
           v-for="group in groups"
@@ -107,6 +107,15 @@ let moved = false
 function cycleSnap() {
   const index = SNAPS.indexOf(snap.value)
   snap.value = index >= SNAPS.length - 1 ? 'peek' : SNAPS[index + 1]
+}
+
+// keyboard/screen-reader focus entering the list raises the sheet: the .home
+// container is overflow: clip (won't scroll), so at peek a focused card would
+// stay invisible below the fold — the body's own scroll then reveals the card
+function onBodyFocusin() {
+  if (snap.value === 'peek') {
+    snap.value = 'half'
+  }
 }
 
 function onGrabKeydown(event: KeyboardEvent) {
