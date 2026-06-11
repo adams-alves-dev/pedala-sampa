@@ -63,7 +63,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import EmptyState from '../components/explore/EmptyState.vue'
 import FiltersDrawer from '../components/explore/FiltersDrawer.vue'
 import GroupMap from '../components/map/GroupMap.client.vue'
@@ -86,6 +86,17 @@ const { filters, filteredGroups, activeCount, setQuery, toggleFilter, clearFilte
 const { selectedGroupSlug, selectedGroup, selectGroup, clearSelectedGroup } = useSelectedGroup(groups)
 
 const drawerOpen = ref(false)
+
+// a filter change can remove the selected group from the map/carousel — close
+// the quick view instead of leaving it pointing at a group that is not visible
+watch(filteredGroups, (visibleGroups) => {
+  if (
+    selectedGroupSlug.value &&
+    !visibleGroups.some((group) => group.slug === selectedGroupSlug.value)
+  ) {
+    clearSelectedGroup()
+  }
+})
 
 const days = computed(() => [
   ...new Set(groups.value.flatMap((group) => group.schedules.map((schedule) => schedule.day))),
