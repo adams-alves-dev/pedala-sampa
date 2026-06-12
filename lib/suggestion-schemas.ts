@@ -27,6 +27,8 @@ export const payloadSchema = z
       .string()
       .trim()
       .url('Link inválido (inclua https://)')
+      // o .url() do Zod aceita qualquer scheme (javascript:, data:) — só http(s) faz sentido aqui
+      .regex(/^https?:\/\//i, 'Use um link http(s)')
       .max(500, 'Link longo demais'),
     address: shortText(200),
     day: shortText(40),
