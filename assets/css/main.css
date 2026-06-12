@@ -111,6 +111,8 @@
 [data-theme='dark'] .ps-cta { color: #1A120B; }
 /* mesmo caso do .ps-cta: fundo amarelo pede tinta escura mesmo no noturno (ghost não tem fundo) */
 [data-theme='dark'] .contribution-link:not(.contribution-link--ghost) { color: #1A120B; }
+/* pin selecionado também é fundo amarelo: número/ícone e borda em tinta escura */
+[data-theme='dark'] .ps-pin--selected { color: #1A120B; border-color: #1A120B; }
 [data-theme='dark'] .leaflet-control-attribution { background: rgba(20, 19, 14, 0.8); color: #9c978b; }
 [data-theme='dark'] .leaflet-control-attribution a { color: #b9b3a6; }
 
