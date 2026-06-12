@@ -22,11 +22,11 @@
               <div class="ps-label">Ponto de saída</div>
               <div class="v v--addr">{{ departure }}</div>
             </div>
-            <div class="meta-cell">
+            <div v-if="primarySchedule.distanceKm > 0" class="meta-cell">
               <div class="ps-label">Distância</div>
               <div class="v">{{ primarySchedule.distanceKm }} km</div>
             </div>
-            <div class="meta-cell">
+            <div v-if="primarySchedule.rhythmKmH > 0" class="meta-cell">
               <div class="ps-label">Ritmo médio</div>
               <div class="v">{{ primarySchedule.rhythmKmH }} km/h</div>
             </div>
@@ -34,7 +34,7 @@
               <div class="ps-label">Nível</div>
               <div class="v">{{ primarySchedule.effort }}</div>
             </div>
-            <div class="meta-cell">
+            <div v-if="duration" class="meta-cell">
               <div class="ps-label">Volta média</div>
               <div class="v">{{ duration }}</div>
             </div>
@@ -102,7 +102,7 @@ const duration = computed(() =>
         distanceKm: primarySchedule.value.distanceKm,
         rhythmKmH: primarySchedule.value.rhythmKmH,
       })
-    : '—',
+    : null,
 )
 </script>
 

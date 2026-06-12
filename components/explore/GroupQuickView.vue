@@ -18,7 +18,7 @@
           <PsIcon name="pin" :size="15" /> {{ group.departureAddress || 'Ponto de saída no mapa' }}
         </p>
         <GroupMetaBadges v-if="primarySchedule" :schedule="primarySchedule" />
-        <p v-if="primarySchedule" class="qv__dur">
+        <p v-if="duration" class="qv__dur">
           <PsIcon name="compass" :size="16" /> Tempo médio da volta: <strong>{{ duration }}</strong>
         </p>
         <div class="qv__actions">
@@ -77,7 +77,7 @@ const duration = computed(() =>
         distanceKm: primarySchedule.value.distanceKm,
         rhythmKmH: primarySchedule.value.rhythmKmH,
       })
-    : '',
+    : null,
 )
 </script>
 
