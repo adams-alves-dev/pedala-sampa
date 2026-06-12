@@ -65,6 +65,14 @@ export default defineEventHandler(async (event): Promise<GroupRecord> => {
 
   const info = group.groupInfos?.[0]
 
+  // cache curto no CDN: o form de correção não precisa de dado fresquíssimo
+  // e cada miss custa uma chamada autenticada ao Hygraph
+  setResponseHeader(
+    event,
+    'Cache-Control',
+    'public, max-age=60, s-maxage=300, stale-while-revalidate=600',
+  )
+
   return {
     id: group.id,
     slug: group.slug || group.id,

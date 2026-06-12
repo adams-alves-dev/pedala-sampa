@@ -14,8 +14,11 @@ export type SuggestionFormFields = {
   longitude: string
 }
 
-const NUMERIC_FIELDS = ['distanceKm', 'rhythmKmH', 'latitude', 'longitude'] as const
-const TEXT_FIELDS = ['name', 'linkUrl', 'address', 'day', 'startHour', 'effort'] as const
+type NumericField = 'distanceKm' | 'rhythmKmH' | 'latitude' | 'longitude'
+type TextField = 'name' | 'linkUrl' | 'address' | 'day' | 'startHour' | 'effort'
+
+const NUMERIC_FIELDS: ReadonlyArray<NumericField> = ['distanceKm', 'rhythmKmH', 'latitude', 'longitude']
+const TEXT_FIELDS: ReadonlyArray<TextField> = ['name', 'linkUrl', 'address', 'day', 'startHour', 'effort']
 
 export function emptyFields(): SuggestionFormFields {
   return {

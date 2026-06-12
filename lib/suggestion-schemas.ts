@@ -10,7 +10,7 @@ export const SP_BOUNDS = {
   latMax: -23.2,
   lngMin: -47.2,
   lngMax: -46.0,
-} as const
+}
 
 /** Remove tags HTML e normaliza espaços — sugestões são texto puro. */
 export function sanitizeText(value: string): string {
@@ -71,6 +71,12 @@ const baseSchema = z.object({
   website: z.string().max(500).optional(),
 })
 
+const REQUIRED_CREATE_FIELDS: ReadonlyArray<'name' | 'latitude' | 'longitude'> = [
+  'name',
+  'latitude',
+  'longitude',
+]
+
 /** Conditional rules per type: target required for UPDATE/DELETE, payload for CREATE/UPDATE. */
 export const suggestionSchema = baseSchema.superRefine((data, ctx) => {
   const needsTarget = data.type === 'UPDATE' || data.type === 'DELETE'
@@ -99,7 +105,7 @@ export const suggestionSchema = baseSchema.superRefine((data, ctx) => {
   }
 
   if (data.type === 'CREATE') {
-    for (const field of ['name', 'latitude', 'longitude'] as const) {
+    for (const field of REQUIRED_CREATE_FIELDS) {
       if (data.payload?.[field] === undefined) {
         ctx.addIssue({
           code: 'custom',

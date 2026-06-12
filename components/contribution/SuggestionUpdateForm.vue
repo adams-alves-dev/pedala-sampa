@@ -1,6 +1,11 @@
 <template>
   <p v-if="pending" class="ps-body" role="status">Carregando dados do grupo…</p>
 
+  <div v-else-if="loadFailed" class="suggestion-notfound">
+    <p class="ps-body">Não foi possível carregar o grupo agora. Tente novamente em instantes.</p>
+    <button class="ps-btn" type="button" @click="refresh()">Tentar de novo</button>
+  </div>
+
   <div v-else-if="!record" class="suggestion-notfound">
     <p class="ps-body">Não encontramos esse grupo. Ele pode ter sido removido.</p>
     <NuxtLink class="ps-btn" to="/">Voltar ao mapa</NuxtLink>
@@ -29,7 +34,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { diffPayload, emptyFields, fieldsFromRecord } from '../../lib/suggestion-form'
 import type { SuggestionRequest } from '../../types/suggestion'
 import SuggestionFormBase from './SuggestionFormBase.vue'
@@ -42,11 +47,14 @@ const props = defineProps<{
 const { fetchGroupRecord } = useSuggestions()
 
 // busca só no client: a página é prerenderizada como casca estática
-const { data: record, pending } = useAsyncData(
+const { data: record, pending, error, refresh } = useAsyncData(
   `record:${props.slug}`,
-  () => fetchGroupRecord(props.slug).catch(() => null),
+  () => fetchGroupRecord(props.slug),
   { server: false, default: () => null },
 )
+
+// 404 cai no estado "não encontramos"; qualquer outra falha pede nova tentativa
+const loadFailed = computed(() => Boolean(error.value) && error.value?.statusCode !== 404)
 
 const fields = ref(emptyFields())
 watch(

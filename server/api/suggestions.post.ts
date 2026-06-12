@@ -5,27 +5,47 @@ type TurnstileVerifyResponse = {
   success: boolean
 }
 
+/** Mesmo limite do schema Zod — o token é checado aqui antes do parse do corpo. */
+const TURNSTILE_TOKEN_MAX_LENGTH = 4096
+
+let warnedMissingSiteKey = false
+
 async function verifyTurnstile(token: string | undefined, ip: string): Promise<boolean> {
   const config = useRuntimeConfig()
 
   if (!config.turnstileEnabled) {
     return true
   }
-  if (!token) {
+  if (!config.public.turnstileSiteKey && !warnedMissingSiteKey) {
+    warnedMissingSiteKey = true
+    console.warn(
+      '[suggestions] TURNSTILE_ENABLED=true sem NUXT_PUBLIC_TURNSTILE_SITE_KEY: o widget não renderiza no client e todo envio real falha com 400',
+    )
+  }
+  if (!token || token.length > TURNSTILE_TOKEN_MAX_LENGTH) {
     return false
   }
 
-  const result = await $fetch<TurnstileVerifyResponse>(
-    'https://challenges.cloudflare.com/turnstile/v0/siteverify',
-    {
-      method: 'POST',
-      body: {
-        secret: config.turnstileSecretKey,
-        response: token,
-        remoteip: ip,
+  let result: TurnstileVerifyResponse
+  try {
+    result = await $fetch<TurnstileVerifyResponse>(
+      'https://challenges.cloudflare.com/turnstile/v0/siteverify',
+      {
+        method: 'POST',
+        body: {
+          secret: config.turnstileSecretKey,
+          response: token,
+          remoteip: ip,
+        },
       },
-    },
-  )
+    )
+  } catch {
+    throw createError({
+      statusCode: 502,
+      statusMessage: 'Bad Gateway',
+      message: 'Não foi possível verificar o desafio anti-bot agora. Tente novamente em instantes.',
+    })
+  }
 
   return result.success
 }

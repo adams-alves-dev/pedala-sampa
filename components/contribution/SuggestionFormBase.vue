@@ -117,10 +117,10 @@ const errorMessage = ref('')
 const issues = ref<Array<{ path: string; message: string }>>([])
 const errorRef = ref<HTMLElement | null>(null)
 
-async function showError(message: string, novasIssues: Array<{ path: string; message: string }> = []) {
+async function showError(message: string, newIssues: Array<{ path: string; message: string }> = []) {
   status.value = 'error'
   errorMessage.value = message
-  issues.value = novasIssues
+  issues.value = newIssues
   await nextTick()
   errorRef.value?.focus()
 }
@@ -133,6 +133,8 @@ function extractIssues(data: unknown): Array<{ path: string; message: string }> 
     (item): item is { path: string; message: string } =>
       typeof item === 'object' &&
       item !== null &&
+      'path' in item &&
+      typeof item.path === 'string' &&
       'message' in item &&
       typeof item.message === 'string',
   )

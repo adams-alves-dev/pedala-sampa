@@ -1,5 +1,9 @@
-export const SUGGESTION_TYPES = ['CREATE', 'UPDATE', 'DELETE'] as const
-export type SuggestionType = (typeof SUGGESTION_TYPES)[number]
+export type SuggestionType = 'CREATE' | 'UPDATE' | 'DELETE'
+export const SUGGESTION_TYPES: readonly [SuggestionType, ...SuggestionType[]] = [
+  'CREATE',
+  'UPDATE',
+  'DELETE',
+]
 
 /** Campos editáveis do grupo que um visitante pode propor (criar ou corrigir). */
 export type SuggestionGroupPayload = {
