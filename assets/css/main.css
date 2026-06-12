@@ -82,6 +82,8 @@
 
 /* Ciclovia (light, default) */
 [data-theme='ciclovia'] {
+  /* widgets nativos (picker de horário, scrollbar, autofill) seguem o tema */
+  color-scheme: light;
   --color-asphalt: #11271C; --color-concrete: #DCE7DA; --color-paper: #F4F9F0;
   --color-bike-green: #1F8A4C; --color-sign-yellow: #F2B33A;
   --color-alert-red: #D8432F; --color-transit-blue: #1E7A9E; --color-border: #BBCDB6;
@@ -94,6 +96,7 @@
 
 /* Noturno (dark) — the asphalt token becomes light ink on a dark surface */
 [data-theme='noturno'] {
+  color-scheme: dark;
   --color-asphalt: #F3EEE2; --color-concrete: #14130E; --color-paper: #211F18;
   --color-bike-green: #2FCB7E; --color-sign-yellow: #FFC83D;
   --color-alert-red: #FF6B5E; --color-transit-blue: #5AA9FF; --color-border: #3A3730;
