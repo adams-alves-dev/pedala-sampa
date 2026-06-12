@@ -7,8 +7,8 @@ export default defineNuxtConfig({
   colorMode: {
     classSuffix: '', // no class suffix
     dataValue: 'theme', // writes data-theme on <html>
-    preference: 'ciclovia', // default theme (light)
-    fallback: 'ciclovia',
+    preference: 'light', // tema padrão (a identidade "Ciclovia")
+    fallback: 'light',
     storageKey: 'ps-color-mode',
   },
   app: {

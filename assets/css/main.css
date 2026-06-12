@@ -81,7 +81,7 @@
    ============================================================ */
 
 /* Ciclovia (light, default) */
-[data-theme='ciclovia'] {
+[data-theme='light'] {
   /* widgets nativos (picker de horário, scrollbar, autofill) seguem o tema */
   color-scheme: light;
   --color-asphalt: #11271C; --color-concrete: #DCE7DA; --color-paper: #F4F9F0;
@@ -95,7 +95,7 @@
 }
 
 /* Noturno (dark) — the asphalt token becomes light ink on a dark surface */
-[data-theme='noturno'] {
+[data-theme='dark'] {
   color-scheme: dark;
   --color-asphalt: #F3EEE2; --color-concrete: #14130E; --color-paper: #211F18;
   --color-bike-green: #2FCB7E; --color-sign-yellow: #FFC83D;
@@ -106,13 +106,13 @@
   --header-bg: #0E0D09; --header-fg: #F3EEE2;
   --tile-url: 'dark';
 }
-[data-theme='noturno'] .ps-input,
-[data-theme='noturno'] .ps-search { background: #1A1812; }
-[data-theme='noturno'] .ps-cta { color: #1A120B; }
+[data-theme='dark'] .ps-input,
+[data-theme='dark'] .ps-search { background: #1A1812; }
+[data-theme='dark'] .ps-cta { color: #1A120B; }
 /* mesmo caso do .ps-cta: fundo amarelo pede tinta escura mesmo no noturno (ghost não tem fundo) */
-[data-theme='noturno'] .contribution-link:not(.contribution-link--ghost) { color: #1A120B; }
-[data-theme='noturno'] .leaflet-control-attribution { background: rgba(20, 19, 14, 0.8); color: #9c978b; }
-[data-theme='noturno'] .leaflet-control-attribution a { color: #b9b3a6; }
+[data-theme='dark'] .contribution-link:not(.contribution-link--ghost) { color: #1A120B; }
+[data-theme='dark'] .leaflet-control-attribution { background: rgba(20, 19, 14, 0.8); color: #9c978b; }
+[data-theme='dark'] .leaflet-control-attribution a { color: #b9b3a6; }
 
 /* ============================================================
    Base resets

@@ -20,7 +20,7 @@
         @click="toggleTheme"
       >
         <ClientOnly>
-          <PsIcon :name="colorMode.value === 'noturno' ? 'sun' : 'moon'" :size="18" />
+          <PsIcon :name="colorMode.value === 'dark' ? 'sun' : 'moon'" :size="18" />
           <template #fallback><span class="toggle-ph" /></template>
         </ClientOnly>
       </button>
@@ -60,7 +60,7 @@ const burgerRef = ref<HTMLElement | null>(null)
 const menuRef = ref<HTMLElement | null>(null)
 
 function toggleTheme() {
-  colorMode.preference = colorMode.value === 'noturno' ? 'ciclovia' : 'noturno'
+  colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark'
 }
 
 // close the dropdown when navigating
