@@ -40,9 +40,10 @@ import { SP_BOUNDS, isInsideSpBounds } from '../../lib/sp-bounds'
 import { parseNumber } from '../../lib/suggestion-form'
 import MapTileLayer from '../map/MapTileLayer.vue'
 
-// o estado vive nos campos do form (strings) — o mapa é só outra forma de editá-los
-const latitude = defineModel<string>('latitude', { required: true })
-const longitude = defineModel<string>('longitude', { required: true })
+// o estado vive nos campos do form — o mapa é só outra forma de editá-los
+// (number aparece quando o visitante digita nos inputs type="number" do fallback)
+const latitude = defineModel<string | number>('latitude', { required: true })
+const longitude = defineModel<string | number>('longitude', { required: true })
 
 // o mapa não deixa navegar para fora da região válida (viscosity 1 = parede dura)
 const MAP_BOUNDS: [[number, number], [number, number]] = [

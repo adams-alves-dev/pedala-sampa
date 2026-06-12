@@ -1,6 +1,10 @@
 import type { GroupRecord, SuggestionGroupPayload } from '../types/suggestion'
 
-/** Estado dos inputs dos forms — tudo string; a conversão acontece no submit. */
+/**
+ * Estado dos inputs dos forms. Campos de texto são string; nos campos com
+ * `<input type="number">` o v-model do Vue entrega `number` assim que o campo
+ * é editado — o tipo reflete isso e a conversão final acontece no submit.
+ */
 export type SuggestionFormFields = {
   name: string
   linkUrl: string
@@ -8,10 +12,10 @@ export type SuggestionFormFields = {
   day: string
   startHour: string
   effort: string
-  distanceKm: string
-  rhythmKmH: string
-  latitude: string
-  longitude: string
+  distanceKm: string | number
+  rhythmKmH: string | number
+  latitude: string | number
+  longitude: string | number
 }
 
 type NumericField = 'distanceKm' | 'rhythmKmH' | 'latitude' | 'longitude'
@@ -50,8 +54,11 @@ export function fieldsFromRecord(record: GroupRecord): SuggestionFormFields {
   }
 }
 
-/** Converte input de texto em número, aceitando vírgula decimal — `undefined` se vazio/ inválido. */
-export function parseNumber(value: string): number | undefined {
+/** Converte valor de input em número, aceitando vírgula decimal — `undefined` se vazio/inválido. */
+export function parseNumber(value: string | number): number | undefined {
+  if (typeof value === 'number') {
+    return Number.isFinite(value) ? value : undefined
+  }
   const trimmed = value.trim()
   if (!trimmed) {
     return undefined

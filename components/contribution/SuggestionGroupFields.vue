@@ -152,6 +152,7 @@
 
 <script setup lang="ts">
 import { computed, useId } from 'vue'
+import { parseNumber } from '../../lib/suggestion-form'
 import type { SuggestionFormFields } from '../../lib/suggestion-form'
 import LocationPicker from './LocationPicker.client.vue'
 
@@ -166,7 +167,11 @@ withDefaults(
 const model = defineModel<SuggestionFormFields>({ required: true })
 const uid = useId()
 
-const hasPoint = computed(() => Boolean(model.value.latitude.trim() && model.value.longitude.trim()))
+const hasPoint = computed(
+  () =>
+    parseNumber(model.value.latitude) !== undefined &&
+    parseNumber(model.value.longitude) !== undefined,
+)
 </script>
 
 <style scoped>

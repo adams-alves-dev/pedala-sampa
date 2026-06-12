@@ -22,6 +22,29 @@ describe('payloadFromFields', () => {
     const fields = { ...emptyFields(), name: ' Pedal Novo ', distanceKm: '32,5' }
     expect(payloadFromFields(fields)).toEqual({ name: 'Pedal Novo', distanceKm: 32.5 })
   })
+
+  it('aceita number nos campos numéricos (v-model de input type=number entrega number)', () => {
+    const fields = {
+      ...emptyFields(),
+      name: 'Pedal Novo',
+      distanceKm: 25,
+      rhythmKmH: 18,
+      latitude: -23.5505,
+      longitude: -46.6333,
+    }
+    expect(payloadFromFields(fields)).toEqual({
+      name: 'Pedal Novo',
+      distanceKm: 25,
+      rhythmKmH: 18,
+      latitude: -23.5505,
+      longitude: -46.6333,
+    })
+  })
+
+  it('diff não acusa mudança quando o number do input é igual ao publicado', () => {
+    const fields = { ...fieldsFromRecord(record), distanceKm: 25 }
+    expect(diffPayload(fields, record)).toEqual({})
+  })
 })
 
 describe('diffPayload', () => {
