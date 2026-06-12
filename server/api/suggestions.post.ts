@@ -1,14 +1,11 @@
-import { SuggestionError, createSuggestion } from '../../lib/suggestion-service'
+import { SuggestionError, createSuggestion, parseSuggestion } from '../../lib/suggestion-service'
 import type { SuggestionRequest } from '../../types/suggestion'
 
 type TurnstileVerifyResponse = {
   success: boolean
 }
 
-/** Mesmo limite do schema Zod — o token é checado aqui antes do parse do corpo. */
-const TURNSTILE_TOKEN_MAX_LENGTH = 4096
-
-let warnedMissingSiteKey = false
+let warnedMissingConfig = false
 
 async function verifyTurnstile(token: string | undefined, ip: string): Promise<boolean> {
   const config = useRuntimeConfig()
@@ -16,13 +13,19 @@ async function verifyTurnstile(token: string | undefined, ip: string): Promise<b
   if (!config.turnstileEnabled) {
     return true
   }
-  if (!config.public.turnstileSiteKey && !warnedMissingSiteKey) {
-    warnedMissingSiteKey = true
+  if ((!config.public.turnstileSiteKey || !config.turnstileSecretKey) && !warnedMissingConfig) {
+    warnedMissingConfig = true
+    const missing = [
+      config.public.turnstileSiteKey ? '' : 'NUXT_PUBLIC_TURNSTILE_SITE_KEY',
+      config.turnstileSecretKey ? '' : 'TURNSTILE_SECRET_KEY',
+    ]
+      .filter(Boolean)
+      .join(' e ')
     console.warn(
-      '[suggestions] TURNSTILE_ENABLED=true sem NUXT_PUBLIC_TURNSTILE_SITE_KEY: o widget não renderiza no client e todo envio real falha com 400',
+      `[suggestions] TURNSTILE_ENABLED=true sem ${missing}: todo envio real falha com 400`,
     )
   }
-  if (!token || token.length > TURNSTILE_TOKEN_MAX_LENGTH) {
+  if (!token) {
     return false
   }
 
@@ -71,15 +74,19 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  if (!(await verifyTurnstile(body?.turnstileToken, ip))) {
-    throw createError({
-      statusCode: 400,
-      statusMessage: 'Bad Request',
-      message: 'Não foi possível verificar que você é humano. Recarregue a página e tente de novo.',
-    })
-  }
-
   try {
+    // valida ANTES do Turnstile: o token do desafio é de uso único, e um 400 de
+    // validação não pode consumi-lo — senão o reenvio corrigido falharia
+    const parsed = parseSuggestion(body)
+
+    if (!(await verifyTurnstile(parsed.turnstileToken, ip))) {
+      throw createError({
+        statusCode: 400,
+        statusMessage: 'Bad Request',
+        message: 'Não foi possível verificar que você é humano. Recarregue a página e tente de novo.',
+      })
+    }
+
     return await createSuggestion(body, hygraphRequest)
   } catch (error) {
     if (error instanceof SuggestionError) {

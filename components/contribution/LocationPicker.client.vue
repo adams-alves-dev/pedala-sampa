@@ -37,6 +37,7 @@
 import type { DragEndEvent, LeafletMouseEvent, Map as LeafletMap } from 'leaflet'
 import { computed, onBeforeUnmount, ref } from 'vue'
 import { SP_BOUNDS, isInsideSpBounds } from '../../lib/sp-bounds'
+import { parseNumber } from '../../lib/suggestion-form'
 import MapTileLayer from '../map/MapTileLayer.vue'
 
 // o estado vive nos campos do form (strings) — o mapa é só outra forma de editá-los
@@ -49,18 +50,9 @@ const MAP_BOUNDS: [[number, number], [number, number]] = [
   [SP_BOUNDS.latMax, SP_BOUNDS.lngMax],
 ]
 
-function parseCoord(value: string): number | undefined {
-  const trimmed = value.trim()
-  if (!trimmed) {
-    return undefined
-  }
-  const parsed = Number(trimmed.replace(',', '.'))
-  return Number.isFinite(parsed) ? parsed : undefined
-}
-
 const pin = computed<[number, number] | null>(() => {
-  const lat = parseCoord(latitude.value)
-  const lng = parseCoord(longitude.value)
+  const lat = parseNumber(latitude.value)
+  const lng = parseNumber(longitude.value)
   return lat !== undefined && lng !== undefined ? [lat, lng] : null
 })
 
@@ -141,8 +133,8 @@ async function onDragEnd(event: DragEndEvent) {
   margin: 0;
   padding: var(--space-2) var(--space-3);
   background: var(--color-paper);
-  border: 2px solid var(--color-signal-red, #c0392b);
-  color: var(--color-signal-red, #c0392b);
+  border: 2px solid var(--color-alert-red);
+  color: var(--color-alert-red);
   font-weight: 700;
   font-size: var(--text-xs);
   text-align: center;

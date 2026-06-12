@@ -111,7 +111,8 @@
   transition: color var(--duration-fast) var(--ease-out);
 }
 .ps-nav a:hover { color: var(--header-fg); }
-.ps-nav a[aria-current='page'] { color: var(--color-sun); }
+/* o CTA (.contribution-link) tem fundo amarelo — pintar de amarelo o tornaria invisível */
+.ps-nav a[aria-current='page']:not(.contribution-link) { color: var(--color-sun); }
 
 /* ---------- Yellow signage CTA (parallelogram + hard shadow) ---------- */
 .ps-cta {

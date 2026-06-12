@@ -1,3 +1,4 @@
+import { extractLinkUrl, normalizeHour } from '../../../lib/group-normalizers'
 import type { HygraphGroup } from '../../../types/hygraph'
 import type { GroupRecord } from '../../../types/suggestion'
 
@@ -26,17 +27,6 @@ const GET_GROUP_RECORD_QUERY = /* GraphQL */ `
     }
   }
 `
-
-function extractLinkUrl(html?: string | null): string | undefined {
-  const match = html?.match(/href\s*=\s*["']([^"']+)["']/i)
-  return match ? match[1] : undefined
-}
-
-/** O CMS guarda horários como "20:30h" — o input type="time" exige "20:30". */
-function normalizeHour(value?: string | null): string | undefined {
-  const cleaned = value?.trim().replace(/h$/i, '')
-  return cleaned || undefined
-}
 
 export default defineEventHandler(async (event): Promise<GroupRecord> => {
   const slug = getRouterParam(event, 'slug')

@@ -55,7 +55,7 @@
       >
     </div>
 
-    <TurnstileWidget @token="turnstileToken = $event" />
+    <TurnstileWidget ref="turnstileRef" @token="turnstileToken = $event" />
 
     <p
       v-if="status === 'error'"
@@ -116,6 +116,7 @@ const status = ref<'idle' | 'sending' | 'success' | 'error'>('idle')
 const errorMessage = ref('')
 const issues = ref<Array<{ path: string; message: string }>>([])
 const errorRef = ref<HTMLElement | null>(null)
+const turnstileRef = ref<InstanceType<typeof TurnstileWidget> | null>(null)
 
 async function showError(message: string, newIssues: Array<{ path: string; message: string }> = []) {
   status.value = 'error'
@@ -158,6 +159,8 @@ async function onSubmit() {
     await submitSuggestion(request)
     status.value = 'success'
   } catch (error) {
+    // o token do Turnstile pode ter sido consumido pelo envio que falhou
+    turnstileRef.value?.reset()
     if (error instanceof FetchError) {
       const message =
         typeof error.data?.message === 'string'
@@ -201,8 +204,8 @@ async function onSubmit() {
 .suggestion-error {
   margin: 0;
   padding: var(--space-3);
-  border: 2px solid var(--color-signal-red, #c0392b);
-  color: var(--color-signal-red, #c0392b);
+  border: 2px solid var(--color-alert-red);
+  color: var(--color-alert-red);
   font-weight: 700;
   font-size: var(--text-sm);
 }

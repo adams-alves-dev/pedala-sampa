@@ -50,7 +50,8 @@ export function fieldsFromRecord(record: GroupRecord): SuggestionFormFields {
   }
 }
 
-function parseNumber(value: string): number | undefined {
+/** Converte input de texto em número, aceitando vírgula decimal — `undefined` se vazio/ inválido. */
+export function parseNumber(value: string): number | undefined {
   const trimmed = value.trim()
   if (!trimmed) {
     return undefined

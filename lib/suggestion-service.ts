@@ -1,5 +1,6 @@
 import type { SuggestionResponse } from '../types/suggestion'
 import { suggestionSchema } from './suggestion-schemas'
+import type { ValidatedSuggestion } from './suggestion-schemas'
 
 /**
  * Assinatura mínima de um client GraphQL — injetada para facilitar teste/mocking.
@@ -86,15 +87,8 @@ function readIdFromResponse(data: unknown, key: 'group' | 'createSuggestion'): s
   return null
 }
 
-/**
- * Valida o corpo recebido, confirma a existência do alvo (UPDATE/DELETE) e cria
- * a entry `Suggestion` em DRAFT no Hygraph. Lança `SuggestionError` com o status
- * HTTP apropriado: 400 validação, 404 alvo inexistente, 502 falha no Hygraph.
- */
-export async function createSuggestion(
-  body: unknown,
-  hygraph: HygraphRequest,
-): Promise<SuggestionResponse> {
+/** Valida o corpo cru e lança `SuggestionError` 400 com issues por campo. */
+export function parseSuggestion(body: unknown): ValidatedSuggestion {
   const parsed = suggestionSchema.safeParse(body)
 
   if (!parsed.success) {
@@ -108,7 +102,19 @@ export async function createSuggestion(
     )
   }
 
-  const { type, targetId, payload, justification, contactEmail } = parsed.data
+  return parsed.data
+}
+
+/**
+ * Valida o corpo recebido, confirma a existência do alvo (UPDATE/DELETE) e cria
+ * a entry `Suggestion` em DRAFT no Hygraph. Lança `SuggestionError` com o status
+ * HTTP apropriado: 400 validação, 404 alvo inexistente, 502 falha no Hygraph.
+ */
+export async function createSuggestion(
+  body: unknown,
+  hygraph: HygraphRequest,
+): Promise<SuggestionResponse> {
+  const { type, targetId, payload, justification, contactEmail } = parseSuggestion(body)
 
   if (targetId) {
     let target: unknown

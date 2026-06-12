@@ -14,6 +14,7 @@ type TurnstileApi = {
       'expired-callback'?: () => void
     },
   ) => string
+  reset: (widgetId: string) => void
 }
 
 declare global {
@@ -51,13 +52,16 @@ function loadTurnstile(): Promise<TurnstileApi> {
   })
 }
 
+let api: TurnstileApi | null = null
+let widgetId: string | null = null
+
 onMounted(async () => {
   if (!siteKey || !widgetRef.value) {
     return
   }
   try {
-    const turnstile = await loadTurnstile()
-    turnstile.render(widgetRef.value, {
+    api = await loadTurnstile()
+    widgetId = api.render(widgetRef.value, {
       sitekey: siteKey,
       callback: (token) => emit('token', token),
       'expired-callback': () => emit('token', ''),
@@ -66,6 +70,16 @@ onMounted(async () => {
     // sem widget o server ainda decide pelo flag TURNSTILE_ENABLED
   }
 })
+
+/** Tokens do Turnstile são de uso único — o form reseta o widget após erro de envio. */
+function reset() {
+  if (api && widgetId !== null) {
+    api.reset(widgetId)
+    emit('token', '')
+  }
+}
+
+defineExpose({ reset })
 </script>
 
 <style scoped>

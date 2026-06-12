@@ -18,6 +18,7 @@
     "graphql-request": "latest",
     "leaflet": "latest",
     "nuxt": "^3.19.3",
+    "ofetch": "^1.5.1",
     "vue": "latest",
     "zod": "^4.4.3"
   },
