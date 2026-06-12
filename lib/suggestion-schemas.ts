@@ -1,16 +1,8 @@
 import { z } from 'zod'
 import { SUGGESTION_TYPES } from '../types/suggestion'
+import { SP_BOUNDS } from './sp-bounds'
 
-/**
- * Limites geográficos generosos da Grande São Paulo — pontos de saída em
- * cidades vizinhas (ABC, Guarulhos, Osasco) são válidos.
- */
-export const SP_BOUNDS = {
-  latMin: -24.2,
-  latMax: -23.2,
-  lngMin: -47.2,
-  lngMax: -46.0,
-}
+export { SP_BOUNDS }
 
 /** Remove tags HTML e normaliza espaços — sugestões são texto puro. */
 export function sanitizeText(value: string): string {
