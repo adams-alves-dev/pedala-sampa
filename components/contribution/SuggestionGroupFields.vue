@@ -97,44 +97,63 @@
       >
     </div>
 
-    <div class="ps-field-group">
-      <label class="ps-fieldlabel" :for="`${uid}-lat`">Latitude {{ required ? '*' : '' }}</label>
-      <input
-        :id="`${uid}-lat`"
-        v-model="model.latitude"
-        class="ps-input"
-        type="number"
-        step="any"
-        placeholder="-23.55"
-        :required="required"
+    <div class="ps-field-group suggestion-span">
+      <span :id="`${uid}-point`" class="ps-fieldlabel">
+        Ponto de saída no mapa {{ required ? '*' : '' }}
+      </span>
+      <div
+        class="suggestion-map"
+        role="application"
+        :aria-labelledby="`${uid}-point`"
         :aria-describedby="`${uid}-coord-hint`"
       >
-    </div>
+        <LocationPicker v-model:latitude="model.latitude" v-model:longitude="model.longitude" />
+      </div>
+      <p :id="`${uid}-coord-hint`" class="suggestion-hint" aria-live="polite">
+        {{
+          hasPoint
+            ? `Ponto marcado em ${model.latitude}, ${model.longitude}. Clique no mapa ou arraste o pino para ajustar.`
+            : 'Clique no ponto de saída do pedal no mapa para marcar.'
+        }}
+      </p>
 
-    <div class="ps-field-group">
-      <label class="ps-fieldlabel" :for="`${uid}-lng`">Longitude {{ required ? '*' : '' }}</label>
-      <input
-        :id="`${uid}-lng`"
-        v-model="model.longitude"
-        class="ps-input"
-        type="number"
-        step="any"
-        placeholder="-46.63"
-        :required="required"
-        :aria-describedby="`${uid}-coord-hint`"
-      >
+      <details class="suggestion-coords">
+        <summary class="suggestion-hint">Prefere digitar as coordenadas?</summary>
+        <div class="suggestion-coords-grid">
+          <div class="ps-field-group">
+            <label class="ps-fieldlabel" :for="`${uid}-lat`">Latitude {{ required ? '*' : '' }}</label>
+            <input
+              :id="`${uid}-lat`"
+              v-model="model.latitude"
+              class="ps-input"
+              type="number"
+              step="any"
+              placeholder="-23.55"
+              :required="required"
+            >
+          </div>
+          <div class="ps-field-group">
+            <label class="ps-fieldlabel" :for="`${uid}-lng`">Longitude {{ required ? '*' : '' }}</label>
+            <input
+              :id="`${uid}-lng`"
+              v-model="model.longitude"
+              class="ps-input"
+              type="number"
+              step="any"
+              placeholder="-46.63"
+              :required="required"
+            >
+          </div>
+        </div>
+      </details>
     </div>
-
-    <p :id="`${uid}-coord-hint`" class="suggestion-hint suggestion-span">
-      Para pegar as coordenadas, clique com o botão direito no ponto de saída no Google Maps e
-      copie os números.
-    </p>
   </fieldset>
 </template>
 
 <script setup lang="ts">
-import { useId } from 'vue'
+import { computed, useId } from 'vue'
 import type { SuggestionFormFields } from '../../lib/suggestion-form'
+import LocationPicker from './LocationPicker.client.vue'
 
 withDefaults(
   defineProps<{
@@ -146,6 +165,8 @@ withDefaults(
 
 const model = defineModel<SuggestionFormFields>({ required: true })
 const uid = useId()
+
+const hasPoint = computed(() => Boolean(model.value.latitude.trim() && model.value.longitude.trim()))
 </script>
 
 <style scoped>
@@ -171,6 +192,31 @@ const uid = useId()
   margin: 0;
   font-size: var(--text-xs);
   color: var(--color-asphalt-55);
+}
+
+.suggestion-map {
+  height: 280px;
+  border: 2px solid var(--color-border);
+  background: var(--color-concrete);
+  overflow: hidden;
+}
+
+.suggestion-coords > summary {
+  cursor: pointer;
+  width: fit-content;
+}
+
+.suggestion-coords-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+  margin-top: var(--space-3);
+}
+
+@media (max-width: 560px) {
+  .suggestion-coords-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 560px) {
