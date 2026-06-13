@@ -55,13 +55,15 @@ const to = computed(() => getContributionRoute(props.context, props.slug))
   text-decoration: none;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  transition: transform var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out);
+  transition: transform var(--duration-fast) var(--ease-out), filter var(--duration-fast) var(--ease-out);
   clip-path: polygon(var(--space-1) 0, 100% 0, calc(100% - var(--space-1)) 100%, 0 100%);
 }
 
+/* clip-path recorta box-shadow; drop-shadow é aplicado depois do recorte e
+   acompanha o formato de placa */
 .contribution-link:hover {
   transform: translate(-3px, -3px);
-  box-shadow: var(--shadow-hover);
+  filter: drop-shadow(5px 5px 0 var(--color-asphalt));
 }
 
 .contribution-link--ghost {
