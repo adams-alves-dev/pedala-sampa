@@ -110,8 +110,9 @@
   cursor: pointer;
   transition: color var(--duration-fast) var(--ease-out);
 }
-.ps-nav a:hover { color: var(--header-fg); }
-/* o CTA (.contribution-link) tem fundo amarelo — pintar de amarelo o tornaria invisível */
+/* o CTA (.contribution-link) tem fundo amarelo e tinta própria — as regras de
+   cor dos links de nav (hover/ativo) o tornariam ilegível, então é excluído */
+.ps-nav a:hover:not(.contribution-link) { color: var(--header-fg); }
 .ps-nav a[aria-current='page']:not(.contribution-link) { color: var(--color-sun); }
 
 /* ---------- Yellow signage CTA (parallelogram + offset block) ---------- */
