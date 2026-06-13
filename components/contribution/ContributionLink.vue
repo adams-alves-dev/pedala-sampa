@@ -55,17 +55,15 @@ const to = computed(() => getContributionRoute(props.context, props.slug))
   text-decoration: none;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  transition: transform var(--duration-fast) var(--ease-out),
-    filter var(--duration-fast) var(--ease-out), background var(--duration-fast) var(--ease-out);
+  transition: transform var(--duration-fast) var(--ease-out), filter var(--duration-fast) var(--ease-out);
   clip-path: polygon(var(--space-1) 0, 100% 0, calc(100% - var(--space-1)) 100%, 0 100%);
 }
 
-/* hover: escurece o amarelo (feedback principal) + leve "salto". clip-path
-   recorta box-shadow, então a sombra usa drop-shadow (aplicado pós-recorte) */
+/* hover: bloco verde deslocado + salto (igual ao .ps-btn--solid). clip-path
+   recorta box-shadow, então o bloco vem de drop-shadow (aplicado pós-recorte) */
 .contribution-link:hover {
-  background: color-mix(in srgb, var(--color-sun) 84%, #000);
   transform: translate(-3px, -3px);
-  filter: drop-shadow(5px 5px 0 var(--color-asphalt));
+  filter: drop-shadow(6px 6px 0 var(--color-bike-green));
 }
 
 .contribution-link--ghost {
@@ -76,7 +74,6 @@ const to = computed(() => getContributionRoute(props.context, props.slug))
 }
 
 .contribution-link--ghost:hover {
-  background: color-mix(in srgb, var(--color-asphalt) 8%, transparent);
   border-color: var(--color-asphalt);
   transform: none;
   filter: none;
