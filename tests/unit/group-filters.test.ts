@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { countActiveFilters, filterGroups, createEmptyGroupFilters } from '../../lib/group-filters'
-import type { Group } from '../../types/group'
+import type { Group, GroupFilters } from '../../types/group'
 
 const groups: Group[] = [
   {
@@ -57,6 +57,18 @@ describe('group filters', () => {
     })
 
     expect(result.map((group) => group.slug)).toEqual(['iniciantes-zona-oeste'])
+  })
+
+  it('grupo sem ritmo informado (0) fica fora do filtro de ritmo', () => {
+    const withoutRhythm: Group[] = [
+      {
+        ...groups[1],
+        schedules: [{ ...groups[1].schedules[0], rhythmKmH: 0 }],
+      },
+    ]
+    const filters: GroupFilters = { ...createEmptyGroupFilters(), rhythm: 'light' }
+    expect(filterGroups(withoutRhythm, filters)).toEqual([])
+    expect(filterGroups(withoutRhythm, createEmptyGroupFilters())).toHaveLength(1)
   })
 
   it('conta categorias ativas mais a busca', () => {

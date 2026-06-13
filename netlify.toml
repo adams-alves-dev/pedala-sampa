@@ -1,6 +1,10 @@
+# Build com o preset `netlify` do Nitro: as páginas são prerenderizadas (HTML
+# estático em dist/) e as server routes (server/api/) viram Netlify Functions.
+# O Nitro gera o dist/_redirects que roteia o que não for estático para a
+# function — por isso não há mais o catch-all manual para /index.html aqui.
 [build]
-  command = "yarn generate"
-  publish = ".output/public"
+  command = "yarn build"
+  publish = "dist"
 
 [build.environment]
   NODE_VERSION = "22"
@@ -10,9 +14,4 @@
 # então neste contexto copiamos um arquivo _headers só com X-Robots-Tag: noindex
 # para o diretório publicado. Produção (main) não recebe esse arquivo.
 [context.branch-deploy]
-  command = "yarn generate && cp ./netlify/_branch_headers .output/public/_headers"
-
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
+  command = "yarn build && cp ./netlify/_branch_headers dist/_headers"

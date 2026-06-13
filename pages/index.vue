@@ -37,17 +37,9 @@
       @select="selectGroup"
     />
 
-    <EmptyState
-      v-if="!filteredGroups.length"
-      :contribution-form-url="contributionFormUrl"
-      @clear="clearFilters"
-    />
+    <EmptyState v-if="!filteredGroups.length" @clear="clearFilters" />
 
-    <GroupQuickView
-      :group="selectedGroup"
-      :contribution-form-url="contributionFormUrl"
-      @close="clearSelectedGroup"
-    />
+    <GroupQuickView :group="selectedGroup" @close="clearSelectedGroup" />
 
     <MobileSheet
       :groups="filteredGroups"
@@ -75,9 +67,6 @@ import { useGroupFilters } from '../composables/useGroupFilters'
 import { useGroups } from '../composables/useGroups'
 import { useSelectedGroup } from '../composables/useSelectedGroup'
 import { buildFilterGroups } from '../lib/filter-options'
-
-const config = useRuntimeConfig()
-const contributionFormUrl = config.public.contributionFormUrl
 
 const { data } = await useGroups()
 const groups = computed(() => data.value || [])
