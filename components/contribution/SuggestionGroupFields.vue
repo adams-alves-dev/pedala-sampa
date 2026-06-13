@@ -209,6 +209,11 @@ const hasPoint = computed(
 .suggestion-coords > summary {
   cursor: pointer;
   width: fit-content;
+  transition: color var(--duration-fast) var(--ease-out);
+}
+
+.suggestion-coords > summary:hover {
+  color: var(--color-asphalt);
 }
 
 .suggestion-coords-grid {

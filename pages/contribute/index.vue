@@ -45,4 +45,12 @@ useSeoMeta({
   margin-top: var(--space-8);
   color: var(--color-asphalt-55);
 }
+
+.contribute-alt a {
+  transition: color var(--duration-fast) var(--ease-out);
+}
+
+.contribute-alt a:hover {
+  color: var(--color-asphalt);
+}
 </style>

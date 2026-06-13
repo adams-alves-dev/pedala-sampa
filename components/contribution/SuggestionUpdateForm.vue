@@ -108,4 +108,12 @@ function buildRequest(common: {
   margin-top: var(--space-6);
   color: var(--color-asphalt-55);
 }
+
+.suggestion-removal a {
+  transition: color var(--duration-fast) var(--ease-out);
+}
+
+.suggestion-removal a:hover {
+  color: var(--color-asphalt);
+}
 </style>

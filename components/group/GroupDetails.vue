@@ -130,6 +130,11 @@ const duration = computed(() =>
 .group-removal a {
   color: inherit;
   font-weight: 800;
+  transition: color var(--duration-fast) var(--ease-out);
+}
+
+.group-removal a:hover {
+  color: var(--color-asphalt);
 }
 
 .group-addr {
