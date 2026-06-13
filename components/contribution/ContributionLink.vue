@@ -49,7 +49,7 @@ const to = computed(() => getContributionRoute(props.context, props.slug))
   min-height: 42px;
   padding: 0 var(--space-5);
   background: var(--color-sun);
-  color: var(--color-asphalt);
+  color: var(--color-on-sun);
   font-weight: 800;
   font-size: var(--text-sm);
   text-decoration: none;

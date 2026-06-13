@@ -123,7 +123,7 @@
   min-height: 42px;
   padding: 0 var(--space-5);
   background: var(--color-sun);
-  color: var(--color-asphalt);
+  color: var(--color-on-sun);
   border: 0;
   font-family: var(--font-body);
   font-weight: 800;
@@ -225,7 +225,7 @@
 }
 .ps-chip:hover { transform: translateY(-1px); }
 .ps-chip--active { background: var(--color-bike-green); color: var(--color-paper); border-color: var(--color-asphalt); }
-.ps-chip--count { background: var(--color-sun); }
+.ps-chip--count { background: var(--color-sun); color: var(--color-on-sun); border-color: var(--color-on-sun); }
 
 /* ---------- Group card (accent rail + meta) ---------- */
 .ps-card {
@@ -316,7 +316,7 @@
   transition: transform var(--duration-fast) var(--ease-out), background var(--duration-fast) var(--ease-out);
 }
 .ps-pin > * { transform: rotate(45deg); font-size: var(--text-sm); }
-.ps-pin--selected { background: var(--color-sun); width: 36px; height: 36px; box-shadow: 4px 4px 0 var(--color-asphalt); }
+.ps-pin--selected { background: var(--color-sun); color: var(--color-on-sun); border-color: var(--color-on-sun); width: 36px; height: 36px; box-shadow: 4px 4px 0 var(--color-asphalt); }
 .ps-pin--selected > * { font-size: var(--text-md); }
 
 /* ---------- States (empty / error) ---------- */
@@ -373,8 +373,8 @@
 .about-card { border: 2px solid var(--color-asphalt); border-radius: var(--radius-md); background: var(--color-paper);
   padding: var(--space-5); display: grid; gap: var(--space-2); box-shadow: 4px 4px 0 var(--color-bike-green); }
 .about-card .num { font-family: var(--font-display); font-size: var(--text-xl); font-weight: 800; opacity: 0.28; }
-.about-ic { display: inline-grid; place-items: center; width: 44px; height: 44px; border: 2px solid var(--color-asphalt);
-  border-radius: var(--radius-sm); background: var(--color-sign-yellow); color: var(--color-asphalt); margin-bottom: var(--space-1); }
+.about-ic { display: inline-grid; place-items: center; width: 44px; height: 44px; border: 2px solid var(--color-on-sun);
+  border-radius: var(--radius-sm); background: var(--color-sign-yellow); color: var(--color-on-sun); margin-bottom: var(--space-1); }
 
 @media (max-width: 760px) {
   .doc__inner { padding: var(--space-6) var(--space-4) var(--space-12); }

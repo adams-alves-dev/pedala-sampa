@@ -80,7 +80,7 @@ function onInput(event: Event) {
   padding: 0 5px;
   margin-left: 2px;
   background: var(--color-sun);
-  color: var(--color-asphalt);
+  color: var(--color-on-sun);
   border-radius: 999px;
   font-size: var(--text-xs);
   font-weight: 800;

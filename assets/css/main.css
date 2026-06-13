@@ -91,6 +91,9 @@
   --color-green-dark: #136636; --color-green-tint: #D7EBD6; --color-yellow-tint: #F8EAC4;
   --color-paper-2: #EAF2E4; --color-concrete-dk: #CCD9C7;
   --header-bg: #11271C; --header-fg: #DCE7DA;
+  /* tinta para superfícies amarelas (--color-sun); NÃO inverte com o tema, ao
+     contrário de --color-asphalt, que vira creme no dark e some sobre o amarelo */
+  --color-on-sun: #11271C;
   --tile-url: 'light';
 }
 
@@ -104,15 +107,12 @@
   --color-green-dark: #28B870; --color-green-tint: #1C3A2C; --color-yellow-tint: #3A3320;
   --color-paper-2: #1A1812; --color-concrete-dk: #2A2820;
   --header-bg: #0E0D09; --header-fg: #F3EEE2;
+  --color-on-sun: #1A120B;
   --tile-url: 'dark';
 }
 [data-theme='dark'] .ps-input,
 [data-theme='dark'] .ps-search { background: #1A1812; }
-[data-theme='dark'] .ps-cta { color: #1A120B; }
-/* mesmo caso do .ps-cta: fundo amarelo pede tinta escura mesmo no noturno (ghost não tem fundo) */
-[data-theme='dark'] .contribution-link:not(.contribution-link--ghost) { color: #1A120B; }
-/* pin selecionado também é fundo amarelo: número/ícone e borda em tinta escura */
-[data-theme='dark'] .ps-pin--selected { color: #1A120B; border-color: #1A120B; }
+/* superfícies amarelas usam --color-on-sun na base (não invertem) — sem override por tema */
 [data-theme='dark'] .leaflet-control-attribution { background: rgba(20, 19, 14, 0.8); color: #9c978b; }
 [data-theme='dark'] .leaflet-control-attribution a { color: #b9b3a6; }
 
@@ -143,7 +143,7 @@ select {
 
 ::selection {
   background: var(--color-sign-yellow);
-  color: var(--color-asphalt);
+  color: var(--color-on-sun);
 }
 
 :focus-visible {
