@@ -134,10 +134,10 @@
   cursor: pointer;
   white-space: nowrap;
   clip-path: polygon(var(--space-1) 0, 100% 0, calc(100% - var(--space-1)) 100%, 0 100%);
-  transition: transform var(--duration-fast) var(--ease-out), filter var(--duration-fast) var(--ease-out);
+  transition: transform var(--duration-fast) var(--ease-out), filter var(--duration-fast) var(--ease-out), background var(--duration-fast) var(--ease-out);
 }
-/* clip-path recorta box-shadow; drop-shadow segue o formato de placa */
-.ps-cta:hover { transform: translate(-3px, -3px); filter: drop-shadow(5px 5px 0 var(--color-asphalt)); }
+/* hover: escurece o amarelo + salto; drop-shadow porque clip-path recorta box-shadow */
+.ps-cta:hover { background: color-mix(in srgb, var(--color-sun) 84%, #000); transform: translate(-3px, -3px); filter: drop-shadow(5px 5px 0 var(--color-asphalt)); }
 .ps-cta--disabled { opacity: 0.45; cursor: not-allowed; clip-path: none; }
 .ps-cta--disabled:hover { transform: none; box-shadow: none; }
 
