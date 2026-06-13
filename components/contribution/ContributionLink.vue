@@ -60,8 +60,8 @@ const to = computed(() => getContributionRoute(props.context, props.slug))
 }
 
 .contribution-link:hover {
-  transform: translate(-1px, -1px);
-  box-shadow: 4px 4px 0 var(--color-asphalt);
+  transform: translate(-3px, -3px);
+  box-shadow: var(--shadow-hover);
 }
 
 .contribution-link--ghost {

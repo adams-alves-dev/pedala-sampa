@@ -136,7 +136,7 @@
   clip-path: polygon(var(--space-1) 0, 100% 0, calc(100% - var(--space-1)) 100%, 0 100%);
   transition: transform var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out);
 }
-.ps-cta:hover { transform: translate(-1px, -1px); box-shadow: var(--shadow-hard); }
+.ps-cta:hover { transform: translate(-3px, -3px); box-shadow: var(--shadow-hover); }
 .ps-cta--disabled { opacity: 0.45; cursor: not-allowed; clip-path: none; }
 .ps-cta--disabled:hover { transform: none; box-shadow: none; }
 
@@ -161,9 +161,9 @@
   transition: transform var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out),
               background var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out);
 }
-.ps-btn:hover { transform: translate(-1px, -1px); box-shadow: var(--shadow-hard); }
+.ps-btn:hover { transform: translate(-3px, -3px); box-shadow: var(--shadow-hover); }
 .ps-btn--solid { background: var(--color-asphalt); color: var(--color-concrete); }
-.ps-btn--solid:hover { box-shadow: 4px 4px 0 var(--color-bike-green); }
+.ps-btn--solid:hover { box-shadow: 6px 6px 0 var(--color-bike-green); }
 .ps-btn--ghost { border-color: var(--color-border); background: transparent; }
 .ps-btn--ghost:hover { border-color: var(--color-asphalt); box-shadow: none; transform: none; }
 .ps-btn--sm { min-height: 34px; padding: 0 var(--space-3); }

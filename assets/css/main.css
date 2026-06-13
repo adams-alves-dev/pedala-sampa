@@ -66,6 +66,7 @@
   /* ---- Elevation & radius ---- */
   --shadow-panel: 0 18px 50px rgb(26 18 11 / 18%);
   --shadow-hard:  4px 4px 0 var(--color-asphalt); /* signage offset block (no blur) */
+  --shadow-hover: 6px 6px 0 var(--color-asphalt); /* hover dos botões: bloco que "salta" */
   --radius-sm: 4px;
   --radius-md: 6px;
 
