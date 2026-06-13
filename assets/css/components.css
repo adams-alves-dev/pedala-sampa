@@ -114,15 +114,17 @@
 /* o CTA (.contribution-link) tem fundo amarelo — pintar de amarelo o tornaria invisível */
 .ps-nav a[aria-current='page']:not(.contribution-link) { color: var(--color-sun); }
 
-/* ---------- Yellow signage CTA (parallelogram + hard shadow) ---------- */
+/* ---------- Yellow signage CTA (parallelogram + offset block) ---------- */
 .ps-cta {
+  position: relative;
+  isolation: isolate;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: var(--space-2);
   min-height: 42px;
   padding: 0 var(--space-5);
-  background: var(--color-sun);
+  background: transparent;
   color: var(--color-on-sun);
   border: 0;
   font-family: var(--font-body);
@@ -133,13 +135,26 @@
   letter-spacing: 0.04em;
   cursor: pointer;
   white-space: nowrap;
-  clip-path: polygon(var(--space-1) 0, 100% 0, calc(100% - var(--space-1)) 100%, 0 100%);
-  transition: transform var(--duration-fast) var(--ease-out), filter var(--duration-fast) var(--ease-out);
+  transition: transform var(--duration-fast) var(--ease-out);
 }
-/* hover: bloco verde deslocado + salto (igual ao .ps-btn--solid); drop-shadow porque clip-path recorta box-shadow */
-.ps-cta:hover { transform: translate(-3px, -3px); filter: drop-shadow(6px 6px 0 var(--color-bike-green)); }
-.ps-cta--disabled { opacity: 0.45; cursor: not-allowed; clip-path: none; }
-.ps-cta--disabled:hover { transform: none; box-shadow: none; }
+/* face amarela e bloco de hover como camadas reais (box-shadow seria recortado
+   pelo clip-path; drop-shadow não renderiza com clip-path em alguns navegadores) */
+.ps-cta::before,
+.ps-cta::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  clip-path: polygon(var(--space-1) 0, 100% 0, calc(100% - var(--space-1)) 100%, 0 100%);
+}
+.ps-cta::after { z-index: -1; background: var(--color-sun); }
+.ps-cta::before { z-index: -2; background: var(--color-bike-green); transition: transform var(--duration-fast) var(--ease-out); }
+/* hover: a placa "salta" e o bloco verde aparece deslocado (igual ao .ps-btn--solid) */
+.ps-cta:hover { transform: translate(-3px, -3px); }
+.ps-cta:hover::before { transform: translate(9px, 9px); }
+.ps-cta--disabled { opacity: 0.45; cursor: not-allowed; }
+.ps-cta--disabled::before, .ps-cta--disabled::after { clip-path: none; }
+.ps-cta--disabled:hover { transform: none; }
+.ps-cta--disabled:hover::before { transform: none; }
 
 /* ---------- Outline / solid / ghost buttons ---------- */
 .ps-btn {
