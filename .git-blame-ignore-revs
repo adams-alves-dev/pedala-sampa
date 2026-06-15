@@ -1,0 +1,6 @@
+# Revisões só-formatação, ignoradas pelo git blame.
+# Ativar localmente:  git config blame.ignoreRevsFile .git-blame-ignore-revs
+# (O GitHub detecta e respeita este arquivo automaticamente.)
+
+# style: aplica Prettier como baseline de formatação
+d2b469f0bfe9927fa27f791cf5a14678d4904dd2
