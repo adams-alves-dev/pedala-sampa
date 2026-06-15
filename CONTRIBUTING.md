@@ -85,9 +85,13 @@ ficam no CI.
 
 ## CI (GitHub Actions)
 
-Cada Pull Request (para `develop` e `main`) dispara o workflow **CI**
-(`.github/workflows/ci.yml`), que roda `lint`, `typecheck` e `test`. É uma rede
-de segurança além dos hooks locais.
+Cada Pull Request (para `develop` e `main`) dispara dois workflows, como rede de
+segurança além dos hooks locais:
+
+- **CI** (`.github/workflows/ci.yml`): roda `lint`, `typecheck` e `test`.
+- **commitlint** (`.github/workflows/commitlint.yml`): valida que todos os
+  commits do PR seguem Conventional Commits (pega commits feitos pela web do
+  GitHub ou com o hook pulado via `--no-verify`).
 
 ## Versionamento e Releases
 
@@ -104,11 +108,10 @@ Usamos **[SemVer](https://semver.org/)** (`MAJOR.MINOR.PATCH`), partindo de
    bumpa a versão no `package.json` e atualiza o `CHANGELOG.md`.
 4. **Revise e mergeie a Release PR.** Isso cria a **tag** `vX.Y.Z` e a
    **GitHub Release** automaticamente; o Netlify publica a `main`.
-5. **Back-merge `main` → `develop`** para a `develop` carregar a versão e o
-   CHANGELOG atualizados:
-   ```bash
-   git checkout develop && git merge --ff-only main && git push
-   ```
+5. **Back-merge automático:** ao criar o release, o próprio workflow do
+   release-please sincroniza a `develop` com a `main` (versão + CHANGELOG). Não é
+   preciso fazer nada. Se houver conflito (raro), o job falha e aí é só resolver
+   o merge `main → develop` à mão.
 
 > O `CHANGELOG.md` é **gerado** pelo release-please — não edite à mão.
 
