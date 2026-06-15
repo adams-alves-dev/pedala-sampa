@@ -98,6 +98,15 @@ describe('suggestionSchema', () => {
     expect(result.success).toBe(false)
   })
 
+  it('rejeita ritmo acima de 60 (backstop do ritmo derivado da duração)', () => {
+    const result = suggestionSchema.safeParse({
+      type: 'CREATE',
+      payload: { ...validPayload, distanceKm: 60, rhythmKmH: 120 },
+      justification,
+    })
+    expect(result.success).toBe(false)
+  })
+
   it('rejeita justificativa curta demais', () => {
     const result = suggestionSchema.safeParse({
       type: 'CREATE',
