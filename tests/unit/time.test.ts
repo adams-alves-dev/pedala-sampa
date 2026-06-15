@@ -3,6 +3,7 @@ import {
   getPeriodFromHour,
   getRhythmCategory,
   getEstimatedLapDuration,
+  getRhythmFromDistanceAndDuration,
 } from '../../lib/time'
 
 describe('time helpers', () => {
@@ -38,5 +39,30 @@ describe('time helpers', () => {
     expect(getRhythmCategory(12)).toBe('light')
     expect(getRhythmCategory(18)).toBe('moderate')
     expect(getRhythmCategory(26)).toBe('strong')
+  })
+
+  it('deriva o ritmo a partir da distância e da duração', () => {
+    expect(
+      getRhythmFromDistanceAndDuration({
+        distanceKm: 50,
+        durationMinutes: 150,
+      }),
+    ).toBe(20)
+    // arredonda em 1 casa decimal (50 / 3h = 16,666…)
+    expect(
+      getRhythmFromDistanceAndDuration({
+        distanceKm: 50,
+        durationMinutes: 180,
+      }),
+    ).toBe(16.7)
+  })
+
+  it('retorna null quando distância ou duração não permitem o cálculo', () => {
+    expect(
+      getRhythmFromDistanceAndDuration({ distanceKm: 0, durationMinutes: 60 }),
+    ).toBeNull()
+    expect(
+      getRhythmFromDistanceAndDuration({ distanceKm: 50, durationMinutes: 0 }),
+    ).toBeNull()
   })
 })

@@ -19,6 +19,26 @@ export function getEstimatedLapDuration({
   return `${String(hours).padStart(2, '0')}h:${String(minutes).padStart(2, '0')}m`
 }
 
+/**
+ * Inverso de `getEstimatedLapDuration`: ritmo médio (km/h) a partir da distância
+ * e da duração. Para quem sabe quanto tempo o pedal dura, mas não o km/h.
+ * `null` quando os dados não permitem o cálculo. Arredonda em 1 casa decimal.
+ */
+export function getRhythmFromDistanceAndDuration({
+  distanceKm,
+  durationMinutes,
+}: {
+  distanceKm: number
+  durationMinutes: number
+}): number | null {
+  if (!distanceKm || !durationMinutes || durationMinutes <= 0) {
+    return null
+  }
+
+  const rhythm = distanceKm / (durationMinutes / 60)
+  return Math.round(rhythm * 10) / 10
+}
+
 export function getPeriodFromHour(startHour: string): Period {
   const [rawHour] = startHour.split(':')
   const hour = Number(rawHour)

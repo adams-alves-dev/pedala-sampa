@@ -1,4 +1,5 @@
 import type { GroupRecord, SuggestionGroupPayload } from '../types/suggestion'
+import { getRhythmFromDistanceAndDuration } from './time'
 
 /**
  * Estado dos inputs dos forms. Campos de texto são string; nos campos com
@@ -14,6 +15,9 @@ export type SuggestionFormFields = {
   effort: string
   distanceKm: string | number
   rhythmKmH: string | number
+  /** Duração aproximada do pedal no formato "HH:MM". Não vai ao payload — só
+   *  deriva o `rhythmKmH` quando a pessoa não sabe o ritmo em km/h. */
+  durationHhmm: string
   latitude: string | number
   longitude: string | number
 }
@@ -46,6 +50,7 @@ export function emptyFields(): SuggestionFormFields {
     effort: '',
     distanceKm: '',
     rhythmKmH: '',
+    durationHhmm: '',
     latitude: '',
     longitude: '',
   }
@@ -62,6 +67,8 @@ export function fieldsFromRecord(record: GroupRecord): SuggestionFormFields {
     distanceKm:
       record.distanceKm !== undefined ? String(record.distanceKm) : '',
     rhythmKmH: record.rhythmKmH !== undefined ? String(record.rhythmKmH) : '',
+    // o grupo publicado não guarda duração; o ritmo já vem preenchido acima
+    durationHhmm: '',
     latitude: String(record.latitude),
     longitude: String(record.longitude),
   }
@@ -80,6 +87,16 @@ export function parseNumber(value: string | number): number | undefined {
   return Number.isFinite(parsed) ? parsed : undefined
 }
 
+/** Converte uma duração "HH:MM" em minutos — `null` se vazio ou inválido. */
+export function parseDurationToMinutes(value: string): number | null {
+  const match = value.trim().match(/^(\d{1,2}):([0-5]\d)$/)
+  if (!match) {
+    return null
+  }
+  const total = Number(match[1]) * 60 + Number(match[2])
+  return total > 0 ? total : null
+}
+
 /** Converte os inputs em payload, descartando campos vazios. */
 export function payloadFromFields(
   fields: SuggestionFormFields,
@@ -96,6 +113,23 @@ export function payloadFromFields(
     const value = parseNumber(fields[field])
     if (value !== undefined) {
       payload[field] = value
+    }
+  }
+
+  // Sem ritmo digitado: deriva pela distância + duração informada (HH:MM).
+  // O ritmo digitado tem precedência; a duração não é persistida no payload.
+  // (convenção: `parseNumber` devolve `undefined`; `parseDurationToMinutes` e
+  //  `getRhythmFromDistanceAndDuration` devolvem `null` — por isso os checks diferem.)
+  if (payload.rhythmKmH === undefined && payload.distanceKm !== undefined) {
+    const durationMinutes = parseDurationToMinutes(fields.durationHhmm)
+    if (durationMinutes !== null) {
+      const derived = getRhythmFromDistanceAndDuration({
+        distanceKm: payload.distanceKm,
+        durationMinutes,
+      })
+      if (derived !== null) {
+        payload.rhythmKmH = derived
+      }
     }
   }
 

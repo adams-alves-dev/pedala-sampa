@@ -3,6 +3,7 @@ import {
   diffPayload,
   emptyFields,
   fieldsFromRecord,
+  parseDurationToMinutes,
   payloadFromFields,
 } from '../../lib/suggestion-form'
 import type { GroupRecord } from '../../types/suggestion'
@@ -57,6 +58,83 @@ describe('payloadFromFields', () => {
     const fields = { ...fieldsFromRecord(record), distanceKm: 25 }
     expect(diffPayload(fields, record)).toEqual({})
   })
+
+  it('deriva o ritmo da duração quando o ritmo não é informado', () => {
+    const fields = {
+      ...emptyFields(),
+      name: 'Pedal Novo',
+      distanceKm: 50,
+      durationHhmm: '02:30',
+    }
+    expect(payloadFromFields(fields)).toEqual({
+      name: 'Pedal Novo',
+      distanceKm: 50,
+      rhythmKmH: 20,
+    })
+  })
+
+  it('o ritmo informado tem precedência e a duração não é persistida', () => {
+    const fields = {
+      ...emptyFields(),
+      name: 'Pedal Novo',
+      distanceKm: 50,
+      rhythmKmH: 18,
+      durationHhmm: '02:30',
+    }
+    expect(payloadFromFields(fields)).toEqual({
+      name: 'Pedal Novo',
+      distanceKm: 50,
+      rhythmKmH: 18,
+    })
+  })
+
+  it('ignora a duração quando não há distância', () => {
+    const fields = {
+      ...emptyFields(),
+      name: 'Pedal Novo',
+      durationHhmm: '02:30',
+    }
+    expect(payloadFromFields(fields)).toEqual({ name: 'Pedal Novo' })
+  })
+
+  it('deriva o ritmo com distância em vírgula decimal', () => {
+    const fields = {
+      ...emptyFields(),
+      name: 'Pedal Novo',
+      distanceKm: '50,0',
+      durationHhmm: '02:30',
+    }
+    expect(payloadFromFields(fields)).toEqual({
+      name: 'Pedal Novo',
+      distanceKm: 50,
+      rhythmKmH: 20,
+    })
+  })
+
+  it('deriva ritmo acima de 60 sem clampar (o schema é o backstop)', () => {
+    const fields = {
+      ...emptyFields(),
+      name: 'Pedal Novo',
+      distanceKm: 60,
+      durationHhmm: '00:30', // 60 km em 30 min = 120 km/h
+    }
+    // não clampamos no form: o payloadSchema (rhythmKmH max 60) rejeita no envio
+    expect(payloadFromFields(fields).rhythmKmH).toBe(120)
+  })
+})
+
+describe('parseDurationToMinutes', () => {
+  it('converte "HH:MM" em minutos', () => {
+    expect(parseDurationToMinutes('02:30')).toBe(150)
+    expect(parseDurationToMinutes('00:45')).toBe(45)
+  })
+
+  it('retorna null para vazio, zero ou formato inválido', () => {
+    expect(parseDurationToMinutes('')).toBeNull()
+    expect(parseDurationToMinutes('00:00')).toBeNull()
+    expect(parseDurationToMinutes('9:99')).toBeNull()
+    expect(parseDurationToMinutes('abc')).toBeNull()
+  })
 })
 
 describe('diffPayload', () => {
@@ -88,5 +166,15 @@ describe('diffPayload', () => {
     fields.rhythmKmH = '20'
 
     expect(diffPayload(fields, record)).toEqual({ rhythmKmH: 20 })
+  })
+
+  it('deriva o ritmo da duração no diff quando o grupo não tinha ritmo', () => {
+    const recordNoRhythm: GroupRecord = { ...record, rhythmKmH: undefined }
+    const fields = {
+      ...fieldsFromRecord(recordNoRhythm),
+      durationHhmm: '01:00', // distância publicada (25 km) ÷ 1h = 25 km/h
+    }
+    // o ritmo que faltava entra no diff por não existir no publicado
+    expect(diffPayload(fields, recordNoRhythm)).toEqual({ rhythmKmH: 25 })
   })
 })
