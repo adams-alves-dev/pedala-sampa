@@ -103,20 +103,26 @@ Usamos **[SemVer](https://semver.org/)** (`MAJOR.MINOR.PATCH`), partindo de
 ### Rotina de lançamento
 
 1. Trabalhe em `feature/*` → PR para **`develop`**.
-2. Pronto para publicar: PR **`develop` → `main`** (merge normal).
-3. O push na `main` faz o release-please abrir/atualizar uma **Release PR** que
-   bumpa a versão no `package.json` e atualiza o `CHANGELOG.md`.
-4. **Revise e mergeie a Release PR.** Isso cria a **tag** `vX.Y.Z` e a
-   **GitHub Release** automaticamente; o Netlify publica a `main`.
-5. **Back-merge automático:** ao criar o release, o próprio workflow do
-   release-please sincroniza a `develop` com a `main` (versão + CHANGELOG). Não é
-   preciso fazer nada. Se houver conflito (raro), o job falha e aí é só resolver
-   o merge `main → develop` à mão.
+2. **Pronto para publicar: PR `develop` → `main` e mergeie.** Esta é a sua única
+   decisão de release.
+3. O push na `main` faz o release-please abrir uma **Release PR** (bump no
+   `package.json` + `CHANGELOG.md`). Com o PAT configurado (ver abaixo), ela é
+   **auto-mergeada**; sem o PAT, você a mergeia à mão.
+4. Ao mergear a Release PR: **tag** `vX.Y.Z` + **GitHub Release** + **back-merge
+   automático** `main` → `develop` (a develop recebe versão + CHANGELOG). Tudo
+   automático. Se o back-merge conflitar (raro), o job falha e aí é só resolver o
+   merge `main → develop` à mão.
 
 > O `CHANGELOG.md` é **gerado** pelo release-please — não edite à mão.
 
 ### Configuração necessária no GitHub (uma vez)
 
-Em **Settings → Actions → General → Workflow permissions**: marque
-_Read and write permissions_ e **"Allow GitHub Actions to create and approve
-pull requests"** — sem isso o release-please não consegue abrir a Release PR.
+1. **Settings → Actions → General → Workflow permissions**: marque _Read and write
+   permissions_ e **"Allow GitHub Actions to create and approve pull requests"** —
+   sem isso o release-please não consegue abrir a Release PR.
+2. **Secret `RELEASE_PLEASE_TOKEN`** (opcional, liga o auto-merge da Release PR):
+   um **PAT fine-grained** com acesso só a este repositório e permissões
+   _Contents: Read and write_ + _Pull requests: Read and write_. Em **Settings →
+   Secrets and variables → Actions → New repository secret**. É necessário porque
+   o `GITHUB_TOKEN` não dispara o run que cria a tag/release. Sem o secret, o
+   fluxo segue funcionando — só exige que você mergeie a Release PR manualmente.
