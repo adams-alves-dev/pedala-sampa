@@ -108,6 +108,37 @@
     </div>
 
     <div class="ps-field-group suggestion-span">
+      <label class="ps-fieldlabel" :for="`${uid}-duration`"
+        >Duração aproximada (HH:MM)</label
+      >
+      <input
+        :id="`${uid}-duration`"
+        v-model="model.durationHhmm"
+        class="ps-input suggestion-duration-input"
+        type="time"
+        :aria-describedby="`${uid}-duration-hint`"
+      />
+      <p
+        :id="`${uid}-duration-hint`"
+        class="suggestion-hint"
+        :class="{ 'suggestion-hint--warn': rhythmTooHigh }"
+        aria-live="polite"
+      >
+        <template v-if="rhythmTyped">Usando o ritmo informado acima.</template>
+        <template v-else-if="derivedRhythm === null">
+          Não sabe o ritmo? Informe a duração e calculamos pela distância.
+        </template>
+        <template v-else-if="rhythmTooHigh">
+          Ritmo calculado (≈ {{ formatRhythm(derivedRhythm) }} km/h) parece alto
+          demais — confira a distância e a duração.
+        </template>
+        <template v-else>
+          Ritmo calculado: ≈ {{ formatRhythm(derivedRhythm) }} km/h.
+        </template>
+      </p>
+    </div>
+
+    <div class="ps-field-group suggestion-span">
       <span :id="`${uid}-point`" class="ps-fieldlabel">
         Ponto de saída no mapa {{ required ? '*' : '' }}
       </span>
@@ -171,8 +202,9 @@
 
 <script setup lang="ts">
 import { computed, useId } from 'vue'
-import { parseNumber } from '../../lib/suggestion-form'
+import { parseDurationToMinutes, parseNumber } from '../../lib/suggestion-form'
 import type { SuggestionFormFields } from '../../lib/suggestion-form'
+import { getRhythmFromDistanceAndDuration } from '../../lib/time'
 import LocationPicker from './LocationPicker.client.vue'
 
 withDefaults(
@@ -191,6 +223,33 @@ const hasPoint = computed(
     parseNumber(model.value.latitude) !== undefined &&
     parseNumber(model.value.longitude) !== undefined,
 )
+
+// o ritmo digitado tem precedência sobre a duração
+const rhythmTyped = computed(
+  () => parseNumber(model.value.rhythmKmH) !== undefined,
+)
+
+/** Ritmo derivado da distância + duração — só quando o ritmo não foi digitado. */
+const derivedRhythm = computed<number | null>(() => {
+  if (rhythmTyped.value) {
+    return null
+  }
+  const distanceKm = parseNumber(model.value.distanceKm)
+  const durationMinutes = parseDurationToMinutes(model.value.durationHhmm)
+  if (distanceKm === undefined || durationMinutes === null) {
+    return null
+  }
+  return getRhythmFromDistanceAndDuration({ distanceKm, durationMinutes })
+})
+
+// o schema rejeita ritmo > 60; avisamos antes de enviar
+const rhythmTooHigh = computed(
+  () => derivedRhythm.value !== null && derivedRhythm.value > 60,
+)
+
+function formatRhythm(value: number | null): string {
+  return value === null ? '' : String(value).replace('.', ',')
+}
 </script>
 
 <style scoped>
@@ -216,6 +275,14 @@ const hasPoint = computed(
   margin: 0;
   font-size: var(--text-xs);
   color: var(--color-asphalt-55);
+}
+
+.suggestion-hint--warn {
+  color: var(--color-alert-red);
+}
+
+.suggestion-duration-input {
+  max-width: 12rem;
 }
 
 .suggestion-map {
