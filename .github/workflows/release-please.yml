@@ -16,6 +16,9 @@ jobs:
         id: release
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          # o default branch do repo é a develop; sem isto a action miraria nela.
+          # produção é a main, então os releases saem daqui.
+          target-branch: main
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
 
