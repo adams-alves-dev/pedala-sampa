@@ -19,6 +19,7 @@
     "typecheck": "nuxt typecheck",
     "test": "vitest run",
     "test:watch": "vitest",
+    "postinstall": "nuxt prepare",
     "prepare": "husky"
   },
   "dependencies": {
