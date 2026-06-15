@@ -120,8 +120,8 @@
       />
       <p
         :id="`${uid}-duration-hint`"
-        class="suggestion-hint"
-        :class="{ 'suggestion-hint--warn': rhythmTooHigh }"
+        class="suggestion-duration-hint"
+        :class="`suggestion-duration-hint--${durationHintTone}`"
         aria-live="polite"
       >
         <template v-if="rhythmTyped">Usando o ritmo informado acima.</template>
@@ -247,6 +247,18 @@ const rhythmTooHigh = computed(
   () => derivedRhythm.value !== null && derivedRhythm.value > 60,
 )
 
+// destaque (verde) no convite e no resultado; vermelho no aviso; discreto quando
+// o ritmo já foi digitado e a duração é ignorada
+const durationHintTone = computed(() => {
+  if (rhythmTooHigh.value) {
+    return 'warn'
+  }
+  if (rhythmTyped.value) {
+    return 'muted'
+  }
+  return 'accent'
+})
+
 function formatRhythm(value: number | null): string {
   return value === null ? '' : String(value).replace('.', ',')
 }
@@ -277,12 +289,30 @@ function formatRhythm(value: number | null): string {
   color: var(--color-asphalt-55);
 }
 
-.suggestion-hint--warn {
-  color: var(--color-alert-red);
-}
-
 .suggestion-duration-input {
   max-width: 12rem;
+}
+
+/* helper da duração: mais presente que os hints comuns, para a pessoa perceber
+   que pode preencher o ritmo pela duração */
+.suggestion-duration-hint {
+  margin: var(--space-1) 0 0;
+  font-size: var(--text-base);
+}
+
+.suggestion-duration-hint--accent {
+  color: var(--color-green-dark);
+  font-weight: 600;
+}
+
+.suggestion-duration-hint--warn {
+  color: var(--color-alert-red);
+  font-weight: 600;
+}
+
+.suggestion-duration-hint--muted {
+  font-size: var(--text-sm);
+  color: var(--color-asphalt-55);
 }
 
 .suggestion-map {
