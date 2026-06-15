@@ -96,6 +96,31 @@ describe('payloadFromFields', () => {
     }
     expect(payloadFromFields(fields)).toEqual({ name: 'Pedal Novo' })
   })
+
+  it('deriva o ritmo com distância em vírgula decimal', () => {
+    const fields = {
+      ...emptyFields(),
+      name: 'Pedal Novo',
+      distanceKm: '50,0',
+      durationHhmm: '02:30',
+    }
+    expect(payloadFromFields(fields)).toEqual({
+      name: 'Pedal Novo',
+      distanceKm: 50,
+      rhythmKmH: 20,
+    })
+  })
+
+  it('deriva ritmo acima de 60 sem clampar (o schema é o backstop)', () => {
+    const fields = {
+      ...emptyFields(),
+      name: 'Pedal Novo',
+      distanceKm: 60,
+      durationHhmm: '00:30', // 60 km em 30 min = 120 km/h
+    }
+    // não clampamos no form: o payloadSchema (rhythmKmH max 60) rejeita no envio
+    expect(payloadFromFields(fields).rhythmKmH).toBe(120)
+  })
 })
 
 describe('parseDurationToMinutes', () => {
@@ -141,5 +166,15 @@ describe('diffPayload', () => {
     fields.rhythmKmH = '20'
 
     expect(diffPayload(fields, record)).toEqual({ rhythmKmH: 20 })
+  })
+
+  it('deriva o ritmo da duração no diff quando o grupo não tinha ritmo', () => {
+    const recordNoRhythm: GroupRecord = { ...record, rhythmKmH: undefined }
+    const fields = {
+      ...fieldsFromRecord(recordNoRhythm),
+      durationHhmm: '01:00', // distância publicada (25 km) ÷ 1h = 25 km/h
+    }
+    // o ritmo que faltava entra no diff por não existir no publicado
+    expect(diffPayload(fields, recordNoRhythm)).toEqual({ rhythmKmH: 25 })
   })
 })

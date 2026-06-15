@@ -242,7 +242,8 @@ const derivedRhythm = computed<number | null>(() => {
   return getRhythmFromDistanceAndDuration({ distanceKm, durationMinutes })
 })
 
-// o schema rejeita ritmo > 60; avisamos antes de enviar
+// avisamos antes de enviar; este limite precisa acompanhar o `.max(60)` do
+// `rhythmKmH` em payloadSchema (lib/suggestion-schemas.ts), que é o backstop real
 const rhythmTooHigh = computed(
   () => derivedRhythm.value !== null && derivedRhythm.value > 60,
 )

@@ -118,6 +118,8 @@ export function payloadFromFields(
 
   // Sem ritmo digitado: deriva pela distância + duração informada (HH:MM).
   // O ritmo digitado tem precedência; a duração não é persistida no payload.
+  // (convenção: `parseNumber` devolve `undefined`; `parseDurationToMinutes` e
+  //  `getRhythmFromDistanceAndDuration` devolvem `null` — por isso os checks diferem.)
   if (payload.rhythmKmH === undefined && payload.distanceKm !== undefined) {
     const durationMinutes = parseDurationToMinutes(fields.durationHhmm)
     if (durationMinutes !== null) {
