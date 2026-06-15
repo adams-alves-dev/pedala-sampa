@@ -12,25 +12,48 @@ jobs:
   release-please:
     runs-on: ubuntu-latest
     steps:
+      # Detecta se o PAT (RELEASE_PLEASE_TOKEN) está configurado.
+      # - SEM PAT: o fluxo degrada para o modo manual (release-please usa o
+      #   GITHUB_TOKEN e você mergeia a Release PR à mão). Nada quebra.
+      # - COM PAT: a Release PR é auto-mergeada (o GITHUB_TOKEN não dispara o run
+      #   seguinte que cria a tag/release — por isso o PAT é necessário).
+      - id: haspat
+        env:
+          PAT: ${{ secrets.RELEASE_PLEASE_TOKEN }}
+        run: echo "set=${PAT:+true}" >> "$GITHUB_OUTPUT"
+
       - uses: googleapis/release-please-action@v4
         id: release
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.RELEASE_PLEASE_TOKEN || secrets.GITHUB_TOKEN }}
           # o default branch do repo é a develop; sem isto a action miraria nela.
           # produção é a main, então os releases saem daqui.
           target-branch: main
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
 
-      # Quando um release é efetivamente criado (a Release PR foi mergeada),
-      # sincroniza a develop com a main para ela carregar a versão + CHANGELOG.
-      # Roda na mesma execução do release-please (não depende de evento em cascata).
+      # COM PAT: auto-merge da Release PR assim que ela é aberta/atualizada.
+      # O push do merge (via PAT) dispara o run seguinte, que cria a tag/release.
+      - name: Auto-merge da Release PR
+        if: ${{ steps.haspat.outputs.set == 'true' && steps.release.outputs.pr && !steps.release.outputs.release_created }}
+        env:
+          GH_TOKEN: ${{ secrets.RELEASE_PLEASE_TOKEN }}
+        run: |
+          pr=${{ fromJSON(steps.release.outputs.pr).number }}
+          for i in 1 2 3 4 5 6; do
+            if gh pr merge --merge "$pr"; then exit 0; fi
+            echo "Release PR #$pr ainda não mergeável, tentativa $i..."; sleep 5
+          done
+          echo "::error::não foi possível auto-mergear a Release PR #$pr"; exit 1
+
+      # Quando o release é criado (a Release PR foi mergeada), sincroniza a
+      # develop com a main (versão + CHANGELOG). Roda na mesma execução.
       - uses: actions/checkout@v5
         if: ${{ steps.release.outputs.release_created }}
         with:
           ref: develop
           fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.RELEASE_PLEASE_TOKEN || secrets.GITHUB_TOKEN }}
 
       - name: Back-merge main into develop
         if: ${{ steps.release.outputs.release_created }}
