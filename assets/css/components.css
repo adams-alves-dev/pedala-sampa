@@ -110,19 +110,23 @@
   cursor: pointer;
   transition: color var(--duration-fast) var(--ease-out);
 }
-.ps-nav a:hover { color: var(--header-fg); }
-.ps-nav a[aria-current='page'] { color: var(--color-sun); }
+/* o CTA (.contribution-link) tem fundo amarelo e tinta própria — as regras de
+   cor dos links de nav (hover/ativo) o tornariam ilegível, então é excluído */
+.ps-nav a:hover:not(.contribution-link) { color: var(--header-fg); }
+.ps-nav a[aria-current='page']:not(.contribution-link) { color: var(--color-sun); }
 
-/* ---------- Yellow signage CTA (parallelogram + hard shadow) ---------- */
+/* ---------- Yellow signage CTA (parallelogram + offset block) ---------- */
 .ps-cta {
+  position: relative;
+  isolation: isolate;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: var(--space-2);
   min-height: 42px;
   padding: 0 var(--space-5);
-  background: var(--color-sun);
-  color: var(--color-asphalt);
+  background: transparent;
+  color: var(--color-on-sun);
   border: 0;
   font-family: var(--font-body);
   font-weight: 800;
@@ -132,12 +136,26 @@
   letter-spacing: 0.04em;
   cursor: pointer;
   white-space: nowrap;
-  clip-path: polygon(var(--space-1) 0, 100% 0, calc(100% - var(--space-1)) 100%, 0 100%);
-  transition: transform var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out);
+  transition: transform var(--duration-fast) var(--ease-out);
 }
-.ps-cta:hover { transform: translate(-1px, -1px); box-shadow: var(--shadow-hard); }
-.ps-cta--disabled { opacity: 0.45; cursor: not-allowed; clip-path: none; }
-.ps-cta--disabled:hover { transform: none; box-shadow: none; }
+/* face amarela e bloco de hover como camadas reais (box-shadow seria recortado
+   pelo clip-path; drop-shadow não renderiza com clip-path em alguns navegadores) */
+.ps-cta::before,
+.ps-cta::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  clip-path: polygon(var(--space-1) 0, 100% 0, calc(100% - var(--space-1)) 100%, 0 100%);
+}
+.ps-cta::after { z-index: -1; background: var(--color-sun); }
+.ps-cta::before { z-index: -2; background: var(--color-bike-green); transition: transform var(--duration-fast) var(--ease-out); }
+/* hover: a placa "salta" e o bloco verde aparece deslocado (igual ao .ps-btn--solid) */
+.ps-cta:hover { transform: translate(-3px, -3px); }
+.ps-cta:hover::before { transform: translate(9px, 9px); }
+.ps-cta--disabled { opacity: 0.45; cursor: not-allowed; }
+.ps-cta--disabled::before, .ps-cta--disabled::after { clip-path: none; }
+.ps-cta--disabled:hover { transform: none; }
+.ps-cta--disabled:hover::before { transform: none; }
 
 /* ---------- Outline / solid / ghost buttons ---------- */
 .ps-btn {
@@ -160,9 +178,9 @@
   transition: transform var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out),
               background var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out);
 }
-.ps-btn:hover { transform: translate(-1px, -1px); box-shadow: var(--shadow-hard); }
+.ps-btn:hover { transform: translate(-3px, -3px); box-shadow: var(--shadow-hover); }
 .ps-btn--solid { background: var(--color-asphalt); color: var(--color-concrete); }
-.ps-btn--solid:hover { box-shadow: 4px 4px 0 var(--color-bike-green); }
+.ps-btn--solid:hover { box-shadow: 6px 6px 0 var(--color-bike-green); }
 .ps-btn--ghost { border-color: var(--color-border); background: transparent; }
 .ps-btn--ghost:hover { border-color: var(--color-asphalt); box-shadow: none; transform: none; }
 .ps-btn--sm { min-height: 34px; padding: 0 var(--space-3); }
@@ -224,7 +242,7 @@
 }
 .ps-chip:hover { transform: translateY(-1px); }
 .ps-chip--active { background: var(--color-bike-green); color: var(--color-paper); border-color: var(--color-asphalt); }
-.ps-chip--count { background: var(--color-sun); }
+.ps-chip--count { background: var(--color-sun); color: var(--color-on-sun); border-color: var(--color-on-sun); }
 
 /* ---------- Group card (accent rail + meta) ---------- */
 .ps-card {
@@ -315,7 +333,7 @@
   transition: transform var(--duration-fast) var(--ease-out), background var(--duration-fast) var(--ease-out);
 }
 .ps-pin > * { transform: rotate(45deg); font-size: var(--text-sm); }
-.ps-pin--selected { background: var(--color-sun); width: 36px; height: 36px; box-shadow: 4px 4px 0 var(--color-asphalt); }
+.ps-pin--selected { background: var(--color-sun); color: var(--color-on-sun); border-color: var(--color-on-sun); width: 36px; height: 36px; box-shadow: 4px 4px 0 var(--color-asphalt); }
 .ps-pin--selected > * { font-size: var(--text-md); }
 
 /* ---------- States (empty / error) ---------- */
@@ -372,8 +390,8 @@
 .about-card { border: 2px solid var(--color-asphalt); border-radius: var(--radius-md); background: var(--color-paper);
   padding: var(--space-5); display: grid; gap: var(--space-2); box-shadow: 4px 4px 0 var(--color-bike-green); }
 .about-card .num { font-family: var(--font-display); font-size: var(--text-xl); font-weight: 800; opacity: 0.28; }
-.about-ic { display: inline-grid; place-items: center; width: 44px; height: 44px; border: 2px solid var(--color-asphalt);
-  border-radius: var(--radius-sm); background: var(--color-sign-yellow); color: var(--color-asphalt); margin-bottom: var(--space-1); }
+.about-ic { display: inline-grid; place-items: center; width: 44px; height: 44px; border: 2px solid var(--color-on-sun);
+  border-radius: var(--radius-sm); background: var(--color-sign-yellow); color: var(--color-on-sun); margin-bottom: var(--space-1); }
 
 @media (max-width: 760px) {
   .doc__inner { padding: var(--space-6) var(--space-4) var(--space-12); }

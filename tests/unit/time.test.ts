@@ -7,10 +7,10 @@ describe('time helpers', () => {
     expect(getEstimatedLapDuration({ distanceKm: 20, rhythmKmH: 18 })).toBe('01h:07m')
   })
 
-  it('retorna zero quando ritmo ou distância são inválidos', () => {
-    expect(getEstimatedLapDuration({ distanceKm: 30, rhythmKmH: 0 })).toBe('00h:00m')
-    expect(getEstimatedLapDuration({ distanceKm: 0, rhythmKmH: 18 })).toBe('00h:00m')
-    expect(getEstimatedLapDuration({ distanceKm: 30, rhythmKmH: -5 })).toBe('00h:00m')
+  it('retorna null quando ritmo ou distância não foram informados', () => {
+    expect(getEstimatedLapDuration({ distanceKm: 30, rhythmKmH: 0 })).toBeNull()
+    expect(getEstimatedLapDuration({ distanceKm: 0, rhythmKmH: 18 })).toBeNull()
+    expect(getEstimatedLapDuration({ distanceKm: 30, rhythmKmH: -5 })).toBeNull()
   })
 
   it('classifica hora inválida como noite', () => {

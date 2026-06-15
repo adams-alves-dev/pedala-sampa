@@ -20,17 +20,12 @@
         @click="toggleTheme"
       >
         <ClientOnly>
-          <PsIcon :name="colorMode.value === 'noturno' ? 'sun' : 'moon'" :size="18" />
+          <PsIcon :name="colorMode.value === 'dark' ? 'sun' : 'moon'" :size="18" />
           <template #fallback><span class="toggle-ph" /></template>
         </ClientOnly>
       </button>
 
-      <ContributionLink
-        class="desktop-cta"
-        :href="contributionFormUrl"
-        context="new-group"
-        icon="plus"
-      />
+      <ContributionLink class="desktop-cta" context="new-group" icon="plus" />
 
       <button
         ref="burgerRef"
@@ -49,23 +44,13 @@
     <div v-show="menuOpen" id="app-menu" ref="menuRef" class="menu" @click="menuOpen = false">
       <NuxtLink to="/" :aria-current="route.path === '/' ? 'page' : undefined">Mapa</NuxtLink>
       <NuxtLink to="/about" :aria-current="route.path === '/about' ? 'page' : undefined">Sobre</NuxtLink>
-      <a
-        v-if="contributionFormUrl"
-        :href="contributionFormUrl"
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label="Sugerir grupo (abre em nova aba)"
-      >+ Sugerir grupo</a>
+      <NuxtLink to="/contribute">+ Sugerir grupo</NuxtLink>
     </div>
   </header>
 </template>
 
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
-
-defineProps<{
-  contributionFormUrl?: string
-}>()
 
 const route = useRoute()
 const colorMode = useColorMode()
@@ -75,7 +60,7 @@ const burgerRef = ref<HTMLElement | null>(null)
 const menuRef = ref<HTMLElement | null>(null)
 
 function toggleTheme() {
-  colorMode.preference = colorMode.value === 'noturno' ? 'ciclovia' : 'noturno'
+  colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark'
 }
 
 // close the dropdown when navigating

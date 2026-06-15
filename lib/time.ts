@@ -1,14 +1,15 @@
 import type { Period, Rhythm } from '../types/group'
 
+/** Duração estimada da volta — `null` quando distância/ritmo não foram informados. */
 export function getEstimatedLapDuration({
   distanceKm,
   rhythmKmH,
 }: {
   distanceKm: number
   rhythmKmH: number
-}) {
+}): string | null {
   if (!distanceKm || !rhythmKmH || rhythmKmH <= 0) {
-    return '00h:00m'
+    return null
   }
 
   const totalMinutes = Math.round((distanceKm / rhythmKmH) * 60)

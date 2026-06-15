@@ -1,15 +1,12 @@
 <template>
   <div class="app-layout">
-    <AppHeader :contribution-form-url="contributionFormUrl" />
+    <AppHeader />
     <slot />
   </div>
 </template>
 
 <script setup lang="ts">
 import AppHeader from '../components/app/AppHeader.vue'
-
-const config = useRuntimeConfig()
-const contributionFormUrl = config.public.contributionFormUrl
 </script>
 
 <style scoped>

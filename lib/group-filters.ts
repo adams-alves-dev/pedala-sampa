@@ -61,7 +61,10 @@ export function filterGroups(groups: Group[], filters: GroupFilters) {
       const matchesEffort = !filters.effort || schedule.effort === filters.effort
       const matchesDistance = isInDistanceRange(schedule.distanceKm, filters.distanceRange)
       const matchesPeriod = !filters.period || getPeriodFromHour(schedule.startHour) === filters.period
-      const matchesRhythm = !filters.rhythm || getRhythmCategory(schedule.rhythmKmH) === filters.rhythm
+      // rhythmKmH 0 = não informado (sentinela do normalizador) — fica fora do filtro de ritmo
+      const matchesRhythm =
+        !filters.rhythm ||
+        (schedule.rhythmKmH > 0 && getRhythmCategory(schedule.rhythmKmH) === filters.rhythm)
 
       return matchesDay && matchesEffort && matchesDistance && matchesPeriod && matchesRhythm
     })

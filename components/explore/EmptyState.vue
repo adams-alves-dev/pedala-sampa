@@ -7,17 +7,13 @@
     </p>
     <div class="empty__actions">
       <button class="ps-btn" type="button" @click="$emit('clear')">Limpar filtros</button>
-      <ContributionLink :href="contributionFormUrl" context="new-group" icon="plus" />
+      <ContributionLink context="new-group" icon="plus" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import ContributionLink from '../contribution/ContributionLink.vue'
-
-defineProps<{
-  contributionFormUrl?: string
-}>()
 
 defineEmits<{
   clear: []

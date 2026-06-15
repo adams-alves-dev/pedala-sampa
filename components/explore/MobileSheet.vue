@@ -309,7 +309,7 @@ onBeforeUnmount(() => {
     padding: 0 5px;
     margin-left: 4px;
     background: var(--color-sign-yellow);
-    color: var(--color-asphalt);
+    color: var(--color-on-sun);
     border-radius: 999px;
     font-size: var(--text-xs);
     font-weight: 800;
