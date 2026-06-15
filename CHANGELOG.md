@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.2.0](https://github.com/adams-alves-dev/pedala-sampa/compare/v1.1.0...v1.2.0) (2026-06-15)
+
+
+### ✨ Funcionalidades
+
+* **contribution:** derivar o ritmo a partir da duração do pedal ([bac185f](https://github.com/adams-alves-dev/pedala-sampa/commit/bac185f156a331bf544713870058ab7c2690945d))
+* **contribution:** derivar o ritmo a partir da duração do pedal ([ebfb177](https://github.com/adams-alves-dev/pedala-sampa/commit/ebfb177f3188a75e0cf11ec84e009276e42c8c9d))
+
+
+### 💄 Estilo
+
+* **contribution:** dar mais destaque ao helper de duração ([9457f94](https://github.com/adams-alves-dev/pedala-sampa/commit/9457f9407ac85de39e3e043e29123ffb673a7e7e))
+
 ## [1.1.0](https://github.com/adams-alves-dev/pedala-sampa/compare/v1.0.0...v1.1.0) (2026-06-15)
 
 
