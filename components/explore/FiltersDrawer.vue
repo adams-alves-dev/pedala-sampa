@@ -4,20 +4,31 @@
     <aside class="drawer" :class="{ open }" :inert="!open" aria-label="Filtros">
       <div class="drawer__head">
         <span class="drawer__title">Filtros</span>
-        <button class="drawer__close" type="button" aria-label="Fechar filtros" @click="$emit('close')">
+        <button
+          class="drawer__close"
+          type="button"
+          aria-label="Fechar filtros"
+          @click="$emit('close')"
+        >
           <PsIcon name="x" :size="16" :stroke="3" />
         </button>
       </div>
 
       <div class="drawer__body">
-        <div v-for="group in filterGroups" :key="group.key" class="filter-group">
+        <div
+          v-for="group in filterGroups"
+          :key="group.key"
+          class="filter-group"
+        >
           <span class="ps-fieldlabel">{{ group.label }}</span>
           <div class="chip-row">
             <button
               v-for="option in group.options"
               :key="option.value"
               class="ps-chip"
-              :class="{ 'ps-chip--active': filters[group.key] === option.value }"
+              :class="{
+                'ps-chip--active': filters[group.key] === option.value,
+              }"
               type="button"
               :aria-pressed="filters[group.key] === option.value"
               @click="$emit('toggle', group.key, option.value)"
@@ -29,8 +40,20 @@
       </div>
 
       <div class="drawer__foot">
-        <button class="ps-btn ps-btn--ghost ps-btn--block" type="button" @click="$emit('clear')">Limpar</button>
-        <button class="ps-cta ps-btn--block" type="button" @click="$emit('close')">Ver {{ resultCount }} grupos</button>
+        <button
+          class="ps-btn ps-btn--ghost ps-btn--block"
+          type="button"
+          @click="$emit('clear')"
+        >
+          Limpar
+        </button>
+        <button
+          class="ps-cta ps-btn--block"
+          type="button"
+          @click="$emit('close')"
+        >
+          Ver {{ resultCount }} grupos
+        </button>
       </div>
     </aside>
   </div>

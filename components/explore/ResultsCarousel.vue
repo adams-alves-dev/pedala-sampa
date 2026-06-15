@@ -1,7 +1,10 @@
 <template>
   <div v-if="groups.length" class="carousel">
     <div class="carousel__meta">
-      <span class="ps-chip ps-chip--count"><strong>{{ groups.length }}</strong>&nbsp;grupos</span>
+      <span class="ps-chip ps-chip--count"
+        ><strong>{{ groups.length }}</strong
+        >&nbsp;grupos</span
+      >
     </div>
     <div class="carousel__row">
       <button
@@ -61,7 +64,8 @@ function updateNav() {
   }
   const overflow = track.scrollWidth - track.clientWidth > 4
   canPrev.value = overflow && track.scrollLeft > 2
-  canNext.value = overflow && track.scrollLeft + track.clientWidth < track.scrollWidth - 2
+  canNext.value =
+    overflow && track.scrollLeft + track.clientWidth < track.scrollWidth - 2
 }
 
 function scroll(direction: number) {
@@ -69,7 +73,10 @@ function scroll(direction: number) {
   if (!track) {
     return
   }
-  track.scrollBy({ left: direction * track.clientWidth * 0.8, behavior: scrollBehavior() })
+  track.scrollBy({
+    left: direction * track.clientWidth * 0.8,
+    behavior: scrollBehavior(),
+  })
 }
 
 function scrollToSelected() {
@@ -77,15 +84,23 @@ function scrollToSelected() {
   if (!track || !props.selectedGroupSlug) {
     return
   }
-  const index = props.groups.findIndex((group) => group.slug === props.selectedGroupSlug)
+  const index = props.groups.findIndex(
+    (group) => group.slug === props.selectedGroupSlug,
+  )
   const card = index >= 0 ? track.children[index] : null
   if (card instanceof HTMLElement) {
     track.scrollTo({ left: card.offsetLeft - 8, behavior: scrollBehavior() })
   }
 }
 
-watch(() => props.groups, () => nextTick(updateNav))
-watch(() => props.selectedGroupSlug, () => nextTick(scrollToSelected))
+watch(
+  () => props.groups,
+  () => nextTick(updateNav),
+)
+watch(
+  () => props.selectedGroupSlug,
+  () => nextTick(scrollToSelected),
+)
 
 onMounted(() => {
   nextTick(updateNav)
@@ -129,7 +144,9 @@ onBeforeUnmount(() => window.removeEventListener('resize', updateNav))
   color: var(--color-asphalt);
   cursor: pointer;
   box-shadow: var(--shadow-panel);
-  transition: transform var(--duration-fast) var(--ease-out), opacity var(--duration-fast) var(--ease-out),
+  transition:
+    transform var(--duration-fast) var(--ease-out),
+    opacity var(--duration-fast) var(--ease-out),
     background var(--duration-fast) var(--ease-out);
 }
 

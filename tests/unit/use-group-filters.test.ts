@@ -10,7 +10,16 @@ const groups: Group[] = [
     slug: 'pedal-centro',
     departureAddress: 'Praça da Sé',
     departureLocation: { latitude: -23.55, longitude: -46.63 },
-    schedules: [{ id: 's1', day: 'Terça', startHour: '20:00', effort: 'Intermediário', distanceKm: 30, rhythmKmH: 18 }],
+    schedules: [
+      {
+        id: 's1',
+        day: 'Terça',
+        startHour: '20:00',
+        effort: 'Intermediário',
+        distanceKm: 30,
+        rhythmKmH: 18,
+      },
+    ],
   },
   {
     id: '2',
@@ -18,17 +27,29 @@ const groups: Group[] = [
     slug: 'iniciantes-zona-oeste',
     departureAddress: 'Butantã',
     departureLocation: { latitude: -23.57, longitude: -46.72 },
-    schedules: [{ id: 's2', day: 'Sábado', startHour: '08:00', effort: 'Iniciante', distanceKm: 18, rhythmKmH: 14 }],
+    schedules: [
+      {
+        id: 's2',
+        day: 'Sábado',
+        startHour: '08:00',
+        effort: 'Iniciante',
+        distanceKm: 18,
+        rhythmKmH: 14,
+      },
+    ],
   },
 ]
 
 describe('useGroupFilters', () => {
   it('ativa uma categoria, conta e filtra', () => {
-    const { toggleFilter, filters, filteredGroups, activeCount } = useGroupFilters(ref(groups))
+    const { toggleFilter, filters, filteredGroups, activeCount } =
+      useGroupFilters(ref(groups))
     toggleFilter('day', 'Sábado')
     expect(filters.value.day).toBe('Sábado')
     expect(activeCount.value).toBe(1)
-    expect(filteredGroups.value.map((group) => group.slug)).toEqual(['iniciantes-zona-oeste'])
+    expect(filteredGroups.value.map((group) => group.slug)).toEqual([
+      'iniciantes-zona-oeste',
+    ])
   })
 
   it('reclicar na mesma opção limpa a categoria', () => {
@@ -51,7 +72,8 @@ describe('useGroupFilters', () => {
   })
 
   it('limpar zera as categorias mas mantém a busca', () => {
-    const { setQuery, toggleFilter, clearFilters, filters, activeCount } = useGroupFilters(ref(groups))
+    const { setQuery, toggleFilter, clearFilters, filters, activeCount } =
+      useGroupFilters(ref(groups))
     setQuery('centro')
     toggleFilter('day', 'Sábado')
     toggleFilter('distanceRange', 'up-to-20')

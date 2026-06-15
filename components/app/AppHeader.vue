@@ -1,15 +1,21 @@
 <template>
   <header class="ps-header">
     <NuxtLink class="ps-brand" to="/" aria-label="Pedala Sampa — início">
-      <img src="/brand-logo.svg" width="38" height="44" alt="" >
+      <img src="/brand-logo.svg" width="38" height="44" alt="" />
       <span class="ps-brand__text">Pedala Sampa</span>
       <span class="ps-brand__badge">mapa colaborativo</span>
     </NuxtLink>
 
     <nav class="ps-nav" aria-label="Navegação principal">
       <span class="nav-desktop">
-        <NuxtLink to="/" :aria-current="route.path === '/' ? 'page' : undefined">Mapa</NuxtLink>
-        <NuxtLink to="/about" :aria-current="route.path === '/about' ? 'page' : undefined">Sobre</NuxtLink>
+        <NuxtLink to="/" :aria-current="route.path === '/' ? 'page' : undefined"
+          >Mapa</NuxtLink
+        >
+        <NuxtLink
+          to="/about"
+          :aria-current="route.path === '/about' ? 'page' : undefined"
+          >Sobre</NuxtLink
+        >
       </span>
 
       <button
@@ -20,17 +26,15 @@
         @click="toggleTheme"
       >
         <ClientOnly>
-          <PsIcon :name="colorMode.value === 'noturno' ? 'sun' : 'moon'" :size="18" />
+          <PsIcon
+            :name="colorMode.value === 'dark' ? 'sun' : 'moon'"
+            :size="18"
+          />
           <template #fallback><span class="toggle-ph" /></template>
         </ClientOnly>
       </button>
 
-      <ContributionLink
-        class="desktop-cta"
-        :href="contributionFormUrl"
-        context="new-group"
-        icon="plus"
-      />
+      <ContributionLink class="desktop-cta" context="new-group" icon="plus" />
 
       <button
         ref="burgerRef"
@@ -46,26 +50,28 @@
       </button>
     </nav>
 
-    <div v-show="menuOpen" id="app-menu" ref="menuRef" class="menu" @click="menuOpen = false">
-      <NuxtLink to="/" :aria-current="route.path === '/' ? 'page' : undefined">Mapa</NuxtLink>
-      <NuxtLink to="/about" :aria-current="route.path === '/about' ? 'page' : undefined">Sobre</NuxtLink>
-      <a
-        v-if="contributionFormUrl"
-        :href="contributionFormUrl"
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label="Sugerir grupo (abre em nova aba)"
-      >+ Sugerir grupo</a>
+    <div
+      v-show="menuOpen"
+      id="app-menu"
+      ref="menuRef"
+      class="menu"
+      @click="menuOpen = false"
+    >
+      <NuxtLink to="/" :aria-current="route.path === '/' ? 'page' : undefined"
+        >Mapa</NuxtLink
+      >
+      <NuxtLink
+        to="/about"
+        :aria-current="route.path === '/about' ? 'page' : undefined"
+        >Sobre</NuxtLink
+      >
+      <NuxtLink to="/contribute">+ Sugerir grupo</NuxtLink>
     </div>
   </header>
 </template>
 
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
-
-defineProps<{
-  contributionFormUrl?: string
-}>()
 
 const route = useRoute()
 const colorMode = useColorMode()
@@ -75,20 +81,26 @@ const burgerRef = ref<HTMLElement | null>(null)
 const menuRef = ref<HTMLElement | null>(null)
 
 function toggleTheme() {
-  colorMode.preference = colorMode.value === 'noturno' ? 'ciclovia' : 'noturno'
+  colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark'
 }
 
 // close the dropdown when navigating
-watch(() => route.path, () => {
-  menuOpen.value = false
-})
+watch(
+  () => route.path,
+  () => {
+    menuOpen.value = false
+  },
+)
 
 // close the dropdown when clicking outside the burger/menu
 function onDocumentClick(event: MouseEvent) {
   if (!menuOpen.value || !(event.target instanceof Node)) {
     return
   }
-  if (burgerRef.value?.contains(event.target) || menuRef.value?.contains(event.target)) {
+  if (
+    burgerRef.value?.contains(event.target) ||
+    menuRef.value?.contains(event.target)
+  ) {
     return
   }
   menuOpen.value = false
@@ -127,7 +139,9 @@ onBeforeUnmount(() => document.removeEventListener('click', onDocumentClick))
   background: transparent;
   color: var(--header-fg);
   cursor: pointer;
-  transition: border-color var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out);
+  transition:
+    border-color var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out);
 }
 
 .ps-theme-toggle:hover {

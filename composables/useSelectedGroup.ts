@@ -5,7 +5,9 @@ export function useSelectedGroup(groups: Ref<Group[]>) {
   const selectedGroupSlug = ref<string | null>(null)
 
   const selectedGroup = computed(
-    () => groups.value.find((group) => group.slug === selectedGroupSlug.value) || null,
+    () =>
+      groups.value.find((group) => group.slug === selectedGroupSlug.value) ||
+      null,
   )
 
   function selectGroup(slug: string) {

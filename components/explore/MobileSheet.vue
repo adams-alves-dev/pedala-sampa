@@ -12,14 +12,18 @@
 
     <div class="sheet__head">
       <div class="sheet__headrow">
-        <span class="ps-chip ps-chip--count"><strong>{{ groups.length }}</strong>&nbsp;grupos</span>
+        <span class="ps-chip ps-chip--count"
+          ><strong>{{ groups.length }}</strong
+          >&nbsp;grupos</span
+        >
         <button
           class="ps-btn ps-btn--sm sheet__filtros"
           :class="{ 'has-active': activeCount > 0 }"
           type="button"
           @click="$emit('open-filters')"
         >
-          <PsIcon name="sliders" :size="15" /> Filtros <span class="count-pill">{{ activeCount }}</span>
+          <PsIcon name="sliders" :size="15" /> Filtros
+          <span class="count-pill">{{ activeCount }}</span>
         </button>
       </div>
       <div class="sheet__chips">
@@ -50,7 +54,9 @@
       <div v-else class="sheet__empty">
         <PsIcon name="search" :size="26" />
         <strong>Nenhum grupo com esses filtros.</strong>
-        <button class="ps-btn ps-btn--sm" type="button" @click="$emit('clear')">Limpar filtros</button>
+        <button class="ps-btn ps-btn--sm" type="button" @click="$emit('clear')">
+          Limpar filtros
+        </button>
       </div>
     </div>
   </div>
@@ -83,7 +89,13 @@ const QUICK_KEYS: FilterCategory[] = ['effort', 'period', 'distanceRange']
 const quickChips = computed(() =>
   props.filterGroups
     .filter((group) => QUICK_KEYS.includes(group.key))
-    .flatMap((group) => group.options.map((option) => ({ key: group.key, value: option.value, label: option.label }))),
+    .flatMap((group) =>
+      group.options.map((option) => ({
+        key: group.key,
+        value: option.value,
+        label: option.label,
+      })),
+    ),
 )
 
 // mobile: tapping a card navigates straight to the group page (spec §8.1)
@@ -179,7 +191,8 @@ function onPointerUp() {
     return
   }
   const parentTop = parent.getBoundingClientRect().top
-  const ratio = (sheet.getBoundingClientRect().top - parentTop) / parent.clientHeight
+  const ratio =
+    (sheet.getBoundingClientRect().top - parentTop) / parent.clientHeight
   sheet.style.transform = ''
   snap.value = ratio < 0.25 ? 'full' : ratio < 0.65 ? 'half' : 'peek'
 }
@@ -200,8 +213,12 @@ watch(
       const card = body && index >= 0 ? body.children[index] : null
       if (body && card instanceof HTMLElement) {
         // align the card's top with the top of the list (clamps near the end)
-        const delta = card.getBoundingClientRect().top - body.getBoundingClientRect().top
-        body.scrollTo({ top: body.scrollTop + delta, behavior: scrollBehavior() })
+        const delta =
+          card.getBoundingClientRect().top - body.getBoundingClientRect().top
+        body.scrollTo({
+          top: body.scrollTop + delta,
+          behavior: scrollBehavior(),
+        })
       }
     })
   },
@@ -309,7 +326,7 @@ onBeforeUnmount(() => {
     padding: 0 5px;
     margin-left: 4px;
     background: var(--color-sign-yellow);
-    color: var(--color-asphalt);
+    color: var(--color-on-sun);
     border-radius: 999px;
     font-size: var(--text-xs);
     font-weight: 800;

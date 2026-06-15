@@ -7,28 +7,28 @@
 
 :root {
   /* ---- Core palette (canonical base) ---- */
-  --color-asphalt:      #1A120B;
-  --color-concrete:     #E8E0D0;
-  --color-paper:        #FFF8EE;
-  --color-bike-green:   #00796B;
-  --color-sign-yellow:  #FFB300;
-  --color-alert-red:    #E53935;
-  --color-transit-blue: #1565C0;
-  --color-border:       #C8BFA8;
+  --color-asphalt: #1a120b;
+  --color-concrete: #e8e0d0;
+  --color-paper: #fff8ee;
+  --color-bike-green: #00796b;
+  --color-sign-yellow: #ffb300;
+  --color-alert-red: #e53935;
+  --color-transit-blue: #1565c0;
+  --color-border: #c8bfa8;
 
   /* legacy aliases (avoid breaking references during the migration) */
-  --color-sun:    var(--color-sign-yellow);
+  --color-sun: var(--color-sign-yellow);
   --color-forest: var(--color-bike-green);
 
   /* ---- Derived / supporting shades ---- */
-  --color-asphalt-80:  rgb(26 18 11 / 80%);
-  --color-asphalt-55:  rgb(26 18 11 / 55%);
-  --color-asphalt-45:  rgb(26 18 11 / 45%);
-  --color-green-dark:  #015C50;
-  --color-green-tint:  #DDEAE6;
-  --color-yellow-tint: #FBEBC4;
-  --color-paper-2:     #F7EEDF;
-  --color-concrete-dk: #D9CFB8;
+  --color-asphalt-80: rgb(26 18 11 / 80%);
+  --color-asphalt-55: rgb(26 18 11 / 55%);
+  --color-asphalt-45: rgb(26 18 11 / 45%);
+  --color-green-dark: #015c50;
+  --color-green-tint: #ddeae6;
+  --color-yellow-tint: #fbebc4;
+  --color-paper-2: #f7eedf;
+  --color-concrete-dk: #d9cfb8;
 
   /* ---- Header surface tokens (decoupled for dark mode) ---- */
   --header-bg: var(--color-asphalt);
@@ -39,33 +39,41 @@
 
   /* ---- Typography families (Sinal pairing) ---- */
   --font-display: 'Archivo', ui-sans-serif, system-ui, sans-serif;
-  --font-body:    'Hanken Grotesk', ui-sans-serif, system-ui, sans-serif;
+  --font-body: 'Hanken Grotesk', ui-sans-serif, system-ui, sans-serif;
 
   /* ---- Type scale ---- */
-  --text-xs:   0.6875rem;
-  --text-sm:   0.75rem;
+  --text-xs: 0.6875rem;
+  --text-sm: 0.75rem;
   --text-base: 0.875rem;
-  --text-md:   1rem;
-  --text-lg:   1.25rem;
-  --text-xl:   1.75rem;
-  --text-2xl:  clamp(2rem, 6vw, 3.5rem);
-  --text-3xl:  clamp(2.25rem, 8vw, 5rem);
+  --text-md: 1rem;
+  --text-lg: 1.25rem;
+  --text-xl: 1.75rem;
+  --text-2xl: clamp(2rem, 6vw, 3.5rem);
+  --text-3xl: clamp(2.25rem, 8vw, 5rem);
 
   /* ---- Spacing scale (4px base) ---- */
-  --space-1: 4px;   --space-2: 8px;   --space-3: 12px;  --space-4: 16px;
-  --space-5: 20px;  --space-6: 24px;  --space-8: 32px;  --space-10: 40px;
-  --space-12: 48px; --space-16: 64px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
 
   /* ---- Motion ---- */
-  --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
-  --duration-fast:   150ms;
+  --duration-fast: 150ms;
   --duration-normal: 250ms;
-  --duration-slow:   400ms;
+  --duration-slow: 400ms;
 
   /* ---- Elevation & radius ---- */
   --shadow-panel: 0 18px 50px rgb(26 18 11 / 18%);
-  --shadow-hard:  4px 4px 0 var(--color-asphalt); /* signage offset block (no blur) */
+  --shadow-hard: 4px 4px 0 var(--color-asphalt); /* signage offset block (no blur) */
+  --shadow-hover: 6px 6px 0 var(--color-asphalt); /* hover dos botões: bloco que "salta" */
   --radius-sm: 4px;
   --radius-md: 6px;
 
@@ -81,33 +89,69 @@
    ============================================================ */
 
 /* Ciclovia (light, default) */
-[data-theme='ciclovia'] {
-  --color-asphalt: #11271C; --color-concrete: #DCE7DA; --color-paper: #F4F9F0;
-  --color-bike-green: #1F8A4C; --color-sign-yellow: #F2B33A;
-  --color-alert-red: #D8432F; --color-transit-blue: #1E7A9E; --color-border: #BBCDB6;
-  --color-asphalt-80: rgb(17 39 28 / 80%); --color-asphalt-55: rgb(17 39 28 / 58%); --color-asphalt-45: rgb(17 39 28 / 46%);
-  --color-green-dark: #136636; --color-green-tint: #D7EBD6; --color-yellow-tint: #F8EAC4;
-  --color-paper-2: #EAF2E4; --color-concrete-dk: #CCD9C7;
-  --header-bg: #11271C; --header-fg: #DCE7DA;
+[data-theme='light'] {
+  /* widgets nativos (picker de horário, scrollbar, autofill) seguem o tema */
+  color-scheme: light;
+  --color-asphalt: #11271c;
+  --color-concrete: #dce7da;
+  --color-paper: #f4f9f0;
+  --color-bike-green: #1f8a4c;
+  --color-sign-yellow: #f2b33a;
+  --color-alert-red: #d8432f;
+  --color-transit-blue: #1e7a9e;
+  --color-border: #bbcdb6;
+  --color-asphalt-80: rgb(17 39 28 / 80%);
+  --color-asphalt-55: rgb(17 39 28 / 58%);
+  --color-asphalt-45: rgb(17 39 28 / 46%);
+  --color-green-dark: #136636;
+  --color-green-tint: #d7ebd6;
+  --color-yellow-tint: #f8eac4;
+  --color-paper-2: #eaf2e4;
+  --color-concrete-dk: #ccd9c7;
+  --header-bg: #11271c;
+  --header-fg: #dce7da;
+  /* tinta para superfícies amarelas (--color-sun); NÃO inverte com o tema, ao
+     contrário de --color-asphalt, que vira creme no dark e some sobre o amarelo */
+  --color-on-sun: #11271c;
   --tile-url: 'light';
 }
 
 /* Noturno (dark) — the asphalt token becomes light ink on a dark surface */
-[data-theme='noturno'] {
-  --color-asphalt: #F3EEE2; --color-concrete: #14130E; --color-paper: #211F18;
-  --color-bike-green: #2FCB7E; --color-sign-yellow: #FFC83D;
-  --color-alert-red: #FF6B5E; --color-transit-blue: #5AA9FF; --color-border: #3A3730;
-  --color-asphalt-80: rgb(243 238 226 / 82%); --color-asphalt-55: rgb(243 238 226 / 62%); --color-asphalt-45: rgb(243 238 226 / 46%);
-  --color-green-dark: #28B870; --color-green-tint: #1C3A2C; --color-yellow-tint: #3A3320;
-  --color-paper-2: #1A1812; --color-concrete-dk: #2A2820;
-  --header-bg: #0E0D09; --header-fg: #F3EEE2;
+[data-theme='dark'] {
+  color-scheme: dark;
+  --color-asphalt: #f3eee2;
+  --color-concrete: #14130e;
+  --color-paper: #211f18;
+  --color-bike-green: #2fcb7e;
+  --color-sign-yellow: #ffc83d;
+  --color-alert-red: #ff6b5e;
+  --color-transit-blue: #5aa9ff;
+  --color-border: #3a3730;
+  --color-asphalt-80: rgb(243 238 226 / 82%);
+  --color-asphalt-55: rgb(243 238 226 / 62%);
+  --color-asphalt-45: rgb(243 238 226 / 46%);
+  --color-green-dark: #28b870;
+  --color-green-tint: #1c3a2c;
+  --color-yellow-tint: #3a3320;
+  --color-paper-2: #1a1812;
+  --color-concrete-dk: #2a2820;
+  --header-bg: #0e0d09;
+  --header-fg: #f3eee2;
+  --color-on-sun: #1a120b;
   --tile-url: 'dark';
 }
-[data-theme='noturno'] .ps-input,
-[data-theme='noturno'] .ps-search { background: #1A1812; }
-[data-theme='noturno'] .ps-cta { color: #1A120B; }
-[data-theme='noturno'] .leaflet-control-attribution { background: rgba(20, 19, 14, 0.8); color: #9c978b; }
-[data-theme='noturno'] .leaflet-control-attribution a { color: #b9b3a6; }
+[data-theme='dark'] .ps-input,
+[data-theme='dark'] .ps-search {
+  background: #1a1812;
+}
+/* superfícies amarelas usam --color-on-sun na base (não invertem) — sem override por tema */
+[data-theme='dark'] .leaflet-control-attribution {
+  background: rgba(20, 19, 14, 0.8);
+  color: #9c978b;
+}
+[data-theme='dark'] .leaflet-control-attribution a {
+  color: #b9b3a6;
+}
 
 /* ============================================================
    Base resets
@@ -136,7 +180,7 @@ select {
 
 ::selection {
   background: var(--color-sign-yellow);
-  color: var(--color-asphalt);
+  color: var(--color-on-sun);
 }
 
 :focus-visible {

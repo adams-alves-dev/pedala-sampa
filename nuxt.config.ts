@@ -7,8 +7,8 @@ export default defineNuxtConfig({
   colorMode: {
     classSuffix: '', // no class suffix
     dataValue: 'theme', // writes data-theme on <html>
-    preference: 'ciclovia', // default theme (light)
-    fallback: 'ciclovia',
+    preference: 'light', // tema padrão (a identidade "Ciclovia")
+    fallback: 'light',
     storageKey: 'ps-color-mode',
   },
   app: {
@@ -27,7 +27,11 @@ export default defineNuxtConfig({
       ],
       link: [
         { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
-        { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
+        {
+          rel: 'preconnect',
+          href: 'https://fonts.gstatic.com',
+          crossorigin: '',
+        },
         {
           rel: 'stylesheet',
           href: 'https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Hanken+Grotesk:wght@400;600;800;900&display=swap',
@@ -38,15 +42,23 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     hygraphToken: process.env.GRAPHQL_TOKEN || '',
+    turnstileSecretKey: process.env.TURNSTILE_SECRET_KEY || '',
+    turnstileEnabled: process.env.TURNSTILE_ENABLED === 'true',
     public: {
       hygraphEndpoint:
         process.env.HYGRAPH_ENDPOINT ||
         'https://api-us-east-1.graphcms.com/v2/cktlzsv381lsy01z0109u52uf/master',
-      contributionFormUrl: process.env.NUXT_PUBLIC_CONTRIBUTION_FORM_URL || '',
+      turnstileSiteKey: process.env.NUXT_PUBLIC_TURNSTILE_SITE_KEY || '',
     },
   },
+  // preset netlify: páginas continuam estáticas (prerender com crawl), mas as
+  // server routes em server/api/ viram Netlify Functions no deploy
   nitro: {
-    preset: 'static',
+    preset: 'netlify',
+    prerender: {
+      crawlLinks: true,
+      routes: ['/'],
+    },
   },
   typescript: {
     strict: true,

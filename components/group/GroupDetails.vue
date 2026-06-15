@@ -12,21 +12,25 @@
     <div class="group-grid">
       <div class="group-col">
         <section>
-          <h2 class="section-title"><PsIcon name="calendar" :size="16" /> Agenda</h2>
+          <h2 class="section-title">
+            <PsIcon name="calendar" :size="16" /> Agenda
+          </h2>
           <div v-if="primarySchedule" class="meta-grid">
             <div class="meta-cell">
               <div class="ps-label">Dia &amp; saída</div>
-              <div class="v">{{ primarySchedule.day }} · {{ primarySchedule.startHour }}</div>
+              <div class="v">
+                {{ primarySchedule.day }} · {{ primarySchedule.startHour }}
+              </div>
             </div>
             <div class="meta-cell">
               <div class="ps-label">Ponto de saída</div>
               <div class="v v--addr">{{ departure }}</div>
             </div>
-            <div class="meta-cell">
+            <div v-if="primarySchedule.distanceKm > 0" class="meta-cell">
               <div class="ps-label">Distância</div>
               <div class="v">{{ primarySchedule.distanceKm }} km</div>
             </div>
-            <div class="meta-cell">
+            <div v-if="primarySchedule.rhythmKmH > 0" class="meta-cell">
               <div class="ps-label">Ritmo médio</div>
               <div class="v">{{ primarySchedule.rhythmKmH }} km/h</div>
             </div>
@@ -34,16 +38,20 @@
               <div class="ps-label">Nível</div>
               <div class="v">{{ primarySchedule.effort }}</div>
             </div>
-            <div class="meta-cell">
+            <div v-if="duration" class="meta-cell">
               <div class="ps-label">Volta média</div>
               <div class="v">{{ duration }}</div>
             </div>
           </div>
-          <p v-else class="ps-body group-muted">Agenda ainda não cadastrada para este grupo.</p>
+          <p v-else class="ps-body group-muted">
+            Agenda ainda não cadastrada para este grupo.
+          </p>
         </section>
 
         <section>
-          <h2 class="section-title"><PsIcon name="users" :size="16" /> Contato &amp; contribuição</h2>
+          <h2 class="section-title">
+            <PsIcon name="users" :size="16" /> Contato &amp; contribuição
+          </h2>
           <div class="group-actions">
             <a
               v-if="group.link?.url"
@@ -51,19 +59,37 @@
               :href="group.link.url"
               target="_blank"
               rel="noopener noreferrer"
-              :aria-label="(group.link.label || 'Perfil / contato') + ' (abre em nova aba)'"
+              :aria-label="
+                (group.link.label || 'Perfil / contato') + ' (abre em nova aba)'
+              "
             >
-              <PsIcon name="chat" :size="16" /> {{ group.link.label || 'Perfil / contato' }}
+              <PsIcon name="chat" :size="16" />
+              {{ group.link.label || 'Perfil / contato' }}
               <PsIcon name="arrowUR" :size="15" />
             </a>
-            <p v-else class="ps-body group-muted">Este grupo ainda não tem link de contato cadastrado.</p>
-            <ContributionLink :href="contributionFormUrl" context="correction" icon="pencil" fab />
+            <p v-else class="ps-body group-muted">
+              Este grupo ainda não tem link de contato cadastrado.
+            </p>
+            <ContributionLink
+              context="correction"
+              :slug="group.slug"
+              icon="pencil"
+              fab
+            />
+            <p class="ps-body group-removal">
+              É quem organiza o pedal e não quer o grupo no site?
+              <NuxtLink :to="`/contribute/removal/${group.slug}`"
+                >Solicitar remoção</NuxtLink
+              >
+            </p>
           </div>
         </section>
       </div>
 
       <section>
-        <h2 class="section-title"><PsIcon name="pin" :size="16" /> Ponto de saída</h2>
+        <h2 class="section-title">
+          <PsIcon name="pin" :size="16" /> Ponto de saída
+        </h2>
         <div class="group-map">
           <GroupLocationMap
             :lat="group.departureLocation.latitude"
@@ -86,7 +112,6 @@ import GroupMetaBadges from './GroupMetaBadges.vue'
 
 const props = defineProps<{
   group: Group
-  contributionFormUrl?: string
 }>()
 
 const primarySchedule = computed(() => props.group.schedules[0])
@@ -99,7 +124,7 @@ const duration = computed(() =>
         distanceKm: primarySchedule.value.distanceKm,
         rhythmKmH: primarySchedule.value.rhythmKmH,
       })
-    : '—',
+    : null,
 )
 </script>
 
@@ -116,6 +141,22 @@ const duration = computed(() =>
 .group-muted {
   margin: 0;
   color: var(--color-asphalt-55);
+}
+
+.group-removal {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--color-asphalt-55);
+}
+
+.group-removal a {
+  color: inherit;
+  font-weight: 800;
+  transition: color var(--duration-fast) var(--ease-out);
+}
+
+.group-removal a:hover {
+  color: var(--color-asphalt);
 }
 
 .group-addr {

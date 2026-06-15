@@ -14,16 +14,26 @@
       <LMarker
         v-for="(group, index) in groups"
         :key="`${group.id}${group.slug === selectedGroupSlug ? '-selected' : ''}`"
-        :lat-lng="[group.departureLocation.latitude, group.departureLocation.longitude]"
+        :lat-lng="[
+          group.departureLocation.latitude,
+          group.departureLocation.longitude,
+        ]"
         :z-index-offset="group.slug === selectedGroupSlug ? 1000 : 0"
         @click="onMarkerClick(group.slug, $event)"
       >
         <LIcon
-          :icon-size="group.slug === selectedGroupSlug ? selectedSize : defaultSize"
-          :icon-anchor="group.slug === selectedGroupSlug ? selectedAnchor : defaultAnchor"
+          :icon-size="
+            group.slug === selectedGroupSlug ? selectedSize : defaultSize
+          "
+          :icon-anchor="
+            group.slug === selectedGroupSlug ? selectedAnchor : defaultAnchor
+          "
           class-name="pin-wrap"
         >
-          <div class="ps-pin" :class="{ 'ps-pin--selected': group.slug === selectedGroupSlug }">
+          <div
+            class="ps-pin"
+            :class="{ 'ps-pin--selected': group.slug === selectedGroupSlug }"
+          >
             <span>{{ index + 1 }}</span>
           </div>
         </LIcon>
@@ -33,9 +43,19 @@
 </template>
 
 <script setup lang="ts">
-import type { LatLngTuple, LeafletMouseEvent, Map as LeafletMap, PointTuple } from 'leaflet'
+import type {
+  LatLngTuple,
+  LeafletMouseEvent,
+  Map as LeafletMap,
+  PointTuple,
+} from 'leaflet'
 import { onBeforeUnmount, watch } from 'vue'
-import { FLY_ZOOM, SHEET_OVERLAP, buildFitOptions, groupsToPoints } from '../../lib/map-bounds'
+import {
+  FLY_ZOOM,
+  SHEET_OVERLAP,
+  buildFitOptions,
+  groupsToPoints,
+} from '../../lib/map-bounds'
 import { prefersReducedMotion } from '../../lib/motion'
 import type { Group } from '../../types/group'
 import MapTileLayer from './MapTileLayer.vue'
@@ -51,7 +71,9 @@ const emit = defineEmits<{
 }>()
 
 // aligns with the prototype (PS.CENTER / PS.ZOOM)
-const CENTER: LatLngTuple = [-23.576, -46.655]
+// LMap tipa :center como PointExpression (par fixo de 2); um LatLngTuple admite
+// uma altitude opcional e não casa — fixamos um par de 2 elementos.
+const CENTER: [number, number] = [-23.576, -46.655]
 const ZOOM = 12
 
 const defaultSize: PointTuple = [28, 28]
@@ -70,7 +92,8 @@ let pendingFit = false
 // mobile: the bottom sheet covers the lower half, so a centred pin lands behind
 // it — shift the map centre down so the pin sits in the visible upper area.
 const isMobileViewport = () =>
-  typeof window !== 'undefined' && window.matchMedia('(max-width: 760px)').matches
+  typeof window !== 'undefined' &&
+  window.matchMedia('(max-width: 760px)').matches
 
 // half the sheet overlap puts the pin at the same height as a fitted single pin
 function flyTarget(map: LeafletMap, latlng: LatLngTuple): LatLngTuple {
@@ -165,7 +188,10 @@ watch(
     if (!group) {
       return
     }
-    const latlng: LatLngTuple = [group.departureLocation.latitude, group.departureLocation.longitude]
+    const latlng: LatLngTuple = [
+      group.departureLocation.latitude,
+      group.departureLocation.longitude,
+    ]
     const target = flyTarget(mapInstance, latlng)
     if (prefersReducedMotion()) {
       mapInstance.setView(target, FLY_ZOOM)

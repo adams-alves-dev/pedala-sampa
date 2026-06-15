@@ -1,6 +1,10 @@
 import { describe, expect, it } from 'vitest'
-import { countActiveFilters, filterGroups, createEmptyGroupFilters } from '../../lib/group-filters'
-import type { Group } from '../../types/group'
+import {
+  countActiveFilters,
+  filterGroups,
+  createEmptyGroupFilters,
+} from '../../lib/group-filters'
+import type { Group, GroupFilters } from '../../types/group'
 
 const groups: Group[] = [
   {
@@ -9,7 +13,16 @@ const groups: Group[] = [
     slug: 'pedal-centro',
     departureAddress: 'Praça da Sé',
     departureLocation: { latitude: -23.55, longitude: -46.63 },
-    schedules: [{ id: 's1', day: 'Terça', startHour: '20:00', effort: 'Intermediário', distanceKm: 30, rhythmKmH: 18 }],
+    schedules: [
+      {
+        id: 's1',
+        day: 'Terça',
+        startHour: '20:00',
+        effort: 'Intermediário',
+        distanceKm: 30,
+        rhythmKmH: 18,
+      },
+    ],
   },
   {
     id: '2',
@@ -17,7 +30,16 @@ const groups: Group[] = [
     slug: 'iniciantes-zona-oeste',
     departureAddress: 'Butantã',
     departureLocation: { latitude: -23.57, longitude: -46.72 },
-    schedules: [{ id: 's2', day: 'Sábado', startHour: '08:00', effort: 'Iniciante', distanceKm: 18, rhythmKmH: 14 }],
+    schedules: [
+      {
+        id: 's2',
+        day: 'Sábado',
+        startHour: '08:00',
+        effort: 'Iniciante',
+        distanceKm: 18,
+        rhythmKmH: 14,
+      },
+    ],
   },
 ]
 
@@ -34,16 +56,20 @@ describe('group filters', () => {
   })
 
   it('mantém todos os grupos quando o filtro está vazio', () => {
-    expect(filterGroups(groups, createEmptyGroupFilters()).map((group) => group.slug)).toEqual([
-      'pedal-centro',
-      'iniciantes-zona-oeste',
-    ])
+    expect(
+      filterGroups(groups, createEmptyGroupFilters()).map(
+        (group) => group.slug,
+      ),
+    ).toEqual(['pedal-centro', 'iniciantes-zona-oeste'])
   })
 
   it('filtra por texto', () => {
-    expect(filterGroups(groups, { ...createEmptyGroupFilters(), query: 'oeste' }).map((group) => group.slug)).toEqual([
-      'iniciantes-zona-oeste',
-    ])
+    expect(
+      filterGroups(groups, {
+        ...createEmptyGroupFilters(),
+        query: 'oeste',
+      }).map((group) => group.slug),
+    ).toEqual(['iniciantes-zona-oeste'])
   })
 
   it('filtra por dia, nível, distância, período e ritmo (seleção única)', () => {
@@ -59,9 +85,28 @@ describe('group filters', () => {
     expect(result.map((group) => group.slug)).toEqual(['iniciantes-zona-oeste'])
   })
 
+  it('grupo sem ritmo informado (0) fica fora do filtro de ritmo', () => {
+    const withoutRhythm: Group[] = [
+      {
+        ...groups[1],
+        schedules: [{ ...groups[1].schedules[0], rhythmKmH: 0 }],
+      },
+    ]
+    const filters: GroupFilters = {
+      ...createEmptyGroupFilters(),
+      rhythm: 'light',
+    }
+    expect(filterGroups(withoutRhythm, filters)).toEqual([])
+    expect(filterGroups(withoutRhythm, createEmptyGroupFilters())).toHaveLength(
+      1,
+    )
+  })
+
   it('conta categorias ativas mais a busca', () => {
     expect(countActiveFilters(createEmptyGroupFilters())).toBe(0)
-    expect(countActiveFilters({ ...createEmptyGroupFilters(), query: 'pedal' })).toBe(1)
+    expect(
+      countActiveFilters({ ...createEmptyGroupFilters(), query: 'pedal' }),
+    ).toBe(1)
     expect(
       countActiveFilters({
         ...createEmptyGroupFilters(),

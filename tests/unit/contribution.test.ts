@@ -1,18 +1,33 @@
 import { describe, expect, it } from 'vitest'
-import { getContributionLinkState } from '../../lib/contribution'
+import {
+  getContributionLabel,
+  getContributionRoute,
+} from '../../lib/contribution'
 
-describe('contribution helper', () => {
-  it('habilita link quando URL existe', () => {
-    expect(getContributionLinkState('https://example.com/form')).toEqual({
-      href: 'https://example.com/form',
-      isEnabled: true,
-    })
+describe('contribution routes', () => {
+  it('aponta sugestão de grupo novo para /contribute', () => {
+    expect(getContributionRoute('new-group')).toBe('/contribute')
   })
 
-  it('desabilita link quando URL está ausente', () => {
-    expect(getContributionLinkState('')).toEqual({
-      href: undefined,
-      isEnabled: false,
-    })
+  it('aponta correção com slug para o form do grupo', () => {
+    expect(getContributionRoute('correction', 'pedal-noturno')).toBe(
+      '/contribute/correction/pedal-noturno',
+    )
+  })
+
+  it('aponta correção sem slug para a escolha de grupo', () => {
+    expect(getContributionRoute('correction')).toBe('/contribute/correction')
+  })
+
+  it('aponta remoção com slug para o form de remoção', () => {
+    expect(getContributionRoute('removal', 'pedal-noturno')).toBe(
+      '/contribute/removal/pedal-noturno',
+    )
+  })
+
+  it('tem rótulo para cada contexto', () => {
+    expect(getContributionLabel('new-group')).toBe('Sugerir grupo')
+    expect(getContributionLabel('correction')).toBe('Sugerir correção')
+    expect(getContributionLabel('removal')).toBe('Solicitar remoção')
   })
 })

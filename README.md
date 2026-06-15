@@ -12,12 +12,12 @@
 
 ## Sobre
 
-O projeto passou por uma **migração para Nuxt 3** e um **redesign completo** (direção *wayfinding* — inspirada na sinalização urbana). Principais características:
+O projeto passou por uma **migração para Nuxt 3** e um **redesign completo** (direção _wayfinding_ — inspirada na sinalização urbana). Principais características:
 
 - 🗺️ **Mapa-foco** — mapa interativo (Leaflet) com os pontos de saída dos grupos.
 - 🔎 **Filtros** — explore por região, dia, horário, nível, distância e ritmo.
 - 📄 **Página de grupo** — detalhes de cada grupo (agenda, ponto de saída, métricas).
-- 🎨 **Dois temas** — *Ciclovia* (claro, padrão) e *Noturno* (escuro).
+- 🎨 **Dois temas** — _Ciclovia_ (claro, padrão) e _Noturno_ (escuro).
 - ♿ **Acessibilidade** — foco visível, navegação por teclado e `prefers-reduced-motion`.
 - 🤝 **Colaborativo** — qualquer pessoa pode sugerir novos grupos ou correções.
 
@@ -58,14 +58,18 @@ NUXT_PUBLIC_CONTRIBUTION_FORM_URL=
 
 ## Scripts
 
-| Comando | Descrição |
-|---|---|
-| `yarn dev` | Servidor de desenvolvimento |
-| `yarn build` | Build de produção (SSR/Nitro) |
-| `yarn generate` | Geração estática (usado no deploy) |
-| `yarn preview` | Preview do build local |
-| `yarn lint` | ESLint |
-| `yarn test` | Testes (Vitest) |
+| Comando             | Descrição                            |
+| ------------------- | ------------------------------------ |
+| `yarn dev`          | Servidor de desenvolvimento          |
+| `yarn build`        | Build de produção (SSR/Nitro)        |
+| `yarn generate`     | Geração estática (usado no deploy)   |
+| `yarn preview`      | Preview do build local               |
+| `yarn lint`         | ESLint (checagem)                    |
+| `yarn lint:fix`     | ESLint corrigindo o que dá           |
+| `yarn format`       | Prettier (escreve nos arquivos)      |
+| `yarn format:check` | Prettier (só checa)                  |
+| `yarn typecheck`    | Checagem de tipos (`nuxt typecheck`) |
+| `yarn test`         | Testes (Vitest)                      |
 
 ## Estrutura
 
@@ -88,9 +92,19 @@ Deploy contínuo no **Netlify** a partir da branch de produção:
 - Comando: `yarn generate` · Publicação: `.output/public`
 - `NODE_VERSION = "22"` fixado no `netlify.toml`
 
+## Versionamento e releases
+
+O projeto segue **[SemVer](https://semver.org/)** (a partir de `1.0.0`) com
+releases automatizados pelo **release-please** a partir de [Conventional Commits](https://www.conventionalcommits.org/).
+O histórico de mudanças fica no [`CHANGELOG.md`](CHANGELOG.md) (gerado
+automaticamente). Padrão de commits, hooks de qualidade e a rotina de
+lançamento estão documentados em **[`CONTRIBUTING.md`](CONTRIBUTING.md)**.
+
 ## Contribuir
 
-Quer adicionar um grupo ou corrigir uma informação? Use o formulário de contribuição no próprio site (botões *Sugerir grupo* / *Sugerir correção*).
+Quer adicionar um grupo ou corrigir uma informação? Use o formulário de contribuição no próprio site (botões _Sugerir grupo_ / _Sugerir correção_).
+
+Quer contribuir com **código**? Veja o **[CONTRIBUTING.md](CONTRIBUTING.md)**.
 
 ## Desenvolvedor :computer:
 

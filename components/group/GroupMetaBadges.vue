@@ -1,7 +1,9 @@
 <template>
   <div class="ps-badges" aria-label="Resumo do grupo">
     <div v-for="badge in badges" :key="badge.key" class="ps-badge">
-      <span class="ps-badge__ic"><PsIcon :name="BADGE_ICON[badge.key]" :size="15" /></span>
+      <span class="ps-badge__ic"
+        ><PsIcon :name="BADGE_ICON[badge.key]" :size="15"
+      /></span>
       <div>
         <div class="ps-badge__k">{{ BADGE_LABEL[badge.key] }}</div>
         <div class="ps-badge__v">{{ badge.value }}</div>
@@ -19,11 +21,19 @@ const props = defineProps<{
   schedule: GroupSchedule
 }>()
 
-const badges = computed<Array<{ key: BadgeKey; value: string }>>(() => [
-  { key: 'day', value: props.schedule.day },
-  { key: 'departure', value: props.schedule.startHour },
-  { key: 'level', value: props.schedule.effort },
-  { key: 'distance', value: `${props.schedule.distanceKm} km` },
-  { key: 'rhythm', value: `${props.schedule.rhythmKmH} km/h` },
-])
+// distância/ritmo 0 = não informado (sentinela do normalizador) — sem badge
+const badges = computed<Array<{ key: BadgeKey; value: string }>>(() => {
+  const list: Array<{ key: BadgeKey; value: string }> = [
+    { key: 'day', value: props.schedule.day },
+    { key: 'departure', value: props.schedule.startHour },
+    { key: 'level', value: props.schedule.effort },
+  ]
+  if (props.schedule.distanceKm > 0) {
+    list.push({ key: 'distance', value: `${props.schedule.distanceKm} km` })
+  }
+  if (props.schedule.rhythmKmH > 0) {
+    list.push({ key: 'rhythm', value: `${props.schedule.rhythmKmH} km/h` })
+  }
+  return list
+})
 </script>

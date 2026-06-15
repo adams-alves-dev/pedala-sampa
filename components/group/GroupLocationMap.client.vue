@@ -4,12 +4,20 @@
       :zoom="14"
       :center="[lat, lng]"
       :use-global-leaflet="false"
-      :options="{ zoomControl: false, scrollWheelZoom: false, attributionControl: false }"
+      :options="{
+        zoomControl: false,
+        scrollWheelZoom: false,
+        attributionControl: false,
+      }"
       @ready="onMapReady"
     >
       <MapTileLayer />
       <LMarker :lat-lng="[lat, lng]">
-        <LIcon :icon-size="[36, 36]" :icon-anchor="[18, 34]" class-name="pin-wrap">
+        <LIcon
+          :icon-size="[36, 36]"
+          :icon-anchor="[18, 34]"
+          class-name="pin-wrap"
+        >
           <div class="ps-pin ps-pin--selected">
             <span><PsIcon name="bike" :size="16" /></span>
           </div>

@@ -37,17 +37,9 @@
       @select="selectGroup"
     />
 
-    <EmptyState
-      v-if="!filteredGroups.length"
-      :contribution-form-url="contributionFormUrl"
-      @clear="clearFilters"
-    />
+    <EmptyState v-if="!filteredGroups.length" @clear="clearFilters" />
 
-    <GroupQuickView
-      :group="selectedGroup"
-      :contribution-form-url="contributionFormUrl"
-      @close="clearSelectedGroup"
-    />
+    <GroupQuickView :group="selectedGroup" @close="clearSelectedGroup" />
 
     <MobileSheet
       :groups="filteredGroups"
@@ -76,14 +68,19 @@ import { useGroups } from '../composables/useGroups'
 import { useSelectedGroup } from '../composables/useSelectedGroup'
 import { buildFilterGroups } from '../lib/filter-options'
 
-const config = useRuntimeConfig()
-const contributionFormUrl = config.public.contributionFormUrl
-
 const { data } = await useGroups()
 const groups = computed(() => data.value || [])
 
-const { filters, filteredGroups, activeCount, setQuery, toggleFilter, clearFilters } = useGroupFilters(groups)
-const { selectedGroupSlug, selectedGroup, selectGroup, clearSelectedGroup } = useSelectedGroup(groups)
+const {
+  filters,
+  filteredGroups,
+  activeCount,
+  setQuery,
+  toggleFilter,
+  clearFilters,
+} = useGroupFilters(groups)
+const { selectedGroupSlug, selectedGroup, selectGroup, clearSelectedGroup } =
+  useSelectedGroup(groups)
 
 const drawerOpen = ref(false)
 
@@ -99,16 +96,27 @@ watch(filteredGroups, (visibleGroups) => {
 })
 
 const days = computed(() => [
-  ...new Set(groups.value.flatMap((group) => group.schedules.map((schedule) => schedule.day))),
+  ...new Set(
+    groups.value.flatMap((group) =>
+      group.schedules.map((schedule) => schedule.day),
+    ),
+  ),
 ])
 const efforts = computed(() => [
-  ...new Set(groups.value.flatMap((group) => group.schedules.map((schedule) => schedule.effort))),
+  ...new Set(
+    groups.value.flatMap((group) =>
+      group.schedules.map((schedule) => schedule.effort),
+    ),
+  ),
 ])
-const filterGroups = computed(() => buildFilterGroups(days.value, efforts.value))
+const filterGroups = computed(() =>
+  buildFilterGroups(days.value, efforts.value),
+)
 
 useSeoMeta({
   title: 'Pedala Sampa - Grupos de pedal em São Paulo',
-  description: 'Encontre grupos de pedal em São Paulo por região, dia, horário, nível, distância e ritmo.',
+  description:
+    'Encontre grupos de pedal em São Paulo por região, dia, horário, nível, distância e ritmo.',
 })
 </script>
 

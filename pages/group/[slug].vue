@@ -16,7 +16,7 @@
         </p>
       </template>
 
-      <GroupDetails v-else :group="group" :contribution-form-url="contributionFormUrl" />
+      <GroupDetails v-else :group="group" />
     </div>
   </main>
 </template>
@@ -26,13 +26,13 @@ import GroupDetails from '../../components/group/GroupDetails.vue'
 import { useGroup } from '../../composables/useGroup'
 
 const route = useRoute()
-const config = useRuntimeConfig()
-const contributionFormUrl = config.public.contributionFormUrl
 const slug = String(route.params.slug)
 const { data: group, pending, error } = await useGroup(slug)
 
 const title = () =>
-  group.value ? `${group.value.name} - Pedala Sampa` : 'Grupo não encontrado - Pedala Sampa'
+  group.value
+    ? `${group.value.name} - Pedala Sampa`
+    : 'Grupo não encontrado - Pedala Sampa'
 const description = () =>
   group.value
     ? `Veja ponto de saída, horário, nível, distância e ritmo do grupo ${group.value.name} em São Paulo.`

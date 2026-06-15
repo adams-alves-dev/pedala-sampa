@@ -2,12 +2,18 @@ import type { Group, GroupSchedule } from '../types/group'
 import type { HygraphGroup, HygraphGroupInfo } from '../types/hygraph'
 
 /** Pulls the first href out of the rich-text link HTML (e.g. `<p><a href="...">`). */
-function extractLinkUrl(html?: string | null): string | undefined {
+export function extractLinkUrl(html?: string | null): string | undefined {
   if (!html) {
     return undefined
   }
   const match = html.match(/href\s*=\s*["']([^"']+)["']/i)
   return match ? match[1] : undefined
+}
+
+/** O CMS guarda horários como "20:30h" — o input type="time" exige "20:30". */
+export function normalizeHour(value?: string | null): string | undefined {
+  const cleaned = value?.trim().replace(/h$/i, '')
+  return cleaned || undefined
 }
 
 /** Hygraph stores the link label with stray escape sequences (e.g. `\nFúria\n`). */

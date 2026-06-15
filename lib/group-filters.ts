@@ -44,7 +44,10 @@ export function filterGroups(groups: Group[], filters: GroupFilters) {
       [
         group.name,
         group.departureAddress,
-        ...group.schedules.flatMap((schedule) => [schedule.day, schedule.effort]),
+        ...group.schedules.flatMap((schedule) => [
+          schedule.day,
+          schedule.effort,
+        ]),
       ]
         .filter(Boolean)
         .join(' '),
@@ -58,20 +61,44 @@ export function filterGroups(groups: Group[], filters: GroupFilters) {
     // satisfies every active category at once.
     return group.schedules.some((schedule) => {
       const matchesDay = !filters.day || schedule.day === filters.day
-      const matchesEffort = !filters.effort || schedule.effort === filters.effort
-      const matchesDistance = isInDistanceRange(schedule.distanceKm, filters.distanceRange)
-      const matchesPeriod = !filters.period || getPeriodFromHour(schedule.startHour) === filters.period
-      const matchesRhythm = !filters.rhythm || getRhythmCategory(schedule.rhythmKmH) === filters.rhythm
+      const matchesEffort =
+        !filters.effort || schedule.effort === filters.effort
+      const matchesDistance = isInDistanceRange(
+        schedule.distanceKm,
+        filters.distanceRange,
+      )
+      const matchesPeriod =
+        !filters.period ||
+        getPeriodFromHour(schedule.startHour) === filters.period
+      // rhythmKmH 0 = não informado (sentinela do normalizador) — fica fora do filtro de ritmo
+      const matchesRhythm =
+        !filters.rhythm ||
+        (schedule.rhythmKmH > 0 &&
+          getRhythmCategory(schedule.rhythmKmH) === filters.rhythm)
 
-      return matchesDay && matchesEffort && matchesDistance && matchesPeriod && matchesRhythm
+      return (
+        matchesDay &&
+        matchesEffort &&
+        matchesDistance &&
+        matchesPeriod &&
+        matchesRhythm
+      )
     })
   })
 }
 
 /** Number of active filter categories, plus the search query when present. */
 export function countActiveFilters(filters: GroupFilters): number {
-  const categories: Array<keyof GroupFilters> = ['day', 'effort', 'distanceRange', 'period', 'rhythm']
-  const activeCategories = categories.filter((key) => Boolean(filters[key])).length
+  const categories: Array<keyof GroupFilters> = [
+    'day',
+    'effort',
+    'distanceRange',
+    'period',
+    'rhythm',
+  ]
+  const activeCategories = categories.filter((key) =>
+    Boolean(filters[key]),
+  ).length
 
   return activeCategories + (filters.query ? 1 : 0)
 }
