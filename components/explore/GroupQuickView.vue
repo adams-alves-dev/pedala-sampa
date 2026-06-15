@@ -15,14 +15,19 @@
         <span class="ps-quickview__sun" aria-hidden="true" />
         <h2 class="qv__name">{{ group.name }}</h2>
         <p class="qv__loc">
-          <PsIcon name="pin" :size="15" /> {{ group.departureAddress || 'Ponto de saída no mapa' }}
+          <PsIcon name="pin" :size="15" />
+          {{ group.departureAddress || 'Ponto de saída no mapa' }}
         </p>
         <GroupMetaBadges v-if="primarySchedule" :schedule="primarySchedule" />
         <p v-if="duration" class="qv__dur">
-          <PsIcon name="compass" :size="16" /> Tempo médio da volta: <strong>{{ duration }}</strong>
+          <PsIcon name="compass" :size="16" /> Tempo médio da volta:
+          <strong>{{ duration }}</strong>
         </p>
         <div class="qv__actions">
-          <NuxtLink class="ps-btn ps-btn--sm ps-btn--solid" :to="`/group/${group.slug}`">
+          <NuxtLink
+            class="ps-btn ps-btn--sm ps-btn--solid"
+            :to="`/group/${group.slug}`"
+          >
             Página completa <PsIcon name="chevronRight" :size="14" />
           </NuxtLink>
           <a
@@ -31,12 +36,22 @@
             :href="group.link.url"
             target="_blank"
             rel="noopener noreferrer"
-            :aria-label="(group.link.label || 'Contato') + ' (abre em nova aba)'"
+            :aria-label="
+              (group.link.label || 'Contato') + ' (abre em nova aba)'
+            "
           >
-            <PsIcon name="chat" :size="15" /> {{ group.link.label || 'Contato' }} <PsIcon name="arrowUR" :size="14" />
+            <PsIcon name="chat" :size="15" />
+            {{ group.link.label || 'Contato' }}
+            <PsIcon name="arrowUR" :size="14" />
           </a>
-          <span v-else class="ps-btn ps-btn--sm ps-btn--ghost qv__nolink">Sem link</span>
-          <ContributionLink context="correction" :slug="group.slug" icon="pencil" />
+          <span v-else class="ps-btn ps-btn--sm ps-btn--ghost qv__nolink"
+            >Sem link</span
+          >
+          <ContributionLink
+            context="correction"
+            :slug="group.slug"
+            icon="pencil"
+          />
         </div>
       </div>
     </div>
@@ -93,7 +108,9 @@ const duration = computed(() =>
 
 .qv-enter-active,
 .qv-leave-active {
-  transition: transform var(--duration-normal) var(--ease-out), opacity var(--duration-normal) var(--ease-out);
+  transition:
+    transform var(--duration-normal) var(--ease-out),
+    opacity var(--duration-normal) var(--ease-out);
 }
 
 .qv-enter-from,

@@ -18,7 +18,11 @@
         :draggable="true"
         @dragend="onDragEnd"
       >
-        <LIcon :icon-size="[36, 36]" :icon-anchor="[18, 34]" class-name="pin-wrap">
+        <LIcon
+          :icon-size="[36, 36]"
+          :icon-anchor="[18, 34]"
+          class-name="pin-wrap"
+        >
           <div class="ps-pin ps-pin--selected">
             <span><PsIcon name="bike" :size="16" /></span>
           </div>
@@ -34,7 +38,11 @@
 
 <script setup lang="ts">
 // só tipos no escopo do módulo: importar o leaflet como valor quebra o SSR
-import type { DragEndEvent, LeafletMouseEvent, Map as LeafletMap } from 'leaflet'
+import type {
+  DragEndEvent,
+  LeafletMouseEvent,
+  Map as LeafletMap,
+} from 'leaflet'
 import { computed, onBeforeUnmount, ref } from 'vue'
 import { SP_BOUNDS, isInsideSpBounds } from '../../lib/sp-bounds'
 import { parseNumber } from '../../lib/suggestion-form'

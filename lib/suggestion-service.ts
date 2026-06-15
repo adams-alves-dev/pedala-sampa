@@ -74,7 +74,10 @@ const CREATE_SUGGESTION_WITHOUT_TARGET_MUTATION = /* GraphQL */ `
 `
 
 /** Lê `data.<key>.id` de uma resposta GraphQL sem depender de type casts. */
-function readIdFromResponse(data: unknown, key: 'group' | 'createSuggestion'): string | null {
+function readIdFromResponse(
+  data: unknown,
+  key: 'group' | 'createSuggestion',
+): string | null {
   if (data && typeof data === 'object' && key in data) {
     const node = Reflect.get(data, key)
     if (node && typeof node === 'object' && 'id' in node) {
@@ -114,14 +117,18 @@ export async function createSuggestion(
   body: unknown,
   hygraph: HygraphRequest,
 ): Promise<SuggestionResponse> {
-  const { type, targetId, payload, justification, contactEmail } = parseSuggestion(body)
+  const { type, targetId, payload, justification, contactEmail } =
+    parseSuggestion(body)
 
   if (targetId) {
     let target: unknown
     try {
       target = await hygraph(GROUP_EXISTS_QUERY, { id: targetId })
     } catch {
-      throw new SuggestionError(502, 'Não foi possível confirmar o grupo no momento')
+      throw new SuggestionError(
+        502,
+        'Não foi possível confirmar o grupo no momento',
+      )
     }
     if (!readIdFromResponse(target, 'group')) {
       throw new SuggestionError(404, 'Grupo alvo não encontrado')
@@ -141,16 +148,24 @@ export async function createSuggestion(
   let created: unknown
   try {
     created = await hygraph(
-      targetId ? CREATE_SUGGESTION_MUTATION : CREATE_SUGGESTION_WITHOUT_TARGET_MUTATION,
+      targetId
+        ? CREATE_SUGGESTION_MUTATION
+        : CREATE_SUGGESTION_WITHOUT_TARGET_MUTATION,
       variables,
     )
   } catch {
-    throw new SuggestionError(502, 'Não foi possível registrar a sugestão no momento')
+    throw new SuggestionError(
+      502,
+      'Não foi possível registrar a sugestão no momento',
+    )
   }
 
   const id = readIdFromResponse(created, 'createSuggestion')
   if (!id) {
-    throw new SuggestionError(502, 'Não foi possível registrar a sugestão no momento')
+    throw new SuggestionError(
+      502,
+      'Não foi possível registrar a sugestão no momento',
+    )
   }
 
   return { ok: true, id }

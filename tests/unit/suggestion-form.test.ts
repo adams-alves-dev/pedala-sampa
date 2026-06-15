@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest'
-import { diffPayload, emptyFields, fieldsFromRecord, payloadFromFields } from '../../lib/suggestion-form'
+import {
+  diffPayload,
+  emptyFields,
+  fieldsFromRecord,
+  payloadFromFields,
+} from '../../lib/suggestion-form'
 import type { GroupRecord } from '../../types/suggestion'
 
 const record: GroupRecord = {
@@ -19,8 +24,15 @@ const record: GroupRecord = {
 
 describe('payloadFromFields', () => {
   it('descarta campos vazios e converte números (aceitando vírgula)', () => {
-    const fields = { ...emptyFields(), name: ' Pedal Novo ', distanceKm: '32,5' }
-    expect(payloadFromFields(fields)).toEqual({ name: 'Pedal Novo', distanceKm: 32.5 })
+    const fields = {
+      ...emptyFields(),
+      name: ' Pedal Novo ',
+      distanceKm: '32,5',
+    }
+    expect(payloadFromFields(fields)).toEqual({
+      name: 'Pedal Novo',
+      distanceKm: 32.5,
+    })
   })
 
   it('aceita number nos campos numéricos (v-model de input type=number entrega number)', () => {

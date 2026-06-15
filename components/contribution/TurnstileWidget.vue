@@ -38,7 +38,8 @@ function loadTurnstile(): Promise<TurnstileApi> {
       return
     }
     const script = document.createElement('script')
-    script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit'
+    script.src =
+      'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit'
     script.async = true
     script.onload = () => {
       if (window.turnstile) {

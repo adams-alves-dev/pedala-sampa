@@ -1,5 +1,8 @@
 import { describe, expect, it } from 'vitest'
-import { getContributionLabel, getContributionRoute } from '../../lib/contribution'
+import {
+  getContributionLabel,
+  getContributionRoute,
+} from '../../lib/contribution'
 
 describe('contribution routes', () => {
   it('aponta sugestão de grupo novo para /contribute', () => {

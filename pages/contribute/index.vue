@@ -8,8 +8,8 @@
       <p class="ps-eyebrow contribute-eyebrow">Mapa colaborativo</p>
       <h1 class="ps-h1">Sugerir um grupo novo</h1>
       <p class="ps-lead contribute-lead">
-        Conhece um pedal que ainda não está no mapa? Preencha o que souber — a sugestão passa por
-        revisão antes de ir ao ar.
+        Conhece um pedal que ainda não está no mapa? Preencha o que souber — a
+        sugestão passa por revisão antes de ir ao ar.
       </p>
 
       <SuggestionCreateForm />
@@ -27,7 +27,8 @@ import SuggestionCreateForm from '../../components/contribution/SuggestionCreate
 
 useSeoMeta({
   title: 'Sugerir grupo - Pedala Sampa',
-  description: 'Sugira um grupo de pedal novo para o mapa colaborativo do Pedala Sampa.',
+  description:
+    'Sugira um grupo de pedal novo para o mapa colaborativo do Pedala Sampa.',
 })
 </script>
 

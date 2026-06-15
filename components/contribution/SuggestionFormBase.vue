@@ -11,7 +11,9 @@
     <slot />
 
     <div class="ps-field-group">
-      <label class="ps-fieldlabel" :for="`${uid}-justification`">{{ justificationLabel }} *</label>
+      <label class="ps-fieldlabel" :for="`${uid}-justification`"
+        >{{ justificationLabel }} *</label
+      >
       <textarea
         :id="`${uid}-justification`"
         v-model="justification"
@@ -28,7 +30,9 @@
     </div>
 
     <div class="ps-field-group">
-      <label class="ps-fieldlabel" :for="`${uid}-email`">Seu e-mail (opcional)</label>
+      <label class="ps-fieldlabel" :for="`${uid}-email`"
+        >Seu e-mail (opcional)</label
+      >
       <input
         :id="`${uid}-email`"
         v-model="contactEmail"
@@ -37,7 +41,7 @@
         autocomplete="email"
         maxlength="200"
         :aria-describedby="`${uid}-email-hint`"
-      >
+      />
       <p :id="`${uid}-email-hint`" class="suggestion-hint">
         Usado apenas para avisar você sobre a revisão. Não aparece no site.
       </p>
@@ -52,7 +56,7 @@
         type="text"
         tabindex="-1"
         autocomplete="off"
-      >
+      />
     </div>
 
     <TurnstileWidget ref="turnstileRef" @token="turnstileToken = $event" />
@@ -66,12 +70,18 @@
     >
       {{ errorMessage }}
       <span v-if="issues.length">
-        <br>
-        <span v-for="issue in issues" :key="issue.path">— {{ issue.message }}<br></span>
+        <br />
+        <span v-for="issue in issues" :key="issue.path"
+          >— {{ issue.message }}<br
+        /></span>
       </span>
     </p>
 
-    <button class="ps-btn ps-btn--solid suggestion-submit" type="submit" :disabled="status === 'sending'">
+    <button
+      class="ps-btn ps-btn--solid suggestion-submit"
+      type="submit"
+      :disabled="status === 'sending'"
+    >
       {{ status === 'sending' ? 'Enviando…' : submitLabel }}
     </button>
   </form>
@@ -96,11 +106,14 @@ const props = withDefaults(
     justificationLabel?: string
     justificationHint?: string
     /** Monta a request a partir dos campos comuns — ou devolve um erro local. */
-    buildRequest: (common: CommonFields) => SuggestionRequest | { error: string }
+    buildRequest: (
+      common: CommonFields,
+    ) => SuggestionRequest | { error: string }
   }>(),
   {
     justificationLabel: 'Justificativa',
-    justificationHint: 'Conte de onde veio a informação ou por que a mudança é necessária.',
+    justificationHint:
+      'Conte de onde veio a informação ou por que a mudança é necessária.',
   },
 )
 
@@ -118,7 +131,10 @@ const issues = ref<Array<{ path: string; message: string }>>([])
 const errorRef = ref<HTMLElement | null>(null)
 const turnstileRef = ref<InstanceType<typeof TurnstileWidget> | null>(null)
 
-async function showError(message: string, newIssues: Array<{ path: string; message: string }> = []) {
+async function showError(
+  message: string,
+  newIssues: Array<{ path: string; message: string }> = [],
+) {
   status.value = 'error'
   errorMessage.value = message
   issues.value = newIssues
@@ -126,7 +142,9 @@ async function showError(message: string, newIssues: Array<{ path: string; messa
   errorRef.value?.focus()
 }
 
-function extractIssues(data: unknown): Array<{ path: string; message: string }> {
+function extractIssues(
+  data: unknown,
+): Array<{ path: string; message: string }> {
   if (!Array.isArray(data)) {
     return []
   }
@@ -168,7 +186,9 @@ async function onSubmit() {
           : 'Não foi possível enviar a sugestão. Tente novamente em instantes.'
       await showError(message, extractIssues(error.data?.data))
     } else {
-      await showError('Não foi possível enviar a sugestão. Tente novamente em instantes.')
+      await showError(
+        'Não foi possível enviar a sugestão. Tente novamente em instantes.',
+      )
     }
   }
 }

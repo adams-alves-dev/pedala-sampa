@@ -50,7 +50,9 @@ describe('pruneRateLimit', () => {
     }
     pruneRateLimit(NOW + WINDOW_MS + 1)
     for (let i = 0; i < 5; i++) {
-      expect(isRateLimited('ip-prune-drop', NOW + WINDOW_MS + 2 + i)).toBe(false)
+      expect(isRateLimited('ip-prune-drop', NOW + WINDOW_MS + 2 + i)).toBe(
+        false,
+      )
     }
   })
 })

@@ -6,10 +6,12 @@
       </NuxtLink>
 
       <p class="ps-eyebrow about-eyebrow">Mapa colaborativo</p>
-      <h1 class="ps-h1">Um mapa colaborativo dos grupos de pedal de São Paulo.</h1>
+      <h1 class="ps-h1">
+        Um mapa colaborativo dos grupos de pedal de São Paulo.
+      </h1>
       <p class="ps-lead about-lead">
-        O Pedala Sampa ajuda ciclistas a descobrir grupos por região, dia, horário, nível, distância
-        e ritmo — perto de casa ou do trabalho.
+        O Pedala Sampa ajuda ciclistas a descobrir grupos por região, dia,
+        horário, nível, distância e ritmo — perto de casa ou do trabalho.
       </p>
 
       <div class="about-grid">
@@ -33,7 +35,12 @@
 import ContributionLink from '../components/contribution/ContributionLink.vue'
 import type { IconName } from '../lib/icons'
 
-const cards: Array<{ num: string; icon: IconName; title: string; text: string }> = [
+const cards: Array<{
+  num: string
+  icon: IconName
+  title: string
+  text: string
+}> = [
   {
     num: '01',
     icon: 'layers',
@@ -56,7 +63,8 @@ const cards: Array<{ num: string; icon: IconName; title: string; text: string }>
 
 useSeoMeta({
   title: 'Sobre - Pedala Sampa',
-  description: 'Conheça o Pedala Sampa, um mapa colaborativo de grupos de pedal em São Paulo.',
+  description:
+    'Conheça o Pedala Sampa, um mapa colaborativo de grupos de pedal em São Paulo.',
 })
 </script>
 

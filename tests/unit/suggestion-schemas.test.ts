@@ -11,7 +11,9 @@ const validPayload = {
 
 describe('sanitizeText', () => {
   it('remove tags HTML e normaliza espaços', () => {
-    expect(sanitizeText('  <b>Pedal</b>\n da   Sé <script>x</script> ')).toBe('Pedal da Sé x')
+    expect(sanitizeText('  <b>Pedal</b>\n da   Sé <script>x</script> ')).toBe(
+      'Pedal da Sé x',
+    )
   })
 })
 
@@ -121,18 +123,30 @@ describe('suggestionSchema', () => {
   it('aceita linkUrl http(s) e rejeita outros schemes', () => {
     const base = { type: 'CREATE', justification }
     const withLink = (linkUrl: string) =>
-      suggestionSchema.safeParse({ ...base, payload: { ...validPayload, linkUrl } })
+      suggestionSchema.safeParse({
+        ...base,
+        payload: { ...validPayload, linkUrl },
+      })
     expect(withLink('https://instagram.com/pedal').success).toBe(true)
     expect(withLink('http://exemplo.com.br/grupo').success).toBe(true)
     expect(withLink('javascript:alert(document.cookie)').success).toBe(false)
-    expect(withLink('data:text/html,<script>alert(1)</script>').success).toBe(false)
+    expect(withLink('data:text/html,<script>alert(1)</script>').success).toBe(
+      false,
+    )
     expect(withLink('ftp://exemplo.com/arquivo').success).toBe(false)
   })
 
   it('aceita contactEmail vazio e rejeita e-mail inválido', () => {
     const base = { type: 'CREATE', payload: validPayload, justification }
-    expect(suggestionSchema.safeParse({ ...base, contactEmail: '' }).success).toBe(true)
-    expect(suggestionSchema.safeParse({ ...base, contactEmail: 'a@b.com' }).success).toBe(true)
-    expect(suggestionSchema.safeParse({ ...base, contactEmail: 'não-é-email' }).success).toBe(false)
+    expect(
+      suggestionSchema.safeParse({ ...base, contactEmail: '' }).success,
+    ).toBe(true)
+    expect(
+      suggestionSchema.safeParse({ ...base, contactEmail: 'a@b.com' }).success,
+    ).toBe(true)
+    expect(
+      suggestionSchema.safeParse({ ...base, contactEmail: 'não-é-email' })
+        .success,
+    ).toBe(false)
   })
 })

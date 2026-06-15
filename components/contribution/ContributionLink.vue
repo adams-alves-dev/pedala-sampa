@@ -1,20 +1,40 @@
 <template>
   <NuxtLink
     class="contribution-link"
-    :class="{ 'contribution-link--fab': fab, 'contribution-link--ghost': variant === 'ghost' }"
+    :class="{
+      'contribution-link--fab': fab,
+      'contribution-link--ghost': variant === 'ghost',
+    }"
     :to="to"
   >
     <PsIcon v-if="icon" :name="icon" :size="15" />
     <span>{{ label }}</span>
-    <svg v-if="fab" class="cta-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-      <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <svg
+      v-if="fab"
+      class="cta-arrow"
+      width="16"
+      height="16"
+      viewBox="0 0 16 16"
+      fill="none"
+      aria-hidden="true"
+    >
+      <path
+        d="M3 8h10M9 4l4 4-4 4"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
     </svg>
   </NuxtLink>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { getContributionLabel, getContributionRoute } from '../../lib/contribution'
+import {
+  getContributionLabel,
+  getContributionRoute,
+} from '../../lib/contribution'
 import type { ContributionContext } from '../../lib/contribution'
 import type { IconName } from '../../lib/icons'
 
@@ -68,13 +88,20 @@ const to = computed(() => getContributionRoute(props.context, props.slug))
   content: '';
   position: absolute;
   inset: 0;
-  clip-path: polygon(var(--space-1) 0, 100% 0, calc(100% - var(--space-1)) 100%, 0 100%);
+  clip-path: polygon(
+    var(--space-1) 0,
+    100% 0,
+    calc(100% - var(--space-1)) 100%,
+    0 100%
+  );
 }
-.contribution-link::after { /* face amarela */
+.contribution-link::after {
+  /* face amarela */
   z-index: -1;
   background: var(--color-sun);
 }
-.contribution-link::before { /* bloco verde, escondido atrás da face até o hover */
+.contribution-link::before {
+  /* bloco verde, escondido atrás da face até o hover */
   z-index: -2;
   background: var(--color-bike-green);
   transition: transform var(--duration-fast) var(--ease-out);

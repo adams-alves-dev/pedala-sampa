@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest'
-import { extractLinkUrl, normalizeGroup, normalizeGroups, normalizeHour } from '../../lib/group-normalizers'
+import {
+  extractLinkUrl,
+  normalizeGroup,
+  normalizeGroups,
+  normalizeHour,
+} from '../../lib/group-normalizers'
 import type { HygraphGroup } from '../../types/hygraph'
 
 const group: HygraphGroup = {
@@ -69,7 +74,10 @@ describe('group normalizers', () => {
   it('limpa sequências de escape do rótulo do link', () => {
     const result = normalizeGroup({
       ...group,
-      link: { text: '\\nFúria Norte Bikers\\n', html: '<p><a href="https://x.com">x</a></p>' },
+      link: {
+        text: '\\nFúria Norte Bikers\\n',
+        html: '<p><a href="https://x.com">x</a></p>',
+      },
     })
     expect(result?.link?.label).toBe('Fúria Norte Bikers')
   })
@@ -79,7 +87,12 @@ describe('group normalizers', () => {
   })
 
   it('remove grupos inválidos da lista', () => {
-    expect(normalizeGroups([group, { ...group, id: 'bad', departureLocation: null }])).toHaveLength(1)
+    expect(
+      normalizeGroups([
+        group,
+        { ...group, id: 'bad', departureLocation: null },
+      ]),
+    ).toHaveLength(1)
   })
 })
 
@@ -100,10 +113,12 @@ describe('normalizeHour', () => {
 
 describe('extractLinkUrl', () => {
   it('extrai o primeiro href do HTML de rich text', () => {
-    expect(extractLinkUrl('<p><a href="https://instagram.com/pedal">Insta</a></p>')).toBe(
-      'https://instagram.com/pedal',
+    expect(
+      extractLinkUrl('<p><a href="https://instagram.com/pedal">Insta</a></p>'),
+    ).toBe('https://instagram.com/pedal')
+    expect(extractLinkUrl("<a href='https://x.com'>x</a>")).toBe(
+      'https://x.com',
     )
-    expect(extractLinkUrl("<a href='https://x.com'>x</a>")).toBe('https://x.com')
   })
 
   it('retorna undefined sem href ou sem HTML', () => {

@@ -21,8 +21,20 @@ export type SuggestionFormFields = {
 type NumericField = 'distanceKm' | 'rhythmKmH' | 'latitude' | 'longitude'
 type TextField = 'name' | 'linkUrl' | 'address' | 'day' | 'startHour' | 'effort'
 
-const NUMERIC_FIELDS: ReadonlyArray<NumericField> = ['distanceKm', 'rhythmKmH', 'latitude', 'longitude']
-const TEXT_FIELDS: ReadonlyArray<TextField> = ['name', 'linkUrl', 'address', 'day', 'startHour', 'effort']
+const NUMERIC_FIELDS: ReadonlyArray<NumericField> = [
+  'distanceKm',
+  'rhythmKmH',
+  'latitude',
+  'longitude',
+]
+const TEXT_FIELDS: ReadonlyArray<TextField> = [
+  'name',
+  'linkUrl',
+  'address',
+  'day',
+  'startHour',
+  'effort',
+]
 
 export function emptyFields(): SuggestionFormFields {
   return {
@@ -47,7 +59,8 @@ export function fieldsFromRecord(record: GroupRecord): SuggestionFormFields {
     day: record.day ?? '',
     startHour: record.startHour ?? '',
     effort: record.effort ?? '',
-    distanceKm: record.distanceKm !== undefined ? String(record.distanceKm) : '',
+    distanceKm:
+      record.distanceKm !== undefined ? String(record.distanceKm) : '',
     rhythmKmH: record.rhythmKmH !== undefined ? String(record.rhythmKmH) : '',
     latitude: String(record.latitude),
     longitude: String(record.longitude),
@@ -68,7 +81,9 @@ export function parseNumber(value: string | number): number | undefined {
 }
 
 /** Converte os inputs em payload, descartando campos vazios. */
-export function payloadFromFields(fields: SuggestionFormFields): SuggestionGroupPayload {
+export function payloadFromFields(
+  fields: SuggestionFormFields,
+): SuggestionGroupPayload {
   const payload: SuggestionGroupPayload = {}
 
   for (const field of TEXT_FIELDS) {

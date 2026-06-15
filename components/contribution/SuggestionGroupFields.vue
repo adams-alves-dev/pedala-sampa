@@ -3,7 +3,9 @@
     <legend class="ps-label suggestion-legend">Dados do grupo</legend>
 
     <div class="ps-field-group suggestion-span">
-      <label class="ps-fieldlabel" :for="`${uid}-name`">Nome do grupo {{ required ? '*' : '' }}</label>
+      <label class="ps-fieldlabel" :for="`${uid}-name`"
+        >Nome do grupo {{ required ? '*' : '' }}</label
+      >
       <input
         :id="`${uid}-name`"
         v-model="model.name"
@@ -11,11 +13,13 @@
         type="text"
         maxlength="120"
         :required="required"
-      >
+      />
     </div>
 
     <div class="ps-field-group suggestion-span">
-      <label class="ps-fieldlabel" :for="`${uid}-link`">Link de contato (Instagram, WhatsApp…)</label>
+      <label class="ps-fieldlabel" :for="`${uid}-link`"
+        >Link de contato (Instagram, WhatsApp…)</label
+      >
       <input
         :id="`${uid}-link`"
         v-model="model.linkUrl"
@@ -23,18 +27,20 @@
         type="url"
         maxlength="500"
         placeholder="https://…"
-      >
+      />
     </div>
 
     <div class="ps-field-group suggestion-span">
-      <label class="ps-fieldlabel" :for="`${uid}-address`">Endereço do ponto de saída</label>
+      <label class="ps-fieldlabel" :for="`${uid}-address`"
+        >Endereço do ponto de saída</label
+      >
       <input
         :id="`${uid}-address`"
         v-model="model.address"
         class="ps-input"
         type="text"
         maxlength="200"
-      >
+      />
     </div>
 
     <div class="ps-field-group">
@@ -46,7 +52,7 @@
         type="text"
         maxlength="40"
         placeholder="Ex.: Sábado"
-      >
+      />
     </div>
 
     <div class="ps-field-group">
@@ -56,7 +62,7 @@
         v-model="model.startHour"
         class="ps-input"
         type="time"
-      >
+      />
     </div>
 
     <div class="ps-field-group">
@@ -68,11 +74,13 @@
         type="text"
         maxlength="40"
         placeholder="Ex.: Iniciante"
-      >
+      />
     </div>
 
     <div class="ps-field-group">
-      <label class="ps-fieldlabel" :for="`${uid}-distance`">Distância (km)</label>
+      <label class="ps-fieldlabel" :for="`${uid}-distance`"
+        >Distância (km)</label
+      >
       <input
         :id="`${uid}-distance`"
         v-model="model.distanceKm"
@@ -81,11 +89,13 @@
         min="1"
         max="600"
         step="any"
-      >
+      />
     </div>
 
     <div class="ps-field-group">
-      <label class="ps-fieldlabel" :for="`${uid}-rhythm`">Ritmo médio (km/h)</label>
+      <label class="ps-fieldlabel" :for="`${uid}-rhythm`"
+        >Ritmo médio (km/h)</label
+      >
       <input
         :id="`${uid}-rhythm`"
         v-model="model.rhythmKmH"
@@ -94,7 +104,7 @@
         min="1"
         max="60"
         step="any"
-      >
+      />
     </div>
 
     <div class="ps-field-group suggestion-span">
@@ -107,7 +117,10 @@
         :aria-labelledby="`${uid}-point`"
         :aria-describedby="`${uid}-coord-hint`"
       >
-        <LocationPicker v-model:latitude="model.latitude" v-model:longitude="model.longitude" />
+        <LocationPicker
+          v-model:latitude="model.latitude"
+          v-model:longitude="model.longitude"
+        />
       </div>
       <p :id="`${uid}-coord-hint`" class="suggestion-hint" aria-live="polite">
         {{
@@ -118,10 +131,14 @@
       </p>
 
       <details class="suggestion-coords">
-        <summary class="suggestion-hint">Prefere digitar as coordenadas?</summary>
+        <summary class="suggestion-hint">
+          Prefere digitar as coordenadas?
+        </summary>
         <div class="suggestion-coords-grid">
           <div class="ps-field-group">
-            <label class="ps-fieldlabel" :for="`${uid}-lat`">Latitude {{ required ? '*' : '' }}</label>
+            <label class="ps-fieldlabel" :for="`${uid}-lat`"
+              >Latitude {{ required ? '*' : '' }}</label
+            >
             <input
               :id="`${uid}-lat`"
               v-model="model.latitude"
@@ -130,10 +147,12 @@
               step="any"
               placeholder="-23.55"
               :required="required"
-            >
+            />
           </div>
           <div class="ps-field-group">
-            <label class="ps-fieldlabel" :for="`${uid}-lng`">Longitude {{ required ? '*' : '' }}</label>
+            <label class="ps-fieldlabel" :for="`${uid}-lng`"
+              >Longitude {{ required ? '*' : '' }}</label
+            >
             <input
               :id="`${uid}-lng`"
               v-model="model.longitude"
@@ -142,7 +161,7 @@
               step="any"
               placeholder="-46.63"
               :required="required"
-            >
+            />
           </div>
         </div>
       </details>

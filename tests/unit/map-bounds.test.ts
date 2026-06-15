@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest'
-import { FLY_ZOOM, SHEET_OVERLAP, buildFitOptions, groupsToPoints } from '../../lib/map-bounds'
+import {
+  FLY_ZOOM,
+  SHEET_OVERLAP,
+  buildFitOptions,
+  groupsToPoints,
+} from '../../lib/map-bounds'
 
 describe('groupsToPoints', () => {
   it('retorna lista vazia para nenhum grupo', () => {

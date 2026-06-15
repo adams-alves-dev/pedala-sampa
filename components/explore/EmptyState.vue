@@ -3,10 +3,13 @@
     <span class="empty__ic"><PsIcon name="search" :size="30" /></span>
     <strong class="ps-h3">Nenhum grupo encontrado com esses filtros.</strong>
     <p class="ps-body ps-state__msg">
-      Tente afrouxar os filtros — ou ajude a comunidade cadastrando um grupo novo.
+      Tente afrouxar os filtros — ou ajude a comunidade cadastrando um grupo
+      novo.
     </p>
     <div class="empty__actions">
-      <button class="ps-btn" type="button" @click="$emit('clear')">Limpar filtros</button>
+      <button class="ps-btn" type="button" @click="$emit('clear')">
+        Limpar filtros
+      </button>
       <ContributionLink context="new-group" icon="plus" />
     </div>
   </div>

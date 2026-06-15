@@ -1,7 +1,9 @@
 <template>
   <div class="ps-badges" aria-label="Resumo do grupo">
     <div v-for="badge in badges" :key="badge.key" class="ps-badge">
-      <span class="ps-badge__ic"><PsIcon :name="BADGE_ICON[badge.key]" :size="15" /></span>
+      <span class="ps-badge__ic"
+        ><PsIcon :name="BADGE_ICON[badge.key]" :size="15"
+      /></span>
       <div>
         <div class="ps-badge__k">{{ BADGE_LABEL[badge.key] }}</div>
         <div class="ps-badge__v">{{ badge.value }}</div>

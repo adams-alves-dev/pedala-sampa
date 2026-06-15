@@ -8,7 +8,7 @@
         placeholder="Nome, bairro, dia ou nível"
         aria-label="Buscar grupos"
         @input="onInput"
-      >
+      />
     </div>
     <button
       class="ps-btn ps-btn--solid filters-btn"

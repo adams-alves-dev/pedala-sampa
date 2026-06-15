@@ -8,7 +8,9 @@
   >
     <span class="ps-card__rail" />
     <span class="ps-card__body">
-      <span v-if="isSelected" class="ps-card__tag"><PsIcon name="check" :size="14" /> Selecionado</span>
+      <span v-if="isSelected" class="ps-card__tag"
+        ><PsIcon name="check" :size="14" /> Selecionado</span
+      >
       <span class="ps-card__name">{{ group.name }}</span>
       <span class="ps-card__loc">
         <PsIcon name="pin" :size="14" />

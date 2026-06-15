@@ -13,7 +13,10 @@ export function sanitizeText(value: string): string {
 }
 
 const shortText = (max: number) =>
-  z.string().transform(sanitizeText).pipe(z.string().max(max, `Máximo de ${max} caracteres`))
+  z
+    .string()
+    .transform(sanitizeText)
+    .pipe(z.string().max(max, `Máximo de ${max} caracteres`))
 
 const hourSchema = z
   .string()
@@ -60,16 +63,15 @@ const baseSchema = z.object({
   justification: shortText(1000).pipe(
     z.string().min(10, 'Conte um pouco mais — mínimo de 10 caracteres'),
   ),
-  contactEmail: z.union([z.literal(''), z.email('E-mail inválido').max(200)]).optional(),
+  contactEmail: z
+    .union([z.literal(''), z.email('E-mail inválido').max(200)])
+    .optional(),
   turnstileToken: z.string().max(4096).optional(),
   website: z.string().max(500).optional(),
 })
 
-const REQUIRED_CREATE_FIELDS: ReadonlyArray<'name' | 'latitude' | 'longitude'> = [
-  'name',
-  'latitude',
-  'longitude',
-]
+const REQUIRED_CREATE_FIELDS: ReadonlyArray<'name' | 'latitude' | 'longitude'> =
+  ['name', 'latitude', 'longitude']
 
 /** Conditional rules per type: target required for UPDATE/DELETE, payload for CREATE/UPDATE. */
 export const suggestionSchema = baseSchema.superRefine((data, ctx) => {
