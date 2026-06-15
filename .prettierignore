@@ -1,0 +1,20 @@
+# Dependências e saídas de build
+node_modules
+dist
+.output
+.nuxt
+.nuxtrc
+.netlify
+coverage
+
+# Lockfile
+yarn.lock
+
+# Gerado pelo release-please (não formatar à mão)
+CHANGELOG.md
+
+# Arquivos de handoff/protótipo do redesign (ESLint também ignora docs/**)
+docs
+
+# Gerenciado por ferramenta (claude-mem) — evita churn de reformatação
+AGENTS.md

@@ -30,7 +30,9 @@ const slug = String(route.params.slug)
 const { data: group, pending, error } = await useGroup(slug)
 
 const title = () =>
-  group.value ? `${group.value.name} - Pedala Sampa` : 'Grupo não encontrado - Pedala Sampa'
+  group.value
+    ? `${group.value.name} - Pedala Sampa`
+    : 'Grupo não encontrado - Pedala Sampa'
 const description = () =>
   group.value
     ? `Veja ponto de saída, horário, nível, distância e ritmo do grupo ${group.value.name} em São Paulo.`

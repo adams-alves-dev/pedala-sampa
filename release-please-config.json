@@ -1,0 +1,22 @@
+{
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+  "packages": {
+    ".": {
+      "release-type": "node",
+      "package-name": "pedala-sampa",
+      "include-component-in-tag": false,
+      "changelog-sections": [
+        { "type": "feat", "section": "✨ Funcionalidades" },
+        { "type": "fix", "section": "🐛 Correções" },
+        { "type": "perf", "section": "⚡ Performance" },
+        { "type": "refactor", "section": "♻️ Refatorações" },
+        { "type": "docs", "section": "📝 Documentação" },
+        { "type": "style", "section": "💄 Estilo" },
+        { "type": "chore", "section": "🔧 Tarefas", "hidden": true },
+        { "type": "test", "section": "✅ Testes", "hidden": true },
+        { "type": "ci", "section": "🤖 CI", "hidden": true },
+        { "type": "build", "section": "📦 Build", "hidden": true }
+      ]
+    }
+  }
+}

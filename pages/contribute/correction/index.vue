@@ -8,7 +8,8 @@
       <p class="ps-eyebrow contribute-eyebrow">Mapa colaborativo</p>
       <h1 class="ps-h1">Qual grupo você quer corrigir?</h1>
       <p class="ps-lead contribute-lead">
-        Escolha o grupo abaixo para abrir o formulário de correção com os dados atuais.
+        Escolha o grupo abaixo para abrir o formulário de correção com os dados
+        atuais.
       </p>
 
       <div class="ps-field-group contribute-search">
@@ -19,20 +20,25 @@
           class="ps-input"
           type="search"
           placeholder="Nome do grupo"
-        >
+        />
       </div>
 
       <p v-if="pending" class="ps-body" role="status">Carregando grupos…</p>
       <ul v-else class="contribute-list">
         <li v-for="group in filteredGroups" :key="group.id">
-          <NuxtLink class="contribute-item" :to="`/contribute/correction/${group.slug}`">
+          <NuxtLink
+            class="contribute-item"
+            :to="`/contribute/correction/${group.slug}`"
+          >
             <strong>{{ group.name }}</strong>
             <span v-if="group.departureAddress" class="contribute-item__addr">
               {{ group.departureAddress }}
             </span>
           </NuxtLink>
         </li>
-        <li v-if="!filteredGroups.length" class="ps-body">Nenhum grupo encontrado.</li>
+        <li v-if="!filteredGroups.length" class="ps-body">
+          Nenhum grupo encontrado.
+        </li>
       </ul>
     </div>
   </main>
@@ -50,12 +56,15 @@ const filteredGroups = computed(() => {
   if (!searchTerm) {
     return list
   }
-  return list.filter((group) => group.name.toLocaleLowerCase('pt-BR').includes(searchTerm))
+  return list.filter((group) =>
+    group.name.toLocaleLowerCase('pt-BR').includes(searchTerm),
+  )
 })
 
 useSeoMeta({
   title: 'Sugerir correção - Pedala Sampa',
-  description: 'Corrija informações de um grupo de pedal no mapa colaborativo do Pedala Sampa.',
+  description:
+    'Corrija informações de um grupo de pedal no mapa colaborativo do Pedala Sampa.',
 })
 </script>
 

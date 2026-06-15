@@ -12,7 +12,9 @@ export function useGroup(slug: string) {
   return useAsyncData(
     `group:${slug}`,
     async () => {
-      const response = await client.request<GroupResponse>(GET_GROUP_QUERY, { slug })
+      const response = await client.request<GroupResponse>(GET_GROUP_QUERY, {
+        slug,
+      })
       return response.group ? normalizeGroup(response.group) : null
     },
     // a missing group resolves to null on purpose; declaring the default keeps

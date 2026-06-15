@@ -26,8 +26,15 @@ function buildRequest(common: {
 }): SuggestionRequest | { error: string } {
   const payload = payloadFromFields(fields.value)
 
-  if (!payload.name || payload.latitude === undefined || payload.longitude === undefined) {
-    return { error: 'Preencha pelo menos o nome do grupo e as coordenadas do ponto de saída.' }
+  if (
+    !payload.name ||
+    payload.latitude === undefined ||
+    payload.longitude === undefined
+  ) {
+    return {
+      error:
+        'Preencha pelo menos o nome do grupo e as coordenadas do ponto de saída.',
+    }
   }
 
   return {

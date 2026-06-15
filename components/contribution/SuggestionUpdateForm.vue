@@ -2,20 +2,27 @@
   <p v-if="pending" class="ps-body" role="status">Carregando dados do grupo…</p>
 
   <div v-else-if="loadFailed" class="suggestion-notfound">
-    <p class="ps-body">Não foi possível carregar o grupo agora. Tente novamente em instantes.</p>
-    <button class="ps-btn" type="button" @click="refresh()">Tentar de novo</button>
+    <p class="ps-body">
+      Não foi possível carregar o grupo agora. Tente novamente em instantes.
+    </p>
+    <button class="ps-btn" type="button" @click="refresh()">
+      Tentar de novo
+    </button>
   </div>
 
   <div v-else-if="!record" class="suggestion-notfound">
-    <p class="ps-body">Não encontramos esse grupo. Ele pode ter sido removido.</p>
+    <p class="ps-body">
+      Não encontramos esse grupo. Ele pode ter sido removido.
+    </p>
     <NuxtLink class="ps-btn" to="/">Voltar ao mapa</NuxtLink>
   </div>
 
   <div v-else>
     <p class="ps-body suggestion-intro">
       Os campos abaixo mostram o que está publicado para
-      <strong>{{ record.name }}</strong>. Altere só o que precisa corrigir — enviamos para
-      revisão apenas o que mudou.
+      <strong>{{ record.name }}</strong
+      >. Altere só o que precisa corrigir — enviamos para revisão apenas o que
+      mudou.
     </p>
 
     <SuggestionFormBase
@@ -28,14 +35,20 @@
 
     <p class="ps-body suggestion-removal">
       O grupo não existe mais ou não quer aparecer no site?
-      <NuxtLink :to="`/contribute/removal/${record.slug}`">Solicitar remoção</NuxtLink>
+      <NuxtLink :to="`/contribute/removal/${record.slug}`"
+        >Solicitar remoção</NuxtLink
+      >
     </p>
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
-import { diffPayload, emptyFields, fieldsFromRecord } from '../../lib/suggestion-form'
+import {
+  diffPayload,
+  emptyFields,
+  fieldsFromRecord,
+} from '../../lib/suggestion-form'
 import type { SuggestionRequest } from '../../types/suggestion'
 import SuggestionFormBase from './SuggestionFormBase.vue'
 import SuggestionGroupFields from './SuggestionGroupFields.vue'
@@ -47,14 +60,20 @@ const props = defineProps<{
 const { fetchGroupRecord } = useSuggestions()
 
 // busca só no client: a página é prerenderizada como casca estática
-const { data: record, pending, error, refresh } = useAsyncData(
-  `record:${props.slug}`,
-  () => fetchGroupRecord(props.slug),
-  { server: false, default: () => null },
-)
+const {
+  data: record,
+  pending,
+  error,
+  refresh,
+} = useAsyncData(`record:${props.slug}`, () => fetchGroupRecord(props.slug), {
+  server: false,
+  default: () => null,
+})
 
 // 404 cai no estado "não encontramos"; qualquer outra falha pede nova tentativa
-const loadFailed = computed(() => Boolean(error.value) && error.value?.statusCode !== 404)
+const loadFailed = computed(
+  () => Boolean(error.value) && error.value?.statusCode !== 404,
+)
 
 const fields = ref(emptyFields())
 watch(
@@ -79,7 +98,10 @@ function buildRequest(common: {
 
   const payload = diffPayload(fields.value, record.value)
   if (Object.keys(payload).length === 0) {
-    return { error: 'Nenhum campo foi alterado. Mude o que precisa corrigir antes de enviar.' }
+    return {
+      error:
+        'Nenhum campo foi alterado. Mude o que precisa corrigir antes de enviar.',
+    }
   }
 
   return {

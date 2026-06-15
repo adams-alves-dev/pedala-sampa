@@ -1,4 +1,8 @@
-import { SuggestionError, createSuggestion, parseSuggestion } from '../../lib/suggestion-service'
+import {
+  SuggestionError,
+  createSuggestion,
+  parseSuggestion,
+} from '../../lib/suggestion-service'
 import type { SuggestionRequest } from '../../types/suggestion'
 
 type TurnstileVerifyResponse = {
@@ -7,13 +11,19 @@ type TurnstileVerifyResponse = {
 
 let warnedMissingConfig = false
 
-async function verifyTurnstile(token: string | undefined, ip: string): Promise<boolean> {
+async function verifyTurnstile(
+  token: string | undefined,
+  ip: string,
+): Promise<boolean> {
   const config = useRuntimeConfig()
 
   if (!config.turnstileEnabled) {
     return true
   }
-  if ((!config.public.turnstileSiteKey || !config.turnstileSecretKey) && !warnedMissingConfig) {
+  if (
+    (!config.public.turnstileSiteKey || !config.turnstileSecretKey) &&
+    !warnedMissingConfig
+  ) {
     warnedMissingConfig = true
     const missing = [
       config.public.turnstileSiteKey ? '' : 'NUXT_PUBLIC_TURNSTILE_SITE_KEY',
@@ -46,7 +56,8 @@ async function verifyTurnstile(token: string | undefined, ip: string): Promise<b
     throw createError({
       statusCode: 502,
       statusMessage: 'Bad Gateway',
-      message: 'Não foi possível verificar o desafio anti-bot agora. Tente novamente em instantes.',
+      message:
+        'Não foi possível verificar o desafio anti-bot agora. Tente novamente em instantes.',
     })
   }
 
@@ -70,7 +81,8 @@ export default defineEventHandler(async (event) => {
     throw createError({
       statusCode: 429,
       statusMessage: 'Too Many Requests',
-      message: 'Muitas sugestões em sequência. Tente novamente em alguns minutos.',
+      message:
+        'Muitas sugestões em sequência. Tente novamente em alguns minutos.',
     })
   }
 
@@ -83,7 +95,8 @@ export default defineEventHandler(async (event) => {
       throw createError({
         statusCode: 400,
         statusMessage: 'Bad Request',
-        message: 'Não foi possível verificar que você é humano. Recarregue a página e tente de novo.',
+        message:
+          'Não foi possível verificar que você é humano. Recarregue a página e tente de novo.',
       })
     }
 

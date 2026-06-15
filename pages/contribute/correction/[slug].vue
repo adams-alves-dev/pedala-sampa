@@ -8,8 +8,8 @@
       <p class="ps-eyebrow contribute-eyebrow">Mapa colaborativo</p>
       <h1 class="ps-h1">Sugerir correção</h1>
       <p class="ps-lead contribute-lead">
-        Encontrou um dado desatualizado? Corrija abaixo — a sugestão passa por revisão antes de ir
-        ao ar.
+        Encontrou um dado desatualizado? Corrija abaixo — a sugestão passa por
+        revisão antes de ir ao ar.
       </p>
 
       <SuggestionUpdateForm :slug="slug" />
@@ -29,7 +29,8 @@ const slug = computed(() => {
 
 useSeoMeta({
   title: 'Sugerir correção - Pedala Sampa',
-  description: 'Corrija informações de um grupo de pedal no mapa colaborativo do Pedala Sampa.',
+  description:
+    'Corrija informações de um grupo de pedal no mapa colaborativo do Pedala Sampa.',
 })
 </script>
 

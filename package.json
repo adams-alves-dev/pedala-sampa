@@ -1,16 +1,26 @@
 {
   "name": "pedala-sampa",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
+  "packageManager": "yarn@1.22.22",
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "dev": "nuxt dev",
     "build": "nuxt build",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "typecheck": "nuxt typecheck",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "postinstall": "nuxt prepare",
+    "prepare": "husky"
   },
   "dependencies": {
     "@nuxtjs/leaflet": "latest",
@@ -23,13 +33,19 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@commitlint/cli": "^21.0.2",
+    "@commitlint/config-conventional": "^21.0.2",
     "@nuxt/eslint": "^1.15.2",
     "@nuxt/test-utils": "latest",
     "@nuxtjs/color-mode": "^4.0.0",
     "@vitejs/plugin-vue": "latest",
     "@vue/test-utils": "latest",
     "eslint": "latest",
+    "eslint-config-prettier": "^10.1.8",
     "happy-dom": "latest",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.0.7",
+    "prettier": "^3.8.4",
     "typescript": "latest",
     "vitest": "latest",
     "vue-tsc": "latest"

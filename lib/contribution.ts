@@ -4,7 +4,10 @@ export type ContributionContext = 'new-group' | 'correction' | 'removal'
  * Rotas internas dos fluxos de contribuição. Correção/remoção sem slug caem
  * na página de escolha de grupo (/contribute/correction).
  */
-export function getContributionRoute(context: ContributionContext, slug?: string): string {
+export function getContributionRoute(
+  context: ContributionContext,
+  slug?: string,
+): string {
   if (context === 'correction') {
     return slug ? `/contribute/correction/${slug}` : '/contribute/correction'
   }

@@ -12,11 +12,15 @@
     <div class="group-grid">
       <div class="group-col">
         <section>
-          <h2 class="section-title"><PsIcon name="calendar" :size="16" /> Agenda</h2>
+          <h2 class="section-title">
+            <PsIcon name="calendar" :size="16" /> Agenda
+          </h2>
           <div v-if="primarySchedule" class="meta-grid">
             <div class="meta-cell">
               <div class="ps-label">Dia &amp; saída</div>
-              <div class="v">{{ primarySchedule.day }} · {{ primarySchedule.startHour }}</div>
+              <div class="v">
+                {{ primarySchedule.day }} · {{ primarySchedule.startHour }}
+              </div>
             </div>
             <div class="meta-cell">
               <div class="ps-label">Ponto de saída</div>
@@ -39,11 +43,15 @@
               <div class="v">{{ duration }}</div>
             </div>
           </div>
-          <p v-else class="ps-body group-muted">Agenda ainda não cadastrada para este grupo.</p>
+          <p v-else class="ps-body group-muted">
+            Agenda ainda não cadastrada para este grupo.
+          </p>
         </section>
 
         <section>
-          <h2 class="section-title"><PsIcon name="users" :size="16" /> Contato &amp; contribuição</h2>
+          <h2 class="section-title">
+            <PsIcon name="users" :size="16" /> Contato &amp; contribuição
+          </h2>
           <div class="group-actions">
             <a
               v-if="group.link?.url"
@@ -51,23 +59,37 @@
               :href="group.link.url"
               target="_blank"
               rel="noopener noreferrer"
-              :aria-label="(group.link.label || 'Perfil / contato') + ' (abre em nova aba)'"
+              :aria-label="
+                (group.link.label || 'Perfil / contato') + ' (abre em nova aba)'
+              "
             >
-              <PsIcon name="chat" :size="16" /> {{ group.link.label || 'Perfil / contato' }}
+              <PsIcon name="chat" :size="16" />
+              {{ group.link.label || 'Perfil / contato' }}
               <PsIcon name="arrowUR" :size="15" />
             </a>
-            <p v-else class="ps-body group-muted">Este grupo ainda não tem link de contato cadastrado.</p>
-            <ContributionLink context="correction" :slug="group.slug" icon="pencil" fab />
+            <p v-else class="ps-body group-muted">
+              Este grupo ainda não tem link de contato cadastrado.
+            </p>
+            <ContributionLink
+              context="correction"
+              :slug="group.slug"
+              icon="pencil"
+              fab
+            />
             <p class="ps-body group-removal">
               É quem organiza o pedal e não quer o grupo no site?
-              <NuxtLink :to="`/contribute/removal/${group.slug}`">Solicitar remoção</NuxtLink>
+              <NuxtLink :to="`/contribute/removal/${group.slug}`"
+                >Solicitar remoção</NuxtLink
+              >
             </p>
           </div>
         </section>
       </div>
 
       <section>
-        <h2 class="section-title"><PsIcon name="pin" :size="16" /> Ponto de saída</h2>
+        <h2 class="section-title">
+          <PsIcon name="pin" :size="16" /> Ponto de saída
+        </h2>
         <div class="group-map">
           <GroupLocationMap
             :lat="group.departureLocation.latitude"

@@ -8,7 +8,8 @@
       <p class="ps-eyebrow contribute-eyebrow">Mapa colaborativo</p>
       <h1 class="ps-h1">Solicitar remoção</h1>
       <p class="ps-lead contribute-lead">
-        O grupo encerrou, mudou ou não quer mais aparecer no Pedala Sampa? Conte o motivo abaixo.
+        O grupo encerrou, mudou ou não quer mais aparecer no Pedala Sampa? Conte
+        o motivo abaixo.
       </p>
 
       <SuggestionDeleteForm :slug="slug" />
@@ -28,7 +29,8 @@ const slug = computed(() => {
 
 useSeoMeta({
   title: 'Solicitar remoção - Pedala Sampa',
-  description: 'Solicite a remoção de um grupo do mapa colaborativo do Pedala Sampa.',
+  description:
+    'Solicite a remoção de um grupo do mapa colaborativo do Pedala Sampa.',
 })
 </script>
 

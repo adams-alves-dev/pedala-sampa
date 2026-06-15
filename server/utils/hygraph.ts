@@ -13,14 +13,21 @@ export async function hygraphRequest<T>(
 ): Promise<T> {
   const config = useRuntimeConfig()
 
-  const response = await $fetch<GraphQLResponse<T>>(config.public.hygraphEndpoint, {
-    method: 'POST',
-    headers: config.hygraphToken ? { Authorization: `Bearer ${config.hygraphToken}` } : {},
-    body: { query, variables },
-  })
+  const response = await $fetch<GraphQLResponse<T>>(
+    config.public.hygraphEndpoint,
+    {
+      method: 'POST',
+      headers: config.hygraphToken
+        ? { Authorization: `Bearer ${config.hygraphToken}` }
+        : {},
+      body: { query, variables },
+    },
+  )
 
   if (response.errors?.length || !response.data) {
-    throw new Error(response.errors?.[0]?.message || 'Resposta vazia do Hygraph')
+    throw new Error(
+      response.errors?.[0]?.message || 'Resposta vazia do Hygraph',
+    )
   }
 
   return response.data

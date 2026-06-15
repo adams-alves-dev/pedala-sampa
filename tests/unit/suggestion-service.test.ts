@@ -33,7 +33,10 @@ describe('createSuggestion', () => {
 
   it('retorna 400 para corpo inválido, com issues por campo', async () => {
     const hygraph = hygraphMock({})
-    const promise = createSuggestion({ type: 'CREATE', justification: 'oi' }, hygraph)
+    const promise = createSuggestion(
+      { type: 'CREATE', justification: 'oi' },
+      hygraph,
+    )
 
     await expect(promise).rejects.toBeInstanceOf(SuggestionError)
     await promise.catch((error: SuggestionError) => {
@@ -46,7 +49,12 @@ describe('createSuggestion', () => {
   it('retorna 404 quando alvo de UPDATE não existe', async () => {
     const hygraph = hygraphMock({ group: null })
     const promise = createSuggestion(
-      { type: 'UPDATE', targetId: 'nao-existe', payload: { name: 'Novo nome' }, justification },
+      {
+        type: 'UPDATE',
+        targetId: 'nao-existe',
+        payload: { name: 'Novo nome' },
+        justification,
+      },
       hygraph,
     )
 
@@ -66,7 +74,9 @@ describe('createSuggestion', () => {
   })
 
   it('retorna 502 quando o Hygraph falha', async () => {
-    const hygraph: HygraphRequest = vi.fn(() => Promise.reject(new Error('boom')))
+    const hygraph: HygraphRequest = vi.fn(() =>
+      Promise.reject(new Error('boom')),
+    )
     const promise = createSuggestion(
       {
         type: 'CREATE',

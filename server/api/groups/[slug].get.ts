@@ -32,12 +32,18 @@ export default defineEventHandler(async (event): Promise<GroupRecord> => {
   const slug = getRouterParam(event, 'slug')
 
   if (!slug) {
-    throw createError({ statusCode: 400, message: 'Slug do grupo é obrigatório' })
+    throw createError({
+      statusCode: 400,
+      message: 'Slug do grupo é obrigatório',
+    })
   }
 
   let data: { group: HygraphGroup | null }
   try {
-    data = await hygraphRequest<{ group: HygraphGroup | null }>(GET_GROUP_RECORD_QUERY, { slug })
+    data = await hygraphRequest<{ group: HygraphGroup | null }>(
+      GET_GROUP_RECORD_QUERY,
+      { slug },
+    )
   } catch {
     throw createError({
       statusCode: 502,
