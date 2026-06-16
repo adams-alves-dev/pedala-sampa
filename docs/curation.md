@@ -90,6 +90,12 @@ Para cada sugestão a CLI revalida o `payload` (o mesmo Zod do site) e então:
 Ao final, a CLI imprime o que precisa de **publish/unpublish manual no Studio**. Rejeições
 (`[r]`) marcam `REJECTED` sem tocar no catálogo.
 
+> **Se algo falhar no meio de um CREATE:** a CLI cria o `Group` e só então marca a sugestão
+> como `APPROVED`. Se a marcação falhar logo depois (rede, permissão), o grupo já existe mas a
+> sugestão segue `PENDENTE` — a CLI avisa citando o slug criado. Marque essa sugestão como
+> `APPROVED` no Studio **antes de rodar de novo**, senão a próxima execução cria um grupo
+> duplicado (com slug `-2`). UPDATE é idempotente, então re-rodar é seguro.
+
 ## 3. Notificação (opcional, recomendado)
 
 Em **Project settings → Webhooks**, crie um webhook disparado em **Entry created** do model
