@@ -19,6 +19,7 @@
     "typecheck": "nuxt typecheck",
     "test": "vitest run",
     "test:watch": "vitest",
+    "curate": "tsx scripts/curate.ts",
     "postinstall": "nuxt prepare",
     "prepare": "husky"
   },
@@ -46,6 +47,7 @@
     "husky": "^9.1.7",
     "lint-staged": "^17.0.7",
     "prettier": "^3.8.4",
+    "tsx": "^4.22.4",
     "typescript": "latest",
     "vitest": "latest",
     "vue-tsc": "latest"
