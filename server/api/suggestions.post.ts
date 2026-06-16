@@ -100,7 +100,20 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    return await createSuggestion(body, hygraphRequest)
+    const result = await createSuggestion(body, hygraphRequest)
+
+    // aviso fire-and-forget no Discord (nunca derruba a requisição: a sugestão
+    // já foi registrada). No-op se DISCORD_WEBHOOK_URL não estiver configurado.
+    await notifyNewSuggestion({
+      id: result.id,
+      type: parsed.type,
+      justification: parsed.justification,
+      targetId: parsed.targetId,
+      contactEmail: parsed.contactEmail || undefined,
+      payload: parsed.payload,
+    })
+
+    return result
   } catch (error) {
     if (error instanceof SuggestionError) {
       throw createError({

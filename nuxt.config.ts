@@ -44,6 +44,7 @@ export default defineNuxtConfig({
     hygraphToken: process.env.GRAPHQL_TOKEN || '',
     turnstileSecretKey: process.env.TURNSTILE_SECRET_KEY || '',
     turnstileEnabled: process.env.TURNSTILE_ENABLED === 'true',
+    discordWebhookUrl: process.env.DISCORD_WEBHOOK_URL || '',
     public: {
       hygraphEndpoint:
         process.env.HYGRAPH_ENDPOINT ||
