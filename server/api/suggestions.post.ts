@@ -102,14 +102,15 @@ export default defineEventHandler(async (event) => {
 
     const result = await createSuggestion(body, hygraphRequest)
 
-    // aviso fire-and-forget no Discord (nunca derruba a requisição: a sugestão
-    // já foi registrada). No-op se DISCORD_WEBHOOK_URL não estiver configurado.
+    // aviso best-effort no Discord: awaitado (com timeout curto) para o serverless
+    // não congelar antes do POST, mas nunca derruba a resposta — a sugestão já foi
+    // registrada. No-op se DISCORD_WEBHOOK_URL não estiver configurado.
     await notifyNewSuggestion({
       id: result.id,
       type: parsed.type,
       justification: parsed.justification,
       targetId: parsed.targetId,
-      contactEmail: parsed.contactEmail || undefined,
+      contactEmail: parsed.contactEmail,
       payload: parsed.payload,
     })
 

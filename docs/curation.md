@@ -57,8 +57,12 @@ copiar a URL) e defina `DISCORD_WEBHOOK_URL` no `.env` local e nas variáveis do
 sugestão dispara uma mensagem com tipo, grupo, justificativa e contato. Sem a variável, o aviso
 fica desligado (não quebra nada).
 
-> O aviso sai do próprio endpoint `POST /api/suggestions` em modo _fire-and-forget_: se o Discord
-> falhar, a sugestão ainda é registrada normalmente.
+> ⚠️ **Privacidade (LGPD):** a mensagem inclui o **e-mail de contato** e a **justificativa** do
+> colaborador — dados pessoais. Use um canal **privado**, restrito à curadoria, e trate a URL do
+> webhook como segredo (quem a tem consegue postar nesse canal).
+
+> O aviso sai do próprio endpoint `POST /api/suggestions` em modo _best-effort_ (com timeout
+> curto): se o Discord falhar ou demorar, a sugestão ainda é registrada normalmente.
 
 **Alternativa — webhook do Hygraph:** para notificar também entries criadas direto no Studio
 (fora do formulário), crie em **Project settings → Webhooks** um webhook em **Entry created** do

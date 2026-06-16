@@ -1,25 +1,26 @@
-import { buildDiscordMessage } from '../../lib/suggestion-notification'
+import { sendSuggestionNotice } from '../../lib/suggestion-notification'
 import type { NewSuggestionNotice } from '../../lib/suggestion-notification'
 
+// Timeout curto do POST ao Discord: o aviso é awaitado antes da resposta, então
+// um Discord lento/pendurado não pode segurar o envio do formulário do usuário.
+const DISCORD_TIMEOUT_MS = 3000
+
 /**
- * Avisa no Discord que chegou uma sugestão. Fire-and-forget seguro: nunca lança
- * — uma falha no aviso não pode derrubar o cadastro da sugestão. No-op quando
- * `DISCORD_WEBHOOK_URL` não está configurado (o recurso é opt-in).
+ * Avisa no Discord que chegou uma sugestão. Best-effort: nunca lança (uma falha
+ * no aviso não derruba o cadastro) e tem timeout curto para não atrasar a
+ * resposta. No-op quando `DISCORD_WEBHOOK_URL` não está configurado (opt-in).
  */
-export async function notifyNewSuggestion(
+export function notifyNewSuggestion(
   notice: NewSuggestionNotice,
 ): Promise<void> {
-  const webhookUrl = useRuntimeConfig().discordWebhookUrl
-  if (!webhookUrl) {
-    return
-  }
-  try {
-    await $fetch(webhookUrl, {
-      method: 'POST',
-      body: buildDiscordMessage(notice),
-    })
-  } catch (error) {
-    // não relança: o usuário já teve a sugestão registrada com sucesso
-    console.warn('[suggestions] falha ao notificar no Discord:', error)
-  }
+  return sendSuggestionNotice(
+    useRuntimeConfig().discordWebhookUrl,
+    notice,
+    (url, payload) =>
+      $fetch(url, {
+        method: 'POST',
+        body: payload,
+        timeout: DISCORD_TIMEOUT_MS,
+      }),
+  )
 }

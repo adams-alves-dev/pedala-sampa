@@ -72,3 +72,33 @@ export function buildDiscordMessage(
     allowed_mentions: { parse: [] },
   }
 }
+
+/**
+ * Transporte do aviso: recebe a URL já resolvida e a mensagem pronta. Injetável
+ * para teste — o adaptador real (`server/utils/notify.ts`) usa `$fetch`.
+ */
+export type DiscordSender = (
+  url: string,
+  payload: DiscordWebhookPayload,
+) => Promise<unknown>
+
+/**
+ * Decide e envia o aviso de uma sugestão (best-effort, testável por injeção):
+ * no-op sem `webhookUrl`; do contrário envia a mensagem montada e **engole** o
+ * erro do transporte — o cadastro da sugestão nunca é derrubado pelo aviso.
+ */
+export async function sendSuggestionNotice(
+  webhookUrl: string | undefined,
+  notice: NewSuggestionNotice,
+  send: DiscordSender,
+): Promise<void> {
+  if (!webhookUrl) {
+    return
+  }
+  try {
+    await send(webhookUrl, buildDiscordMessage(notice))
+  } catch (error) {
+    // não relança: o usuário já teve a sugestão registrada com sucesso
+    console.warn('[suggestions] falha ao notificar no Discord:', error)
+  }
+}
