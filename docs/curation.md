@@ -98,9 +98,22 @@ Ao final, a CLI imprime o que precisa de **publish/unpublish manual no Studio**.
 
 ## 3. Notificação (opcional, recomendado)
 
-Em **Project settings → Webhooks**, crie um webhook disparado em **Entry created** do model
-`Suggestion` apontando para um serviço de notificação (ex.: Zapier/Make → e-mail, ou um webhook
-do Slack). Assim você fica sabendo de cada sugestão sem precisar abrir o Hygraph.
+O site já avisa **no Discord** a cada nova sugestão, sem depender do Studio. Crie um **webhook**
+num canal do Discord (canal → **Editar** → **Integrações** → **Webhooks** → **Novo webhook** →
+copiar a URL) e defina `DISCORD_WEBHOOK_URL` no `.env` local e nas variáveis do Netlify. Cada
+sugestão dispara uma mensagem com tipo, grupo, justificativa e contato. Sem a variável, o aviso
+fica desligado (não quebra nada).
+
+> ⚠️ **Privacidade (LGPD):** a mensagem inclui o **e-mail de contato** e a **justificativa** do
+> colaborador — dados pessoais. Use um canal **privado**, restrito à curadoria, e trate a URL do
+> webhook como segredo (quem a tem consegue postar nesse canal).
+
+> O aviso sai do próprio endpoint `POST /api/suggestions` em modo _best-effort_ (com timeout
+> curto): se o Discord falhar ou demorar, a sugestão ainda é registrada normalmente.
+
+**Alternativa — webhook do Hygraph:** para notificar também entries criadas direto no Studio
+(fora do formulário), crie em **Project settings → Webhooks** um webhook em **Entry created** do
+model `Suggestion` apontando para um serviço (ex.: Zapier/Make → e-mail ou Slack).
 
 ## 4. Proteções ativas no site
 
