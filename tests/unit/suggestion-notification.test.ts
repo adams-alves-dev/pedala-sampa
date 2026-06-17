@@ -68,6 +68,29 @@ describe('buildDiscordMessage', () => {
     expect(msg.content).not.toContain('Campos:')
   })
 
+  it('UPDATE de uma agenda: mostra "Agenda alvo" e não lista scheduleId em Campos', () => {
+    const msg = buildDiscordMessage({
+      ...base,
+      type: 'UPDATE',
+      targetId: 'grp1',
+      payload: { startHour: '20:00', scheduleId: 'gi-2' },
+    })
+    expect(msg.content).toContain('**Agenda alvo:** `gi-2`')
+    expect(msg.content).toContain('**Campos:** startHour')
+    expect(msg.content).not.toContain('scheduleId')
+  })
+
+  it('DELETE de uma agenda: mostra "Agenda alvo"', () => {
+    const msg = buildDiscordMessage({
+      ...base,
+      type: 'DELETE',
+      targetId: 'grp1',
+      payload: { scheduleId: 'gi-2' },
+    })
+    expect(msg.content).toContain('remoção')
+    expect(msg.content).toContain('**Agenda alvo:** `gi-2`')
+  })
+
   it('omite o contato quando ausente', () => {
     const msg = buildDiscordMessage({ ...base, payload: { name: 'X' } })
     expect(msg.content).not.toContain('Contato:')

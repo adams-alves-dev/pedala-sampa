@@ -53,6 +53,8 @@ export const payloadSchema = z
       .number('Longitude deve ser um número')
       .min(SP_BOUNDS.lngMin, 'Longitude fora da região de São Paulo')
       .max(SP_BOUNDS.lngMax, 'Longitude fora da região de São Paulo'),
+    // alvo de UMA agenda (id do GroupInfo) em UPDATE/DELETE — não é editável
+    scheduleId: z.string().trim().min(1).max(64),
   })
   .partial()
 
@@ -95,8 +97,10 @@ export const suggestionSchema = baseSchema.superRefine((data, ctx) => {
   // o modo "adicionar agenda" valida por campo abaixo, com mensagens próprias
   const needsGenericPayload =
     (data.type === 'CREATE' && !isAddSchedule) || data.type === 'UPDATE'
-  const filledFieldCount = Object.values(data.payload ?? {}).filter(
-    (value) => value !== undefined,
+  // scheduleId é alvo (qual agenda), não um campo editável — fora da contagem,
+  // então um DELETE pode levar só scheduleId e um UPDATE exige uma mudança real
+  const filledFieldCount = Object.entries(data.payload ?? {}).filter(
+    ([key, value]) => key !== 'scheduleId' && value !== undefined,
   ).length
 
   if (needsTarget && !data.targetId) {

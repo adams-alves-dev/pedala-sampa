@@ -25,6 +25,34 @@
       mudou.
     </p>
 
+    <fieldset v-if="record.schedules.length > 1" class="schedule-picker">
+      <legend class="ps-label schedule-picker__legend">
+        Qual agenda corrigir?
+      </legend>
+      <p class="schedule-picker__hint">
+        Este grupo tem {{ record.schedules.length }} agendas — escolha qual você
+        quer corrigir.
+      </p>
+      <div class="schedule-picker__opts">
+        <label
+          v-for="(sched, index) in record.schedules"
+          :key="sched.id"
+          class="schedule-picker__opt"
+          :class="{ 'is-active': sched.id === selectedScheduleId }"
+        >
+          <input
+            class="schedule-picker__radio"
+            type="radio"
+            name="schedule-pick"
+            :value="sched.id"
+            :checked="sched.id === selectedScheduleId"
+            @change="selectedScheduleId = sched.id"
+          />
+          <span>{{ scheduleLabel(sched, index) }}</span>
+        </label>
+      </div>
+    </fieldset>
+
     <SuggestionFormBase
       submit-label="Enviar correção"
       justification-hint="Conte de onde veio a informação corrigida (ex.: sou do grupo, o ponto mudou)."
@@ -48,8 +76,12 @@ import {
   diffPayload,
   emptyFields,
   fieldsFromRecord,
+  scheduleLabel,
 } from '../../lib/suggestion-form'
-import type { SuggestionRequest } from '../../types/suggestion'
+import type {
+  SuggestionGroupPayload,
+  SuggestionRequest,
+} from '../../types/suggestion'
 import SuggestionFormBase from './SuggestionFormBase.vue'
 import SuggestionGroupFields from './SuggestionGroupFields.vue'
 
@@ -76,15 +108,40 @@ const loadFailed = computed(
 )
 
 const fields = ref(emptyFields())
+const selectedScheduleId = ref<string>()
+
+const chosenSchedule = computed(() =>
+  record.value?.schedules.find((s) => s.id === selectedScheduleId.value),
+)
+
+// na carga do grupo: seleciona a 1ª agenda e pré-preenche
 watch(
   record,
   (value) => {
-    if (value) {
-      fields.value = fieldsFromRecord(value)
-    }
+    selectedScheduleId.value = value?.schedules[0]?.id
+    fields.value = value
+      ? fieldsFromRecord(value, value.schedules[0])
+      : emptyFields()
   },
   { immediate: true },
 )
+
+// trocar de agenda repreenche os campos com os valores publicados dela
+watch(selectedScheduleId, () => {
+  if (record.value) {
+    fields.value = fieldsFromRecord(record.value, chosenSchedule.value)
+  }
+})
+
+function hasScheduleChange(payload: SuggestionGroupPayload): boolean {
+  return (
+    payload.day !== undefined ||
+    payload.startHour !== undefined ||
+    payload.effort !== undefined ||
+    payload.distanceKm !== undefined ||
+    payload.rhythmKmH !== undefined
+  )
+}
 
 function buildRequest(common: {
   justification: string
@@ -96,12 +153,17 @@ function buildRequest(common: {
     return { error: 'Grupo não carregado. Recarregue a página.' }
   }
 
-  const payload = diffPayload(fields.value, record.value)
+  const payload = diffPayload(fields.value, record.value, chosenSchedule.value)
   if (Object.keys(payload).length === 0) {
     return {
       error:
         'Nenhum campo foi alterado. Mude o que precisa corrigir antes de enviar.',
     }
+  }
+
+  // marca a agenda alvo só quando um campo de agenda mudou
+  if (chosenSchedule.value && hasScheduleChange(payload)) {
+    payload.scheduleId = chosenSchedule.value.id
   }
 
   return {
@@ -117,6 +179,50 @@ function buildRequest(common: {
 .suggestion-intro {
   max-width: 560px;
   margin-bottom: var(--space-5);
+}
+
+.schedule-picker {
+  max-width: 560px;
+  margin: 0 0 var(--space-5);
+  padding: var(--space-4);
+  border: 2px solid var(--color-border);
+}
+
+.schedule-picker__legend {
+  padding: 0 var(--space-2);
+}
+
+.schedule-picker__hint {
+  margin: 0 0 var(--space-3);
+  font-size: var(--text-xs);
+  color: var(--color-asphalt-55);
+}
+
+.schedule-picker__opts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.schedule-picker__opt {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border: 2px solid var(--color-border);
+  cursor: pointer;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  transition: border-color var(--duration-fast) var(--ease-out);
+}
+
+.schedule-picker__opt:hover {
+  border-color: var(--color-asphalt);
+}
+
+.schedule-picker__opt.is-active {
+  border-color: var(--color-bike-green);
+  background: var(--color-green-tint);
 }
 
 .suggestion-notfound {

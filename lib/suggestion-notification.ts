@@ -38,7 +38,10 @@ function truncate(text: string, max: number): string {
 /** Campos preenchidos do payload — usado no resumo de um UPDATE. */
 function filledFields(payload: SuggestionGroupPayload): string[] {
   return Object.entries(payload)
-    .filter(([, value]) => value !== undefined && value !== null)
+    .filter(
+      ([key, value]) =>
+        key !== 'scheduleId' && value !== undefined && value !== null,
+    )
     .map(([key]) => key)
 }
 
@@ -55,6 +58,11 @@ export function buildDiscordMessage(
     lines.push(`**Grupo:** ${notice.payload.name}`)
   } else if (notice.targetId) {
     lines.push(`**Grupo alvo:** \`${notice.targetId}\``)
+  }
+
+  // correção/remoção de UMA agenda específica
+  if (notice.payload?.scheduleId) {
+    lines.push(`**Agenda alvo:** \`${notice.payload.scheduleId}\``)
   }
 
   if (isAddSchedule && notice.payload) {

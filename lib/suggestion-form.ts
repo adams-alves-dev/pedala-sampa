@@ -1,4 +1,8 @@
-import type { GroupRecord, SuggestionGroupPayload } from '../types/suggestion'
+import type {
+  GroupRecord,
+  GroupScheduleRecord,
+  SuggestionGroupPayload,
+} from '../types/suggestion'
 import { getRhythmFromDistanceAndDuration } from './time'
 
 /**
@@ -40,6 +44,27 @@ const TEXT_FIELDS: ReadonlyArray<TextField> = [
   'effort',
 ]
 
+// diffPayload compara os campos do grupo contra o `record` e os da agenda contra
+// a agenda escolhida — daí a separação (payloadFromFields usa as listas acima).
+const GROUP_TEXT_FIELDS: ReadonlyArray<'name' | 'linkUrl' | 'address'> = [
+  'name',
+  'linkUrl',
+  'address',
+]
+const GROUP_NUMERIC_FIELDS: ReadonlyArray<'latitude' | 'longitude'> = [
+  'latitude',
+  'longitude',
+]
+const SCHEDULE_TEXT_FIELDS: ReadonlyArray<'day' | 'startHour' | 'effort'> = [
+  'day',
+  'startHour',
+  'effort',
+]
+const SCHEDULE_NUMERIC_FIELDS: ReadonlyArray<'distanceKm' | 'rhythmKmH'> = [
+  'distanceKm',
+  'rhythmKmH',
+]
+
 export function emptyFields(): SuggestionFormFields {
   return {
     name: '',
@@ -56,17 +81,23 @@ export function emptyFields(): SuggestionFormFields {
   }
 }
 
-export function fieldsFromRecord(record: GroupRecord): SuggestionFormFields {
+/** Pré-preenche o form com os campos do grupo (`record`) e os da agenda escolhida
+ *  (`schedule`). Sem agenda (grupo sem GroupInfo), os campos de agenda ficam vazios. */
+export function fieldsFromRecord(
+  record: GroupRecord,
+  schedule?: GroupScheduleRecord,
+): SuggestionFormFields {
   return {
     name: record.name,
     linkUrl: record.linkUrl ?? '',
     address: record.address ?? '',
-    day: record.day ?? '',
-    startHour: record.startHour ?? '',
-    effort: record.effort ?? '',
+    day: schedule?.day ?? '',
+    startHour: schedule?.startHour ?? '',
+    effort: schedule?.effort ?? '',
     distanceKm:
-      record.distanceKm !== undefined ? String(record.distanceKm) : '',
-    rhythmKmH: record.rhythmKmH !== undefined ? String(record.rhythmKmH) : '',
+      schedule?.distanceKm !== undefined ? String(schedule.distanceKm) : '',
+    rhythmKmH:
+      schedule?.rhythmKmH !== undefined ? String(schedule.rhythmKmH) : '',
     // o grupo publicado não guarda duração; o ritmo já vem preenchido acima
     durationHhmm: '',
     latitude: String(record.latitude),
@@ -113,6 +144,17 @@ export function hasCompleteSchedule(payload: SuggestionGroupPayload): boolean {
   )
 }
 
+/** Rótulo curto de uma agenda para seletores (ex.: "Quinta · 19:00 · Avançado"). */
+export function scheduleLabel(
+  schedule: GroupScheduleRecord,
+  index: number,
+): string {
+  const parts = [schedule.day, schedule.startHour, schedule.effort].filter(
+    (value): value is string => Boolean(value),
+  )
+  return parts.length > 0 ? parts.join(' · ') : `Agenda ${index + 1}`
+}
+
 /** Converte os inputs em payload, descartando campos vazios. */
 export function payloadFromFields(
   fields: SuggestionFormFields,
@@ -153,26 +195,41 @@ export function payloadFromFields(
 }
 
 /**
- * Correction payload: only the fields whose value differs from the published record,
- * so curation sees exactly what changed. A field left empty counts as
- * "unchanged" (asking to clear a field goes in the justification).
+ * Correction payload: only the fields whose value differs from the published
+ * record, so curation sees exactly what changed. Group fields are compared
+ * against the `record`; schedule fields against the chosen `schedule` (so
+ * correcting agenda #2 diffs against #2, not the first). A field left empty
+ * counts as "unchanged" (asking to clear a field goes in the justification).
  */
 export function diffPayload(
   fields: SuggestionFormFields,
   record: GroupRecord,
+  schedule?: GroupScheduleRecord,
 ): SuggestionGroupPayload {
   const proposed = payloadFromFields(fields)
   const diff: SuggestionGroupPayload = {}
 
-  for (const field of TEXT_FIELDS) {
+  for (const field of GROUP_TEXT_FIELDS) {
     const value = proposed[field]
     if (value !== undefined && value !== (record[field] ?? '')) {
       diff[field] = value
     }
   }
-  for (const field of NUMERIC_FIELDS) {
+  for (const field of GROUP_NUMERIC_FIELDS) {
     const value = proposed[field]
     if (value !== undefined && value !== record[field]) {
+      diff[field] = value
+    }
+  }
+  for (const field of SCHEDULE_TEXT_FIELDS) {
+    const value = proposed[field]
+    if (value !== undefined && value !== (schedule?.[field] ?? '')) {
+      diff[field] = value
+    }
+  }
+  for (const field of SCHEDULE_NUMERIC_FIELDS) {
+    const value = proposed[field]
+    if (value !== undefined && value !== schedule?.[field]) {
       diff[field] = value
     }
   }

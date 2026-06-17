@@ -186,6 +186,26 @@ describe('applyUpdate', () => {
     })
     expect(result).toContain('criar no Studio')
   })
+
+  it('mira a agenda escolhida pelo scheduleId (não a primeira)', async () => {
+    const { client, request } = clientWith([
+      {
+        group: { ...currentGroup, groupInfos: [{ id: 'gi1' }, { id: 'gi2' }] },
+      },
+      { updateGroupInfo: { id: 'gi2' } },
+      { updateSuggestion: { id: 's2' } },
+    ])
+    const result = await applyUpdate(client, updateSuggestion, {
+      distanceKm: 50,
+      scheduleId: 'gi2',
+    })
+    expect(result).toBe('Pedal da Sé')
+    // updateGroupInfo aplicado em gi2 (a 2ª), não na primeira
+    expect(request).toHaveBeenNthCalledWith(2, expect.any(String), {
+      id: 'gi2',
+      data: { distance: 50 },
+    })
+  })
 })
 
 describe('applyAddSchedule', () => {
@@ -247,6 +267,18 @@ describe('dryRunSummary', () => {
       group: { id: 'g1', slug: 'pedal-da-se', name: 'Pedal da Sé' },
     }
     expect(dryRunSummary(del, null)).toContain('despublicar pedal-da-se')
+  })
+
+  it('descreve um DELETE de uma agenda específica', () => {
+    const del: PendingSuggestion = {
+      ...createSuggestion,
+      type: 'DELETE',
+      payload: { scheduleId: 'gi9' },
+      group: { id: 'g1', slug: 'pedal-da-se', name: 'Pedal da Sé' },
+    }
+    const summary = dryRunSummary(del, null)
+    expect(summary).toContain('despublicar pedal-da-se')
+    expect(summary).toContain('agenda gi9')
   })
 })
 

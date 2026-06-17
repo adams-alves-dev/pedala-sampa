@@ -92,11 +92,17 @@ export function dryRunSummary(
   }
   if (s.type === 'UPDATE' && payload) {
     const fields = Object.entries(payload)
-      .filter(([, value]) => value !== undefined && value !== null)
+      .filter(
+        ([key, value]) =>
+          key !== 'scheduleId' && value !== undefined && value !== null,
+      )
       .map(([key]) => key)
-    return `atualizaria ${s.group?.slug ?? '?'}: ${fields.join(', ')}`
+    const agenda = payload.scheduleId ? ` (agenda ${payload.scheduleId})` : ''
+    return `atualizaria ${s.group?.slug ?? '?'}${agenda}: ${fields.join(', ')}`
   }
-  return `marcaria APPROVED e lembraria de despublicar ${s.group?.slug ?? '?'}`
+  const scheduleId = s.payload?.scheduleId
+  const agenda = scheduleId ? ` (agenda ${scheduleId})` : ''
+  return `marcaria APPROVED e lembraria de despublicar ${s.group?.slug ?? '?'}${agenda}`
 }
 
 async function mark(
@@ -222,15 +228,21 @@ export async function applyUpdate(
   }
   let note = ''
   if (parts.groupInfo) {
-    const info = group.groupInfos[0]
+    // mira a agenda escolhida (scheduleId); sem ela, cai na primeira (compat)
+    const scheduleId = diff.scheduleId
+    const info = scheduleId
+      ? group.groupInfos.find((gi) => gi.id === scheduleId)
+      : group.groupInfos[0]
     if (!info) {
-      note = ' (sem GroupInfo para a agenda — criar no Studio)'
+      note = scheduleId
+        ? ` (agenda ${scheduleId} não encontrada no grupo — confira no Studio)`
+        : ' (sem GroupInfo para a agenda — criar no Studio)'
     } else {
       await client.request(UPDATE_GROUP_INFO_MUTATION, {
         id: info.id,
         data: parts.groupInfo,
       })
-      if (group.groupInfos.length > 1) {
+      if (!scheduleId && group.groupInfos.length > 1) {
         note = ` (atenção: ${group.groupInfos.length} agendas; apliquei na primeira)`
       }
     }
@@ -347,7 +359,11 @@ export async function main(client: GraphQLClient): Promise<void> {
         console.log('  ✓ atualizado (DRAFT) + sugestão APPROVED\n')
       } else if (answer === 'a' && s.type === 'DELETE') {
         await mark(client, s.id, 'APPROVED')
-        toUnpublish.push(s.group ? `${s.group.name} (${s.group.slug})` : s.id)
+        const scheduleId = s.payload?.scheduleId
+        const agenda = scheduleId ? ` — agenda ${scheduleId}` : ''
+        toUnpublish.push(
+          s.group ? `${s.group.name} (${s.group.slug})${agenda}` : s.id,
+        )
         applied += 1
         console.log('  ✓ sugestão APPROVED (despublicar no Studio)\n')
       } else if (answer === 'r') {

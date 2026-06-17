@@ -166,6 +166,13 @@ describe('splitUpdatePayload', () => {
   it('retorna vazio quando não há nada a aplicar', () => {
     expect(splitUpdatePayload({}, current)).toEqual({})
   })
+
+  it('ignora scheduleId (é alvo, não campo de Group/GroupInfo)', () => {
+    expect(splitUpdatePayload({ scheduleId: 'gi-2' }, current)).toEqual({})
+    expect(
+      splitUpdatePayload({ distanceKm: 50, scheduleId: 'gi-2' }, current),
+    ).toEqual({ groupInfo: { distance: 50 } })
+  })
 })
 
 describe('addScheduleUpdateFromPayload', () => {

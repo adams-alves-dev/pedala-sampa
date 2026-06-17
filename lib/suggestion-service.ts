@@ -137,7 +137,9 @@ export async function createSuggestion(
 
   const variables: Record<string, unknown> = {
     type,
-    payload: type === 'DELETE' ? undefined : payload,
+    // DELETE normalmente não tem payload; quando tem, é só { scheduleId } (remover
+    // UMA agenda) — o schema garante isso, então persistimos o payload validado
+    payload,
     justification,
     contactEmail: contactEmail || undefined,
   }

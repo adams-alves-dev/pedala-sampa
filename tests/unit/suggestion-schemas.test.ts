@@ -208,3 +208,45 @@ describe('suggestionSchema — adicionar agenda (CREATE + targetId)', () => {
     }
   })
 })
+
+describe('suggestionSchema — agenda específica (scheduleId)', () => {
+  it('UPDATE com scheduleId + um campo alterado é válido', () => {
+    const result = suggestionSchema.safeParse({
+      type: 'UPDATE',
+      targetId: 'grp-1',
+      payload: { startHour: '20:00', scheduleId: 'gi-2' },
+      justification,
+    })
+    expect(result.success).toBe(true)
+  })
+
+  it('UPDATE só com scheduleId (sem mudança real) é rejeitado', () => {
+    const result = suggestionSchema.safeParse({
+      type: 'UPDATE',
+      targetId: 'grp-1',
+      payload: { scheduleId: 'gi-2' },
+      justification,
+    })
+    expect(result.success).toBe(false)
+  })
+
+  it('DELETE com só scheduleId é válido (remover uma agenda)', () => {
+    const result = suggestionSchema.safeParse({
+      type: 'DELETE',
+      targetId: 'grp-1',
+      payload: { scheduleId: 'gi-2' },
+      justification,
+    })
+    expect(result.success).toBe(true)
+  })
+
+  it('DELETE com scheduleId + outro campo é rejeitado', () => {
+    const result = suggestionSchema.safeParse({
+      type: 'DELETE',
+      targetId: 'grp-1',
+      payload: { scheduleId: 'gi-2', name: 'Outro' },
+      justification,
+    })
+    expect(result.success).toBe(false)
+  })
+})
