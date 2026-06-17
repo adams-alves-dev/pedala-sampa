@@ -25,6 +25,7 @@ const GROUP_EXISTS_QUERY = /* GraphQL */ `
   query groupExists($id: ID!) {
     group(where: { id: $id }) {
       id
+      name
     }
   }
 `
@@ -90,6 +91,20 @@ function readIdFromResponse(
   return null
 }
 
+/** Lê `data.group.name` da checagem de existência (para dar contexto no aviso). */
+function readGroupName(data: unknown): string | undefined {
+  if (data && typeof data === 'object' && 'group' in data) {
+    const node = Reflect.get(data, 'group')
+    if (node && typeof node === 'object' && 'name' in node) {
+      const name = Reflect.get(node, 'name')
+      if (typeof name === 'string') {
+        return name
+      }
+    }
+  }
+  return undefined
+}
+
 /** Valida o corpo cru e lança `SuggestionError` 400 com issues por campo. */
 export function parseSuggestion(body: unknown): ValidatedSuggestion {
   const parsed = suggestionSchema.safeParse(body)
@@ -120,6 +135,7 @@ export async function createSuggestion(
   const { type, targetId, payload, justification, contactEmail } =
     parseSuggestion(body)
 
+  let targetName: string | undefined
   if (targetId) {
     let target: unknown
     try {
@@ -133,6 +149,8 @@ export async function createSuggestion(
     if (!readIdFromResponse(target, 'group')) {
       throw new SuggestionError(404, 'Grupo alvo não encontrado')
     }
+    // nome do alvo dá contexto no aviso do Discord (o id sozinho é opaco)
+    targetName = readGroupName(target)
   }
 
   const variables: Record<string, unknown> = {
@@ -170,5 +188,5 @@ export async function createSuggestion(
     )
   }
 
-  return { ok: true, id }
+  return { ok: true, id, targetName }
 }

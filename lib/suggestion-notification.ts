@@ -9,6 +9,8 @@ export type NewSuggestionNotice = {
   type: SuggestionType
   justification: string
   targetId?: string
+  /** Nome do grupo alvo, para dar contexto além do id opaco. */
+  targetName?: string
   contactEmail?: string
   payload?: SuggestionGroupPayload
 }
@@ -57,7 +59,10 @@ export function buildDiscordMessage(
   if (notice.type === 'CREATE' && !isAddSchedule && notice.payload?.name) {
     lines.push(`**Grupo:** ${notice.payload.name}`)
   } else if (notice.targetId) {
-    lines.push(`**Grupo alvo:** \`${notice.targetId}\``)
+    const ref = notice.targetName
+      ? `${notice.targetName} \`${notice.targetId}\``
+      : `\`${notice.targetId}\``
+    lines.push(`**Grupo alvo:** ${ref}`)
   }
 
   // correção/remoção de UMA agenda específica

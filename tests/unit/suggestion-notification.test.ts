@@ -91,6 +91,27 @@ describe('buildDiscordMessage', () => {
     expect(msg.content).toContain('**Agenda alvo:** `gi-2`')
   })
 
+  it('Grupo alvo inclui o nome além do id quando disponível', () => {
+    const msg = buildDiscordMessage({
+      ...base,
+      type: 'UPDATE',
+      targetId: 'grp1',
+      targetName: 'Fúria Norte Bikers',
+      payload: { startHour: '20:00' },
+    })
+    expect(msg.content).toContain('**Grupo alvo:** Fúria Norte Bikers `grp1`')
+  })
+
+  it('Grupo alvo cai só no id quando o nome não veio', () => {
+    const msg = buildDiscordMessage({
+      ...base,
+      type: 'UPDATE',
+      targetId: 'grp1',
+      payload: { startHour: '20:00' },
+    })
+    expect(msg.content).toContain('**Grupo alvo:** `grp1`')
+  })
+
   it('omite o contato quando ausente', () => {
     const msg = buildDiscordMessage({ ...base, payload: { name: 'X' } })
     expect(msg.content).not.toContain('Contato:')

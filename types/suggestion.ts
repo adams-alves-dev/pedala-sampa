@@ -34,6 +34,8 @@ export type SuggestionRequest = {
 export type SuggestionResponse = {
   ok: true
   id: string
+  /** Nome do grupo alvo (UPDATE/DELETE/agenda) — usado no aviso do Discord. */
+  targetName?: string
 }
 
 /** Uma agenda publicada (GroupInfo) no snapshot de correção — campos opcionais

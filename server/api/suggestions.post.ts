@@ -110,6 +110,7 @@ export default defineEventHandler(async (event) => {
       type: parsed.type,
       justification: parsed.justification,
       targetId: parsed.targetId,
+      targetName: result.targetName,
       contactEmail: parsed.contactEmail,
       payload: parsed.payload,
     })
