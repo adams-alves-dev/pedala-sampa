@@ -25,9 +25,20 @@ describe('contribution routes', () => {
     )
   })
 
+  it('aponta adicionar agenda sem slug para a página de agenda', () => {
+    expect(getContributionRoute('schedule')).toBe('/contribute/schedule')
+  })
+
+  it('pré-seleciona o grupo via query ao adicionar agenda com slug', () => {
+    expect(getContributionRoute('schedule', 'pedal-noturno')).toBe(
+      '/contribute/schedule?group=pedal-noturno',
+    )
+  })
+
   it('tem rótulo para cada contexto', () => {
     expect(getContributionLabel('new-group')).toBe('Sugerir grupo')
     expect(getContributionLabel('correction')).toBe('Sugerir correção')
     expect(getContributionLabel('removal')).toBe('Solicitar remoção')
+    expect(getContributionLabel('schedule')).toBe('Adicionar agenda')
   })
 })

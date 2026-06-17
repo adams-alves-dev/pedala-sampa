@@ -159,3 +159,52 @@ describe('suggestionSchema', () => {
     ).toBe(false)
   })
 })
+
+describe('suggestionSchema — adicionar agenda (CREATE + targetId)', () => {
+  const schedule = {
+    day: 'Quinta',
+    startHour: '19:00',
+    effort: 'Avançado',
+    distanceKm: 45,
+    rhythmKmH: 28,
+  }
+
+  it('aceita CREATE com targetId e agenda completa', () => {
+    const result = suggestionSchema.safeParse({
+      type: 'CREATE',
+      targetId: 'grp-1',
+      payload: schedule,
+      justification,
+    })
+    expect(result.success).toBe(true)
+  })
+
+  it('rejeita quando falta um campo da agenda', () => {
+    const result = suggestionSchema.safeParse({
+      type: 'CREATE',
+      targetId: 'grp-1',
+      payload: { ...schedule, startHour: undefined },
+      justification,
+    })
+    expect(result.success).toBe(false)
+    if (!result.success) {
+      const paths = result.error.issues.map((issue) => issue.path.join('.'))
+      expect(paths).toContain('payload.startHour')
+    }
+  })
+
+  it('recusa campos do grupo ao adicionar agenda (sem exigir name/lat/lng)', () => {
+    const result = suggestionSchema.safeParse({
+      type: 'CREATE',
+      targetId: 'grp-1',
+      payload: { ...schedule, name: 'Outro nome', latitude: -23.55 },
+      justification,
+    })
+    expect(result.success).toBe(false)
+    if (!result.success) {
+      const paths = result.error.issues.map((issue) => issue.path.join('.'))
+      expect(paths).toContain('payload.name')
+      expect(paths).toContain('payload.latitude')
+    }
+  })
+})

@@ -73,10 +73,28 @@ const baseSchema = z.object({
 const REQUIRED_CREATE_FIELDS: ReadonlyArray<'name' | 'latitude' | 'longitude'> =
   ['name', 'latitude', 'longitude']
 
-/** Conditional rules per type: target required for UPDATE/DELETE, payload for CREATE/UPDATE. */
+/** Campos que definem uma agenda (GroupInfo) — exigidos ao adicionar uma agenda. */
+const SCHEDULE_FIELDS: ReadonlyArray<
+  'day' | 'startHour' | 'effort' | 'distanceKm' | 'rhythmKmH'
+> = ['day', 'startHour', 'effort', 'distanceKm', 'rhythmKmH']
+
+/** Campos do grupo (não da agenda) — recusados ao adicionar agenda a um grupo existente. */
+const GROUP_ONLY_FIELDS: ReadonlyArray<
+  'name' | 'linkUrl' | 'address' | 'latitude' | 'longitude'
+> = ['name', 'linkUrl', 'address', 'latitude', 'longitude']
+
+/**
+ * Regras condicionais por tipo. CREATE tem dois modos: sem `targetId` cria um
+ * grupo novo (exige name+ponto); COM `targetId` adiciona uma agenda a um grupo
+ * existente (exige os campos da agenda e recusa os do grupo — eles já existem).
+ * UPDATE/DELETE exigem `targetId`.
+ */
 export const suggestionSchema = baseSchema.superRefine((data, ctx) => {
+  const isAddSchedule = data.type === 'CREATE' && data.targetId !== undefined
   const needsTarget = data.type === 'UPDATE' || data.type === 'DELETE'
-  const needsPayload = data.type === 'CREATE' || data.type === 'UPDATE'
+  // o modo "adicionar agenda" valida por campo abaixo, com mensagens próprias
+  const needsGenericPayload =
+    (data.type === 'CREATE' && !isAddSchedule) || data.type === 'UPDATE'
   const filledFieldCount = Object.values(data.payload ?? {}).filter(
     (value) => value !== undefined,
   ).length
@@ -89,7 +107,7 @@ export const suggestionSchema = baseSchema.superRefine((data, ctx) => {
     })
   }
 
-  if (needsPayload && filledFieldCount === 0) {
+  if (needsGenericPayload && filledFieldCount === 0) {
     ctx.addIssue({
       code: 'custom',
       path: ['payload'],
@@ -100,7 +118,26 @@ export const suggestionSchema = baseSchema.superRefine((data, ctx) => {
     })
   }
 
-  if (data.type === 'CREATE') {
+  if (isAddSchedule) {
+    for (const field of SCHEDULE_FIELDS) {
+      if (data.payload?.[field] === undefined) {
+        ctx.addIssue({
+          code: 'custom',
+          path: ['payload', field],
+          message: 'Campo obrigatório para a agenda',
+        })
+      }
+    }
+    for (const field of GROUP_ONLY_FIELDS) {
+      if (data.payload?.[field] !== undefined) {
+        ctx.addIssue({
+          code: 'custom',
+          path: ['payload', field],
+          message: 'Este dado é do grupo e não muda ao adicionar uma agenda',
+        })
+      }
+    }
+  } else if (data.type === 'CREATE') {
     for (const field of REQUIRED_CREATE_FIELDS) {
       if (data.payload?.[field] === undefined) {
         ctx.addIssue({

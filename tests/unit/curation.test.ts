@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import {
+  addScheduleUpdateFromPayload,
   buildLinkAst,
   groupCreateInputFromPayload,
   groupInfoCreateInputFromPayload,
@@ -164,5 +165,22 @@ describe('splitUpdatePayload', () => {
 
   it('retorna vazio quando não há nada a aplicar', () => {
     expect(splitUpdatePayload({}, current)).toEqual({})
+  })
+})
+
+describe('addScheduleUpdateFromPayload', () => {
+  it('anexa a agenda via create aninhado de groupInfos', () => {
+    const update = addScheduleUpdateFromPayload(fullSchedule)
+    expect(update).not.toBeNull()
+    expect(update?.groupInfos?.create).toHaveLength(1)
+    expect(update?.groupInfos?.create[0].rhythm).toBe(25)
+    expect(update?.groupInfos?.create[0].startHour).toBe('07:00h')
+    // não toca em campos do grupo (nome/local/link)
+    expect(update?.name).toBeUndefined()
+    expect(update?.departureLocation).toBeUndefined()
+  })
+
+  it('retorna null quando a agenda está incompleta', () => {
+    expect(addScheduleUpdateFromPayload({ day: 'Sábado' })).toBeNull()
   })
 })

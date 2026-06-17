@@ -3,6 +3,7 @@ import {
   diffPayload,
   emptyFields,
   fieldsFromRecord,
+  hasCompleteSchedule,
   parseDurationToMinutes,
   payloadFromFields,
 } from '../../lib/suggestion-form'
@@ -176,5 +177,38 @@ describe('diffPayload', () => {
     }
     // o ritmo que faltava entra no diff por não existir no publicado
     expect(diffPayload(fields, recordNoRhythm)).toEqual({ rhythmKmH: 25 })
+  })
+})
+
+describe('hasCompleteSchedule', () => {
+  const schedule = {
+    ...emptyFields(),
+    day: 'Quinta',
+    startHour: '19:00',
+    effort: 'Avançado',
+    distanceKm: 45,
+    rhythmKmH: 28,
+  }
+
+  it('true quando os cinco campos da agenda vêm no payload', () => {
+    expect(hasCompleteSchedule(payloadFromFields(schedule))).toBe(true)
+  })
+
+  it('aceita ritmo derivado da duração (sem ritmo digitado)', () => {
+    const viaDuration = {
+      ...emptyFields(),
+      day: 'Quinta',
+      startHour: '19:00',
+      effort: 'Avançado',
+      distanceKm: 45,
+      durationHhmm: '01:30',
+    }
+    expect(hasCompleteSchedule(payloadFromFields(viaDuration))).toBe(true)
+  })
+
+  it('false quando falta um campo da agenda', () => {
+    expect(
+      hasCompleteSchedule(payloadFromFields({ ...schedule, effort: '' })),
+    ).toBe(false)
   })
 })

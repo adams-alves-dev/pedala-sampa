@@ -76,6 +76,8 @@ export type GroupUpdateInput = {
   slug?: string
   departureLocation?: LocationInput
   link?: RichTextAst
+  /** Anexa agendas novas ao grupo (create aninhado), sem tocar nas existentes. */
+  groupInfos?: { create: GroupInfoCreateInput[] }
 }
 
 export type GroupInfoUpdateInput = {

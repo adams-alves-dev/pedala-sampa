@@ -46,15 +46,32 @@ function filledFields(payload: SuggestionGroupPayload): string[] {
 export function buildDiscordMessage(
   notice: NewSuggestionNotice,
 ): DiscordWebhookPayload {
-  const lines = [`🚲 **Nova sugestão · ${TYPE_LABEL[notice.type]}**`]
+  // CREATE com grupo alvo = adicionar agenda a um grupo existente
+  const isAddSchedule = notice.type === 'CREATE' && Boolean(notice.targetId)
+  const label = isAddSchedule ? 'nova agenda' : TYPE_LABEL[notice.type]
+  const lines = [`🚲 **Nova sugestão · ${label}**`]
 
-  if (notice.type === 'CREATE' && notice.payload?.name) {
+  if (notice.type === 'CREATE' && !isAddSchedule && notice.payload?.name) {
     lines.push(`**Grupo:** ${notice.payload.name}`)
   } else if (notice.targetId) {
     lines.push(`**Grupo alvo:** \`${notice.targetId}\``)
   }
 
-  if (notice.type === 'UPDATE' && notice.payload) {
+  if (isAddSchedule && notice.payload) {
+    const p = notice.payload
+    const parts = [p.day, p.startHour, p.effort].filter(
+      (value): value is string => Boolean(value),
+    )
+    if (p.distanceKm !== undefined) {
+      parts.push(`${p.distanceKm} km`)
+    }
+    if (p.rhythmKmH !== undefined) {
+      parts.push(`${p.rhythmKmH} km/h`)
+    }
+    if (parts.length > 0) {
+      lines.push(`**Agenda:** ${parts.join(' · ')}`)
+    }
+  } else if (notice.type === 'UPDATE' && notice.payload) {
     const fields = filledFields(notice.payload)
     if (fields.length > 0) {
       lines.push(`**Campos:** ${fields.join(', ')}`)

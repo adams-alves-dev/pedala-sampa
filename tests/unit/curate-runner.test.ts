@@ -1,6 +1,7 @@
 import { GraphQLClient } from 'graphql-request'
 import { describe, expect, it, vi } from 'vitest'
 import {
+  applyAddSchedule,
   applyCreate,
   applyUpdate,
   dryRunSummary,
@@ -60,6 +61,24 @@ const currentGroup = {
   id: 'g1',
   name: 'Pedal da Sé',
   departureLocation: { latitude: -23.55, longitude: -46.63 },
+}
+
+const fullSchedulePayload = {
+  day: 'Quinta',
+  startHour: '19:00',
+  effort: 'Avançado',
+  distanceKm: 45,
+  rhythmKmH: 25,
+}
+
+const addScheduleSuggestion: PendingSuggestion = {
+  id: 's3',
+  type: 'CREATE',
+  payload: null,
+  justification: 'esse grupo também pedala na quinta',
+  contactEmail: null,
+  createdAt: '2026-06-03T12:00:00.000Z',
+  group: { id: 'g1', slug: 'pedal-da-se', name: 'Pedal da Sé' },
 }
 
 describe('resolveUniqueSlug', () => {
@@ -169,7 +188,52 @@ describe('applyUpdate', () => {
   })
 })
 
+describe('applyAddSchedule', () => {
+  it('anexa a agenda ao grupo existente e marca APPROVED', async () => {
+    const { client, request } = clientWith([
+      { updateGroup: { id: 'g1' } },
+      { updateSuggestion: { id: 's3' } },
+    ])
+    const result = await applyAddSchedule(
+      client,
+      addScheduleSuggestion,
+      fullSchedulePayload,
+    )
+    expect(result).toBe('Pedal da Sé')
+    expect(request).toHaveBeenCalledTimes(2)
+    expect(request).toHaveBeenNthCalledWith(1, expect.any(String), {
+      id: 'g1',
+      data: {
+        groupInfos: { create: [expect.objectContaining({ rhythm: 25 })] },
+      },
+    })
+    expect(request).toHaveBeenLastCalledWith(expect.any(String), {
+      id: 's3',
+      status: 'APPROVED',
+    })
+  })
+
+  it('se a marcação falha após anexar, avisa para não duplicar', async () => {
+    const { client, request } = clientWith([{ updateGroup: { id: 'g1' } }])
+    request.mockRejectedValueOnce(new Error('rede caiu'))
+    let message = ''
+    try {
+      await applyAddSchedule(client, addScheduleSuggestion, fullSchedulePayload)
+    } catch (error) {
+      message = error instanceof Error ? error.message : String(error)
+    }
+    expect(message).toContain('pedal-da-se')
+    expect(message).toContain('duplicar')
+  })
+})
+
 describe('dryRunSummary', () => {
+  it('descreve um CREATE com grupo como adicionar agenda', () => {
+    const summary = dryRunSummary(addScheduleSuggestion, fullSchedulePayload)
+    expect(summary).toContain('adicionaria 1 agenda')
+    expect(summary).toContain('pedal-da-se')
+  })
+
   it('descreve um CREATE com agenda', () => {
     const summary = dryRunSummary(createSuggestion, fullCreatePayload)
     expect(summary).toContain('criaria Group "Pedal da Sé"')

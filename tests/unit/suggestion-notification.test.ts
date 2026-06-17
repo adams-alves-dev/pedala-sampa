@@ -37,6 +37,26 @@ describe('buildDiscordMessage', () => {
     expect(msg.content).toContain('**Campos:** distanceKm, startHour')
   })
 
+  it('CREATE com targetId: rotula "nova agenda" e resume a agenda', () => {
+    const msg = buildDiscordMessage({
+      ...base,
+      targetId: 'grp1',
+      payload: {
+        day: 'Quinta',
+        startHour: '19:00',
+        effort: 'Avançado',
+        distanceKm: 45,
+        rhythmKmH: 28,
+      },
+    })
+    expect(msg.content).toContain('nova agenda')
+    expect(msg.content).not.toContain('novo grupo')
+    expect(msg.content).toContain('`grp1`')
+    expect(msg.content).toContain('**Agenda:**')
+    expect(msg.content).toContain('Quinta')
+    expect(msg.content).toContain('45 km')
+  })
+
   it('DELETE: mostra o alvo, sem listar campos', () => {
     const msg = buildDiscordMessage({
       ...base,

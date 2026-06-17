@@ -17,6 +17,9 @@
         {{ group.departureAddress || 'Ponto de saída no mapa' }}
       </span>
       <GroupMetaBadges v-if="primarySchedule" :schedule="primarySchedule" />
+      <span v-if="extraSchedules > 0" class="ps-card__more">
+        +{{ extraSchedules }} {{ extraSchedules > 1 ? 'agendas' : 'agenda' }}
+      </span>
     </span>
   </button>
 </template>
@@ -36,6 +39,9 @@ defineEmits<{
 }>()
 
 const primarySchedule = computed(() => props.group.schedules[0])
+const extraSchedules = computed(() =>
+  Math.max(props.group.schedules.length - 1, 0),
+)
 </script>
 
 <style scoped>
@@ -45,5 +51,11 @@ const primarySchedule = computed(() => props.group.schedules[0])
   display: inline-flex;
   align-items: center;
   gap: 6px;
+}
+
+.ps-card__more {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  color: var(--color-asphalt-55);
 }
 </style>

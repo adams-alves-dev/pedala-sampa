@@ -97,6 +97,22 @@ export function parseDurationToMinutes(value: string): number | null {
   return total > 0 ? total : null
 }
 
+/**
+ * A agenda traz os cinco campos exigidos (dia/horário/nível/distância/ritmo)?
+ * Espelha a regra do servidor (`SCHEDULE_FIELDS` em suggestion-schemas) para o
+ * fluxo "adicionar agenda" avisar cedo, antes do round-trip. O servidor continua
+ * sendo a fonte de verdade.
+ */
+export function hasCompleteSchedule(payload: SuggestionGroupPayload): boolean {
+  return (
+    payload.day !== undefined &&
+    payload.startHour !== undefined &&
+    payload.effort !== undefined &&
+    payload.distanceKm !== undefined &&
+    payload.rhythmKmH !== undefined
+  )
+}
+
 /** Converte os inputs em payload, descartando campos vazios. */
 export function payloadFromFields(
   fields: SuggestionFormFields,
