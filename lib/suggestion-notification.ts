@@ -2,6 +2,8 @@ import type {
   SuggestionGroupPayload,
   SuggestionType,
 } from '../types/suggestion'
+import type { DiscordSender, DiscordWebhookPayload } from './discord'
+import { DISCORD_CONTENT_LIMIT, truncate } from './discord'
 
 /** Dados de uma sugestão recém-criada, o suficiente para montar o aviso. */
 export type NewSuggestionNotice = {
@@ -15,26 +17,10 @@ export type NewSuggestionNotice = {
   payload?: SuggestionGroupPayload
 }
 
-/**
- * Payload do webhook do Discord. `allowed_mentions.parse: []` neutraliza pings
- * (@everyone/@here/usuários) que possam vir no texto livre de uma sugestão — o
- * Zod tira HTML, mas não menções do Discord.
- */
-export type DiscordWebhookPayload = {
-  content: string
-  allowed_mentions: { parse: string[] }
-}
-
 const TYPE_LABEL: Record<SuggestionType, string> = {
   CREATE: 'novo grupo',
   UPDATE: 'correção',
   DELETE: 'remoção',
-}
-
-const DISCORD_CONTENT_LIMIT = 2000
-
-function truncate(text: string, max: number): string {
-  return text.length <= max ? text : `${text.slice(0, max - 1)}…`
 }
 
 /** Campos preenchidos do payload — usado no resumo de um UPDATE. */
@@ -104,15 +90,6 @@ export function buildDiscordMessage(
     allowed_mentions: { parse: [] },
   }
 }
-
-/**
- * Transporte do aviso: recebe a URL já resolvida e a mensagem pronta. Injetável
- * para teste — o adaptador real (`server/utils/notify.ts`) usa `$fetch`.
- */
-export type DiscordSender = (
-  url: string,
-  payload: DiscordWebhookPayload,
-) => Promise<unknown>
 
 /**
  * Decide e envia o aviso de uma sugestão (best-effort, testável por injeção):

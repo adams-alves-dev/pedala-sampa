@@ -90,6 +90,7 @@
 <script setup lang="ts">
 import { nextTick, ref, useId } from 'vue'
 import { FetchError } from 'ofetch'
+import { extractIssues } from '../../lib/form-errors'
 import type { SuggestionRequest } from '../../types/suggestion'
 import TurnstileWidget from './TurnstileWidget.vue'
 
@@ -140,23 +141,6 @@ async function showError(
   issues.value = newIssues
   await nextTick()
   errorRef.value?.focus()
-}
-
-function extractIssues(
-  data: unknown,
-): Array<{ path: string; message: string }> {
-  if (!Array.isArray(data)) {
-    return []
-  }
-  return data.filter(
-    (item): item is { path: string; message: string } =>
-      typeof item === 'object' &&
-      item !== null &&
-      'path' in item &&
-      typeof item.path === 'string' &&
-      'message' in item &&
-      typeof item.message === 'string',
-  )
 }
 
 async function onSubmit() {

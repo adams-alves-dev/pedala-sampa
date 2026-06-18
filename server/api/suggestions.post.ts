@@ -5,65 +5,6 @@ import {
 } from '../../lib/suggestion-service'
 import type { SuggestionRequest } from '../../types/suggestion'
 
-type TurnstileVerifyResponse = {
-  success: boolean
-}
-
-let warnedMissingConfig = false
-
-async function verifyTurnstile(
-  token: string | undefined,
-  ip: string,
-): Promise<boolean> {
-  const config = useRuntimeConfig()
-
-  if (!config.turnstileEnabled) {
-    return true
-  }
-  if (
-    (!config.public.turnstileSiteKey || !config.turnstileSecretKey) &&
-    !warnedMissingConfig
-  ) {
-    warnedMissingConfig = true
-    const missing = [
-      config.public.turnstileSiteKey ? '' : 'NUXT_PUBLIC_TURNSTILE_SITE_KEY',
-      config.turnstileSecretKey ? '' : 'TURNSTILE_SECRET_KEY',
-    ]
-      .filter(Boolean)
-      .join(' e ')
-    console.warn(
-      `[suggestions] TURNSTILE_ENABLED=true sem ${missing}: todo envio real falha com 400`,
-    )
-  }
-  if (!token) {
-    return false
-  }
-
-  let result: TurnstileVerifyResponse
-  try {
-    result = await $fetch<TurnstileVerifyResponse>(
-      'https://challenges.cloudflare.com/turnstile/v0/siteverify',
-      {
-        method: 'POST',
-        body: {
-          secret: config.turnstileSecretKey,
-          response: token,
-          remoteip: ip,
-        },
-      },
-    )
-  } catch {
-    throw createError({
-      statusCode: 502,
-      statusMessage: 'Bad Gateway',
-      message:
-        'Não foi possível verificar o desafio anti-bot agora. Tente novamente em instantes.',
-    })
-  }
-
-  return result.success
-}
-
 export default defineEventHandler(async (event) => {
   const body = await readBody<SuggestionRequest>(event)
   const ip =

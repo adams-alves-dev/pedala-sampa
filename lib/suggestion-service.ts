@@ -1,15 +1,10 @@
 import type { SuggestionResponse } from '../types/suggestion'
+import { readIdFromResponse, type HygraphRequest } from './hygraph-response'
 import { suggestionSchema } from './suggestion-schemas'
 import type { ValidatedSuggestion } from './suggestion-schemas'
 
-/**
- * Assinatura mínima de um client GraphQL — injetada para facilitar teste/mocking.
- * Retorna `unknown` de propósito: o serviço estreita a resposta em runtime.
- */
-export type HygraphRequest = (
-  query: string,
-  variables?: Record<string, unknown>,
-) => Promise<unknown>
+// re-export p/ compat: o teste de suggestion-service importa este tipo daqui
+export type { HygraphRequest }
 
 export class SuggestionError extends Error {
   constructor(
@@ -76,23 +71,6 @@ const CREATE_SUGGESTION_WITHOUT_TARGET_MUTATION = /* GraphQL */ `
     }
   }
 `
-
-/** Lê `data.<key>.id` de uma resposta GraphQL sem depender de type casts. */
-function readIdFromResponse(
-  data: unknown,
-  key: 'group' | 'createSuggestion',
-): string | null {
-  if (data && typeof data === 'object' && key in data) {
-    const node = Reflect.get(data, key)
-    if (node && typeof node === 'object' && 'id' in node) {
-      const id = Reflect.get(node, 'id')
-      if (typeof id === 'string') {
-        return id
-      }
-    }
-  }
-  return null
-}
 
 /** Lê `data.group.name` da checagem de existência (para dar contexto no aviso). */
 function readGroupName(data: unknown): string | undefined {
