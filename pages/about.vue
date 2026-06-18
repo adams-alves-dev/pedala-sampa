@@ -27,12 +27,27 @@
         <ContributionLink context="new-group" icon="plus" />
         <ContributionLink context="correction" icon="pencil" variant="ghost" />
       </div>
+
+      <section class="about-feedback" aria-labelledby="about-feedback-title">
+        <h2 id="about-feedback-title" class="ps-h2">Fale com a gente</h2>
+        <p class="ps-body about-feedback__lead">
+          Uma dúvida, ideia ou um problema no site? Escreva pra gente por aqui.
+        </p>
+        <FeedbackForm />
+      </section>
+
+      <p class="about-legal">
+        <NuxtLink to="/privacy">Privacidade</NuxtLink>
+        <span aria-hidden="true">·</span>
+        <NuxtLink to="/terms">Termos de uso</NuxtLink>
+      </p>
     </div>
   </main>
 </template>
 
 <script setup lang="ts">
 import ContributionLink from '../components/contribution/ContributionLink.vue'
+import FeedbackForm from '../components/feedback/FeedbackForm.vue'
 import type { IconName } from '../lib/icons'
 
 const cards: Array<{
@@ -87,5 +102,25 @@ useSeoMeta({
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-3);
+}
+
+.about-feedback {
+  margin-top: var(--space-8);
+  padding-top: var(--space-8);
+  border-top: 2px solid var(--color-border);
+}
+
+.about-feedback__lead {
+  max-width: 680px;
+  margin: var(--space-3) 0 var(--space-6);
+  color: var(--color-asphalt-55);
+}
+
+.about-legal {
+  display: flex;
+  gap: var(--space-2);
+  margin-top: var(--space-8);
+  font-size: var(--text-sm);
+  color: var(--color-asphalt-55);
 }
 </style>

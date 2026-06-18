@@ -1,22 +1,11 @@
 import { z } from 'zod'
 import { SUGGESTION_TYPES } from '../types/suggestion'
 import { SP_BOUNDS } from './sp-bounds'
+import { sanitizeText, shortText } from './text-schemas'
 
 export { SP_BOUNDS }
-
-/** Remove tags HTML e normaliza espaços — sugestões são texto puro. */
-export function sanitizeText(value: string): string {
-  return value
-    .replace(/<[^>]*>/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim()
-}
-
-const shortText = (max: number) =>
-  z
-    .string()
-    .transform(sanitizeText)
-    .pipe(z.string().max(max, `Máximo de ${max} caracteres`))
+// re-export p/ compat: testes e libs já importavam `sanitizeText` daqui
+export { sanitizeText }
 
 const hourSchema = z
   .string()

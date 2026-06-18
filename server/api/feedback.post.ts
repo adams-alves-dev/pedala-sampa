@@ -1,12 +1,12 @@
 import {
-  SuggestionError,
-  createSuggestion,
-  parseSuggestion,
-} from '../../lib/suggestion-service'
-import type { SuggestionRequest } from '../../types/suggestion'
+  FeedbackError,
+  createFeedback,
+  parseFeedback,
+} from '../../lib/feedback-service'
+import type { FeedbackRequest } from '../../types/feedback'
 
 export default defineEventHandler(async (event) => {
-  const body = await readBody<SuggestionRequest>(event)
+  const body = await readBody<FeedbackRequest>(event)
   const ip =
     getRequestHeader(event, 'x-nf-client-connection-ip') ||
     getRequestHeader(event, 'x-forwarded-for')?.split(',')[0]?.trim() ||
@@ -23,14 +23,14 @@ export default defineEventHandler(async (event) => {
       statusCode: 429,
       statusMessage: 'Too Many Requests',
       message:
-        'Muitas sugestões em sequência. Tente novamente em alguns minutos.',
+        'Muitas mensagens em sequência. Tente novamente em alguns minutos.',
     })
   }
 
   try {
     // valida ANTES do Turnstile: o token do desafio é de uso único, e um 400 de
     // validação não pode consumi-lo — senão o reenvio corrigido falharia
-    const parsed = parseSuggestion(body)
+    const parsed = parseFeedback(body)
 
     if (!(await verifyTurnstile(parsed.turnstileToken, ip))) {
       throw createError({
@@ -41,24 +41,19 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    const result = await createSuggestion(parsed, hygraphRequest)
+    const result = await createFeedback(parsed, hygraphRequest)
 
-    // aviso best-effort no Discord: awaitado (com timeout curto) para o serverless
-    // não congelar antes do POST, mas nunca derruba a resposta — a sugestão já foi
-    // registrada. No-op se DISCORD_WEBHOOK_URL não estiver configurado.
-    await notifyNewSuggestion({
+    // aviso best-effort no Discord: nunca derruba a resposta — o feedback já foi
+    // registrado. No-op se DISCORD_WEBHOOK_URL não estiver configurado.
+    await notifyNewFeedback({
       id: result.id,
-      type: parsed.type,
-      justification: parsed.justification,
-      targetId: parsed.targetId,
-      targetName: result.targetName,
+      message: parsed.message,
       contactEmail: parsed.contactEmail,
-      payload: parsed.payload,
     })
 
     return result
   } catch (error) {
-    if (error instanceof SuggestionError) {
+    if (error instanceof FeedbackError) {
       throw createError({
         statusCode: error.statusCode,
         message: error.message,

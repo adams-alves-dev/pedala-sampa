@@ -1,31 +1,29 @@
 <template>
-  <div v-if="status === 'success'" class="suggestion-success" role="status">
-    <strong class="ps-h3">Sugestão enviada!</strong>
+  <div v-if="status === 'success'" class="feedback-success" role="status">
+    <strong class="ps-h3">Mensagem enviada!</strong>
     <p class="ps-body">
-      Obrigado por contribuir. Ela passará por revisão antes de ir ao ar.
+      Obrigado por escrever. Se você deixou um e-mail, podemos responder por lá.
     </p>
-    <NuxtLink class="ps-btn" to="/">Voltar ao mapa</NuxtLink>
   </div>
 
-  <form v-else class="suggestion-form" novalidate @submit.prevent="onSubmit">
-    <slot />
-
+  <form v-else class="feedback-form" novalidate @submit.prevent="onSubmit">
     <div class="ps-field-group">
-      <label class="ps-fieldlabel" :for="`${uid}-justification`"
-        >{{ justificationLabel }} *</label
+      <label class="ps-fieldlabel" :for="`${uid}-message`"
+        >Sua mensagem *</label
       >
       <textarea
-        :id="`${uid}-justification`"
-        v-model="justification"
-        class="ps-input suggestion-textarea"
-        rows="4"
+        :id="`${uid}-message`"
+        v-model="message"
+        class="ps-input feedback-textarea"
+        rows="5"
         required
         minlength="10"
-        maxlength="1000"
-        :aria-describedby="`${uid}-justification-hint`"
+        maxlength="2000"
+        :aria-describedby="`${uid}-message-hint`"
       />
-      <p :id="`${uid}-justification-hint`" class="suggestion-hint">
-        {{ justificationHint }}
+      <p :id="`${uid}-message-hint`" class="feedback-hint">
+        Dúvidas, ideias, problemas no site ou qualquer comentário — mínimo de 10
+        caracteres. Para sugerir ou corrigir um grupo, use os botões acima.
       </p>
     </div>
 
@@ -42,13 +40,14 @@
         maxlength="200"
         :aria-describedby="`${uid}-email-hint`"
       />
-      <p :id="`${uid}-email-hint`" class="suggestion-hint">
-        Usado apenas para avisar você sobre a revisão. Não aparece no site.
+      <p :id="`${uid}-email-hint`" class="feedback-hint">
+        Usado apenas para responder você. Veja como tratamos seus dados na
+        <NuxtLink to="/privacy">Política de Privacidade</NuxtLink>.
       </p>
     </div>
 
     <!-- honeypot: escondido de humanos; bots que preencherem são ignorados -->
-    <div class="suggestion-hp" aria-hidden="true">
+    <div class="feedback-hp" aria-hidden="true">
       <label :for="`${uid}-website`">Website</label>
       <input
         :id="`${uid}-website`"
@@ -64,7 +63,7 @@
     <p
       v-if="status === 'error'"
       ref="errorRef"
-      class="suggestion-error"
+      class="feedback-error"
       role="alert"
       tabindex="-1"
     >
@@ -77,12 +76,18 @@
       </span>
     </p>
 
+    <p class="feedback-consent">
+      Ao enviar, você concorda com a
+      <NuxtLink to="/privacy">Política de Privacidade</NuxtLink> e os
+      <NuxtLink to="/terms">Termos de Uso</NuxtLink>.
+    </p>
+
     <button
-      class="ps-btn ps-btn--solid suggestion-submit"
+      class="ps-btn ps-btn--solid feedback-submit"
       type="submit"
       :disabled="status === 'sending'"
     >
-      {{ status === 'sending' ? 'Enviando…' : submitLabel }}
+      {{ status === 'sending' ? 'Enviando…' : 'Enviar mensagem' }}
     </button>
   </form>
 </template>
@@ -91,87 +96,59 @@
 import { nextTick, ref, useId } from 'vue'
 import { FetchError } from 'ofetch'
 import { extractIssues } from '../../lib/form-errors'
-import type { SuggestionRequest } from '../../types/suggestion'
-import TurnstileWidget from './TurnstileWidget.vue'
+import type { FormIssue } from '../../lib/form-errors'
+import TurnstileWidget from '../contribution/TurnstileWidget.vue'
 
-type CommonFields = {
-  justification: string
-  contactEmail: string
-  turnstileToken: string
-  website: string
-}
-
-const props = withDefaults(
-  defineProps<{
-    submitLabel: string
-    justificationLabel?: string
-    justificationHint?: string
-    /** Monta a request a partir dos campos comuns — ou devolve um erro local. */
-    buildRequest: (
-      common: CommonFields,
-    ) => SuggestionRequest | { error: string }
-  }>(),
-  {
-    justificationLabel: 'Justificativa',
-    justificationHint:
-      'Conte de onde veio a informação ou por que a mudança é necessária.',
-  },
-)
-
-const { submitSuggestion } = useSuggestions()
+const { submitFeedback } = useFeedback()
 const uid = useId()
 
-const justification = ref('')
+const message = ref('')
 const contactEmail = ref('')
 const turnstileToken = ref('')
 const website = ref('')
 
 const status = ref<'idle' | 'sending' | 'success' | 'error'>('idle')
 const errorMessage = ref('')
-const issues = ref<Array<{ path: string; message: string }>>([])
+const issues = ref<FormIssue[]>([])
 const errorRef = ref<HTMLElement | null>(null)
 const turnstileRef = ref<InstanceType<typeof TurnstileWidget> | null>(null)
 
-async function showError(
-  message: string,
-  newIssues: Array<{ path: string; message: string }> = [],
-) {
+async function showError(text: string, newIssues: FormIssue[] = []) {
   status.value = 'error'
-  errorMessage.value = message
+  errorMessage.value = text
   issues.value = newIssues
   await nextTick()
   errorRef.value?.focus()
 }
 
 async function onSubmit() {
-  const request = props.buildRequest({
-    justification: justification.value,
-    contactEmail: contactEmail.value,
-    turnstileToken: turnstileToken.value,
-    website: website.value,
-  })
-
-  if ('error' in request) {
-    await showError(request.error)
+  // checagem local rápida — o servidor revalida (e sanitiza) de qualquer forma
+  if (message.value.trim().length < 10) {
+    await showError('Escreva uma mensagem com pelo menos 10 caracteres.')
     return
   }
 
   status.value = 'sending'
   try {
-    await submitSuggestion(request)
+    await submitFeedback({
+      message: message.value,
+      contactEmail: contactEmail.value,
+      turnstileToken: turnstileToken.value,
+      website: website.value,
+    })
     status.value = 'success'
   } catch (error) {
     // o token do Turnstile pode ter sido consumido pelo envio que falhou
     turnstileRef.value?.reset()
     if (error instanceof FetchError) {
-      const message =
+      const apiMessage =
         typeof error.data?.message === 'string'
           ? error.data.message
-          : 'Não foi possível enviar a sugestão. Tente novamente em instantes.'
-      await showError(message, extractIssues(error.data?.data))
+          : 'Não foi possível enviar a mensagem. Tente novamente em instantes.'
+      await showError(apiMessage, extractIssues(error.data?.data))
     } else {
       await showError(
-        'Não foi possível enviar a sugestão. Tente novamente em instantes.',
+        'Não foi possível enviar a mensagem. Tente novamente em instantes.',
       )
     }
   }
@@ -179,25 +156,25 @@ async function onSubmit() {
 </script>
 
 <style scoped>
-.suggestion-form {
+.feedback-form {
   display: grid;
   gap: var(--space-4);
   max-width: 560px;
 }
 
-.suggestion-textarea {
-  min-height: 110px;
+.feedback-textarea {
+  min-height: 130px;
   resize: vertical;
   padding-top: var(--space-2);
 }
 
-.suggestion-hint {
+.feedback-hint {
   margin: 0;
   font-size: var(--text-xs);
   color: var(--color-asphalt-55);
 }
 
-.suggestion-hp {
+.feedback-hp {
   position: absolute;
   left: -9999px;
   width: 1px;
@@ -205,7 +182,7 @@ async function onSubmit() {
   overflow: hidden;
 }
 
-.suggestion-error {
+.feedback-error {
   margin: 0;
   padding: var(--space-3);
   border: 2px solid var(--color-alert-red);
@@ -214,16 +191,22 @@ async function onSubmit() {
   font-size: var(--text-sm);
 }
 
-.suggestion-error:focus {
+.feedback-error:focus {
   outline: 2px solid currentcolor;
   outline-offset: 2px;
 }
 
-.suggestion-submit {
+.feedback-consent {
+  margin: 0;
+  font-size: var(--text-xs);
+  color: var(--color-asphalt-55);
+}
+
+.feedback-submit {
   justify-self: start;
 }
 
-.suggestion-success {
+.feedback-success {
   display: grid;
   gap: var(--space-3);
   justify-items: start;

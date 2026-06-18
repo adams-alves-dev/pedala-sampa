@@ -1,5 +1,9 @@
 import { describe, expect, it, vi } from 'vitest'
-import { SuggestionError, createSuggestion } from '../../lib/suggestion-service'
+import {
+  SuggestionError,
+  createSuggestion,
+  parseSuggestion,
+} from '../../lib/suggestion-service'
 import type { HygraphRequest } from '../../lib/suggestion-service'
 
 const justification = 'O grupo mudou o ponto de saída no mês passado.'
@@ -31,19 +35,19 @@ describe('createSuggestion', () => {
     expect(hygraph).toHaveBeenCalledTimes(1)
   })
 
-  it('retorna 400 para corpo inválido, com issues por campo', async () => {
-    const hygraph = hygraphMock({})
-    const promise = createSuggestion(
-      { type: 'CREATE', justification: 'oi' },
-      hygraph,
-    )
+  it('parseSuggestion rejeita corpo inválido (400) com issues por campo', () => {
+    let caught: unknown
+    try {
+      parseSuggestion({ type: 'CREATE', justification: 'oi' })
+    } catch (error) {
+      caught = error
+    }
 
-    await expect(promise).rejects.toBeInstanceOf(SuggestionError)
-    await promise.catch((error: SuggestionError) => {
-      expect(error.statusCode).toBe(400)
-      expect(error.issues?.length).toBeGreaterThan(0)
-    })
-    expect(hygraph).not.toHaveBeenCalled()
+    expect(caught).toBeInstanceOf(SuggestionError)
+    if (caught instanceof SuggestionError) {
+      expect(caught.statusCode).toBe(400)
+      expect(caught.issues?.length).toBeGreaterThan(0)
+    }
   })
 
   it('retorna 404 quando alvo de UPDATE não existe', async () => {
