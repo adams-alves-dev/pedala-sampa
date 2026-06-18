@@ -33,6 +33,9 @@ No Hygraph, em **Schema** (nomes em inglês, consistentes com o model `Group`):
 
 ## 2. Fluxo de revisão
 
+> A transcrição manual abaixo pode ser automatizada pela CLI — veja **Curadoria assistida
+> (CLI)**. Esta seção descreve o que a CLI faz por baixo (e o passo a passo se preferir o Studio).
+
 As sugestões chegam como entries `Suggestion` em DRAFT, com `reviewStatus = PENDING`:
 
 - **CREATE aprovada** — copie os campos do `payload` para uma entry nova no model `Group`
@@ -49,11 +52,68 @@ Campos do `payload` (chaves possíveis): `name`, `linkUrl`, `address`, `day`, `s
 `effort`, `distanceKm`, `rhythmKmH`, `latitude`, `longitude`. O site só permite sugerir um
 agendamento por vez — agendas múltiplas continuam sendo editadas direto no Hygraph.
 
+## Curadoria assistida (CLI)
+
+Para evitar a transcrição manual da seção acima, há uma CLI local (`scripts/curate.ts`) que lê
+as sugestões pendentes e cria/atualiza `Group`/`GroupInfo` por você — **sempre em DRAFT**. O
+publish final continua manual no Studio (um checkpoint para conferir antes de ir ao ar).
+
+**Pré-requisito — token de curadoria (uma vez):** crie um segundo Permanent Auth Token no
+Hygraph (Content API), separado do `GRAPHQL_TOKEN` público, com permissões:
+
+- `Suggestion`: Read + Update (stage Draft)
+- `Group`: Read (Draft+Published) + Create + Update (stage Draft)
+- `GroupInfo`: Read (Draft+Published) + Create + Update (stage Draft)
+- **Sem Publish, Unpublish ou Delete** — daí o publish/unpublish final ser manual.
+
+Copie `.env.curation.example` para `.env.curation` (gitignored) e cole o
+`HYGRAPH_CURATION_TOKEN` — o endpoint é reaproveitado do `.env` do projeto.
+
+**Uso:**
+
+```bash
+yarn curate            # dry-run: lista as pendentes e o que faria (não grava nada)
+yarn curate --apply    # interativo: [a]plicar / [p]ular / [r]ejeitar por sugestão
+yarn curate --id <id>  # restringe a uma sugestão específica
+```
+
+Para cada sugestão a CLI revalida o `payload` (o mesmo Zod do site) e então:
+
+- **CREATE** — gera o `slug` (com checagem de colisão), cria o `Group` e, se a agenda vier
+  completa, o `GroupInfo` aninhado; marca `APPROVED`. Sem agenda completa, cria só o grupo e
+  avisa para completar o `GroupInfo` no Studio.
+- **UPDATE** — aplica o diff: campos do grupo no `Group`, campos de agenda no primeiro
+  `GroupInfo` (avisa se houver mais de um); marca `APPROVED`.
+- **DELETE** — marca `APPROVED` e lista o grupo no resumo final para você **despublicar no
+  Studio** (a CLI não tem permissão de unpublish, por segurança).
+
+Ao final, a CLI imprime o que precisa de **publish/unpublish manual no Studio**. Rejeições
+(`[r]`) marcam `REJECTED` sem tocar no catálogo.
+
+> **Se algo falhar no meio de um CREATE:** a CLI cria o `Group` e só então marca a sugestão
+> como `APPROVED`. Se a marcação falhar logo depois (rede, permissão), o grupo já existe mas a
+> sugestão segue `PENDENTE` — a CLI avisa citando o slug criado. Marque essa sugestão como
+> `APPROVED` no Studio **antes de rodar de novo**, senão a próxima execução cria um grupo
+> duplicado (com slug `-2`). UPDATE é idempotente, então re-rodar é seguro.
+
 ## 3. Notificação (opcional, recomendado)
 
-Em **Project settings → Webhooks**, crie um webhook disparado em **Entry created** do model
-`Suggestion` apontando para um serviço de notificação (ex.: Zapier/Make → e-mail, ou um webhook
-do Slack). Assim você fica sabendo de cada sugestão sem precisar abrir o Hygraph.
+O site já avisa **no Discord** a cada nova sugestão, sem depender do Studio. Crie um **webhook**
+num canal do Discord (canal → **Editar** → **Integrações** → **Webhooks** → **Novo webhook** →
+copiar a URL) e defina `DISCORD_WEBHOOK_URL` no `.env` local e nas variáveis do Netlify. Cada
+sugestão dispara uma mensagem com tipo, grupo, justificativa e contato. Sem a variável, o aviso
+fica desligado (não quebra nada).
+
+> ⚠️ **Privacidade (LGPD):** a mensagem inclui o **e-mail de contato** e a **justificativa** do
+> colaborador — dados pessoais. Use um canal **privado**, restrito à curadoria, e trate a URL do
+> webhook como segredo (quem a tem consegue postar nesse canal).
+
+> O aviso sai do próprio endpoint `POST /api/suggestions` em modo _best-effort_ (com timeout
+> curto): se o Discord falhar ou demorar, a sugestão ainda é registrada normalmente.
+
+**Alternativa — webhook do Hygraph:** para notificar também entries criadas direto no Studio
+(fora do formulário), crie em **Project settings → Webhooks** um webhook em **Entry created** do
+model `Suggestion` apontando para um serviço (ex.: Zapier/Make → e-mail ou Slack).
 
 ## 4. Proteções ativas no site
 

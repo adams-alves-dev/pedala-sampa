@@ -15,6 +15,10 @@
       <SuggestionCreateForm />
 
       <p class="ps-body contribute-alt">
+        O grupo já existe e você só quer adicionar um novo dia/horário?
+        <NuxtLink to="/contribute/schedule">Adicionar agenda</NuxtLink>
+      </p>
+      <p class="ps-body contribute-alt contribute-alt--tight">
         Quer corrigir um grupo que já existe?
         <NuxtLink to="/contribute/correction">Sugerir correção</NuxtLink>
       </p>
@@ -45,6 +49,10 @@ useSeoMeta({
 .contribute-alt {
   margin-top: var(--space-8);
   color: var(--color-asphalt-55);
+}
+
+.contribute-alt--tight {
+  margin-top: var(--space-2);
 }
 
 .contribute-alt a {

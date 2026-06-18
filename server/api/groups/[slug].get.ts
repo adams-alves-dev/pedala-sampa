@@ -1,6 +1,9 @@
 import { extractLinkUrl, normalizeHour } from '../../../lib/group-normalizers'
 import type { HygraphGroup } from '../../../types/hygraph'
-import type { GroupRecord } from '../../../types/suggestion'
+import type {
+  GroupRecord,
+  GroupScheduleRecord,
+} from '../../../types/suggestion'
 
 const GET_GROUP_RECORD_QUERY = /* GraphQL */ `
   query getGroupRecord($slug: String!) {
@@ -15,7 +18,7 @@ const GET_GROUP_RECORD_QUERY = /* GraphQL */ `
         latitude
         longitude
       }
-      groupInfos {
+      groupInfos(orderBy: createdAt_ASC) {
         id
         startHour
         address
@@ -59,7 +62,18 @@ export default defineEventHandler(async (event): Promise<GroupRecord> => {
     throw createError({ statusCode: 404, message: 'Grupo não encontrado' })
   }
 
-  const info = group.groupInfos?.[0]
+  const infos = group.groupInfos ?? []
+  // address/ponto são do grupo (compartilhados) — vêm da 1ª agenda, por convenção
+  const firstInfo = infos[0]
+
+  const schedules: GroupScheduleRecord[] = infos.map((info) => ({
+    id: info.id,
+    day: info.day || undefined,
+    startHour: normalizeHour(info.startHour),
+    effort: info.effort || undefined,
+    distanceKm: typeof info.distance === 'number' ? info.distance : undefined,
+    rhythmKmH: typeof info.rhythm === 'number' ? info.rhythm : undefined,
+  }))
 
   // cache curto no CDN: o form de correção não precisa de dado fresquíssimo
   // e cada miss custa uma chamada autenticada ao Hygraph
@@ -74,13 +88,9 @@ export default defineEventHandler(async (event): Promise<GroupRecord> => {
     slug: group.slug || group.id,
     name: group.name || 'Grupo sem nome',
     linkUrl: extractLinkUrl(group.link?.html),
-    address: info?.address || undefined,
-    day: info?.day || undefined,
-    startHour: normalizeHour(info?.startHour),
-    effort: info?.effort || undefined,
-    distanceKm: typeof info?.distance === 'number' ? info.distance : undefined,
-    rhythmKmH: typeof info?.rhythm === 'number' ? info.rhythm : undefined,
+    address: firstInfo?.address || undefined,
     latitude,
     longitude,
+    schedules,
   }
 })

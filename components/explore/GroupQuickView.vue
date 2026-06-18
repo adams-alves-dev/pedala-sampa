@@ -19,6 +19,10 @@
           {{ group.departureAddress || 'Ponto de saída no mapa' }}
         </p>
         <GroupMetaBadges v-if="primarySchedule" :schedule="primarySchedule" />
+        <p v-if="extraSchedules > 0" class="qv__more">
+          +{{ extraSchedules }} {{ extraSchedules > 1 ? 'agendas' : 'agenda' }}
+          neste grupo
+        </p>
         <p v-if="duration" class="qv__dur">
           <PsIcon name="compass" :size="16" /> Tempo médio da volta:
           <strong>{{ duration }}</strong>
@@ -86,6 +90,9 @@ watch(
 )
 
 const primarySchedule = computed(() => props.group?.schedules[0])
+const extraSchedules = computed(() =>
+  props.group ? Math.max(props.group.schedules.length - 1, 0) : 0,
+)
 const duration = computed(() =>
   primarySchedule.value
     ? getEstimatedLapDuration({
@@ -158,6 +165,13 @@ const duration = computed(() =>
 }
 
 .qv__loc {
+  color: var(--color-asphalt-55);
+}
+
+.qv__more {
+  margin: 0;
+  font-size: var(--text-xs);
+  font-weight: 700;
   color: var(--color-asphalt-55);
 }
 

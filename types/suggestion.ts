@@ -14,6 +14,9 @@ export type SuggestionGroupPayload = {
   rhythmKmH?: number
   latitude?: number
   longitude?: number
+  /** Alvo (id do GroupInfo) ao corrigir/remover UMA agenda específica — não é um
+   *  campo editável; viaja no Json do payload. Ausente = grupo / 1ª agenda. */
+  scheduleId?: string
 }
 
 export type SuggestionRequest = {
@@ -31,20 +34,30 @@ export type SuggestionRequest = {
 export type SuggestionResponse = {
   ok: true
   id: string
+  /** Nome do grupo alvo (UPDATE/DELETE/agenda) — usado no aviso do Discord. */
+  targetName?: string
 }
 
-/** Snapshot dos dados publicados de um grupo, para pré-preencher o form de correção. */
+/** Uma agenda publicada (GroupInfo) no snapshot de correção — campos opcionais
+ *  porque uma agenda pode estar incompleta no CMS. */
+export type GroupScheduleRecord = {
+  id: string
+  day?: string
+  startHour?: string
+  effort?: string
+  distanceKm?: number
+  rhythmKmH?: number
+}
+
+/** Snapshot dos dados publicados de um grupo, para pré-preencher o form de
+ *  correção. Campos de grupo no topo; cada agenda em `schedules`. */
 export type GroupRecord = {
   id: string
   slug: string
   name: string
   linkUrl?: string
   address?: string
-  day?: string
-  startHour?: string
-  effort?: string
-  distanceKm?: number
-  rhythmKmH?: number
   latitude: number
   longitude: number
+  schedules: GroupScheduleRecord[]
 }

@@ -99,6 +99,7 @@ sw.*
 .env.local
 .env.production
 .env.development
+.env.curation
 
 # Local Netlify folder
 .netlify

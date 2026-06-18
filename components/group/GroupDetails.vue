@@ -7,45 +7,37 @@
       <h1 class="ps-h1 group-title">{{ group.name }}</h1>
     </div>
 
-    <GroupMetaBadges v-if="primarySchedule" :schedule="primarySchedule" />
-
     <div class="group-grid">
       <div class="group-col">
         <section>
           <h2 class="section-title">
-            <PsIcon name="calendar" :size="16" /> Agenda
+            <PsIcon name="calendar" :size="16" /> {{ agendaTitle }}
           </h2>
-          <div v-if="primarySchedule" class="meta-grid">
-            <div class="meta-cell">
-              <div class="ps-label">Dia &amp; saída</div>
-              <div class="v">
-                {{ primarySchedule.day }} · {{ primarySchedule.startHour }}
-              </div>
-            </div>
-            <div class="meta-cell">
-              <div class="ps-label">Ponto de saída</div>
-              <div class="v v--addr">{{ departure }}</div>
-            </div>
-            <div v-if="primarySchedule.distanceKm > 0" class="meta-cell">
-              <div class="ps-label">Distância</div>
-              <div class="v">{{ primarySchedule.distanceKm }} km</div>
-            </div>
-            <div v-if="primarySchedule.rhythmKmH > 0" class="meta-cell">
-              <div class="ps-label">Ritmo médio</div>
-              <div class="v">{{ primarySchedule.rhythmKmH }} km/h</div>
-            </div>
-            <div class="meta-cell">
-              <div class="ps-label">Nível</div>
-              <div class="v">{{ primarySchedule.effort }}</div>
-            </div>
-            <div v-if="duration" class="meta-cell">
-              <div class="ps-label">Volta média</div>
-              <div class="v">{{ duration }}</div>
-            </div>
-          </div>
+
+          <ul v-if="group.schedules.length" class="agenda-list">
+            <li
+              v-for="schedule in group.schedules"
+              :key="schedule.id"
+              class="agenda-item"
+            >
+              <GroupMetaBadges :schedule="schedule" />
+              <p v-if="lapDuration(schedule)" class="agenda-dur">
+                <PsIcon name="compass" :size="14" /> Volta média:
+                <strong>{{ lapDuration(schedule) }}</strong>
+              </p>
+            </li>
+          </ul>
           <p v-else class="ps-body group-muted">
             Agenda ainda não cadastrada para este grupo.
           </p>
+
+          <ContributionLink
+            context="schedule"
+            :slug="group.slug"
+            icon="plus"
+            variant="ghost"
+            class="agenda-add"
+          />
         </section>
 
         <section>
@@ -105,7 +97,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { getEstimatedLapDuration } from '../../lib/time'
-import type { Group } from '../../types/group'
+import type { Group, GroupSchedule } from '../../types/group'
 import ContributionLink from '../contribution/ContributionLink.vue'
 import GroupLocationMap from './GroupLocationMap.client.vue'
 import GroupMetaBadges from './GroupMetaBadges.vue'
@@ -114,23 +106,52 @@ const props = defineProps<{
   group: Group
 }>()
 
-const primarySchedule = computed(() => props.group.schedules[0])
+const agendaTitle = computed(() =>
+  props.group.schedules.length > 1 ? 'Agendas' : 'Agenda',
+)
 const departure = computed(
   () => props.group.departureAddress || 'Ponto de saída no mapa',
 )
-const duration = computed(() =>
-  primarySchedule.value
-    ? getEstimatedLapDuration({
-        distanceKm: primarySchedule.value.distanceKm,
-        rhythmKmH: primarySchedule.value.rhythmKmH,
-      })
-    : null,
-)
+
+// volta média por agenda (distância 0 / ritmo 0 = não informado → sem volta)
+function lapDuration(schedule: GroupSchedule): string | null {
+  return getEstimatedLapDuration({
+    distanceKm: schedule.distanceKm,
+    rhythmKmH: schedule.rhythmKmH,
+  })
+}
 </script>
 
 <style scoped>
 .group-title {
   font-size: var(--text-2xl);
+}
+
+.agenda-list {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0 0 var(--space-4);
+  padding: 0;
+  list-style: none;
+}
+
+.agenda-item {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border: 2px solid var(--color-border);
+}
+
+.agenda-dur {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  font-size: var(--text-sm);
+}
+
+.agenda-add {
+  margin-top: var(--space-1);
 }
 
 .group-actions {

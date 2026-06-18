@@ -1,0 +1,293 @@
+import { GraphQLClient } from 'graphql-request'
+import { describe, expect, it, vi } from 'vitest'
+import {
+  applyAddSchedule,
+  applyCreate,
+  applyUpdate,
+  dryRunSummary,
+  formatSuggestion,
+  resolveUniqueSlug,
+} from '../../scripts/curate-runner'
+import type { PendingSuggestion } from '../../scripts/curate-runner'
+
+/**
+ * Cliente real (sem rede no construtor) com `request` espionado: devolve as
+ * respostas na ordem em que as chamadas acontecem. Usar um GraphQLClient de
+ * verdade dispensa cast — um stub `{ request }` não seria atribuível ao tipo.
+ */
+function clientWith(responses: object[]) {
+  const client = new GraphQLClient('http://curation.test')
+  const request = vi.spyOn(client, 'request')
+  for (const response of responses) {
+    request.mockResolvedValueOnce(response)
+  }
+  return { client, request }
+}
+
+const createSuggestion: PendingSuggestion = {
+  id: 's1',
+  type: 'CREATE',
+  payload: null,
+  justification: 'grupo novo do meu bairro',
+  contactEmail: null,
+  createdAt: '2026-06-01T12:00:00.000Z',
+  group: null,
+}
+
+const updateSuggestion: PendingSuggestion = {
+  id: 's2',
+  type: 'UPDATE',
+  payload: null,
+  justification: 'corrigindo a distância',
+  contactEmail: null,
+  createdAt: '2026-06-02T12:00:00.000Z',
+  group: { id: 'g1', slug: 'pedal-da-se', name: 'Pedal da Sé' },
+}
+
+const fullCreatePayload = {
+  name: 'Pedal da Sé',
+  latitude: -23.55,
+  longitude: -46.63,
+  linkUrl: 'https://instagram.com/pedaldase',
+  address: 'Praça da Sé',
+  day: 'Sábado',
+  startHour: '07:00',
+  effort: 'Moderado',
+  distanceKm: 40,
+  rhythmKmH: 25,
+}
+
+const currentGroup = {
+  id: 'g1',
+  name: 'Pedal da Sé',
+  departureLocation: { latitude: -23.55, longitude: -46.63 },
+}
+
+const fullSchedulePayload = {
+  day: 'Quinta',
+  startHour: '19:00',
+  effort: 'Avançado',
+  distanceKm: 45,
+  rhythmKmH: 25,
+}
+
+const addScheduleSuggestion: PendingSuggestion = {
+  id: 's3',
+  type: 'CREATE',
+  payload: null,
+  justification: 'esse grupo também pedala na quinta',
+  contactEmail: null,
+  createdAt: '2026-06-03T12:00:00.000Z',
+  group: { id: 'g1', slug: 'pedal-da-se', name: 'Pedal da Sé' },
+}
+
+describe('resolveUniqueSlug', () => {
+  it('retorna o slug base quando está livre', async () => {
+    const { client, request } = clientWith([{ group: null }])
+    expect(await resolveUniqueSlug(client, 'Pedal da Sé')).toBe('pedal-da-se')
+    expect(request).toHaveBeenCalledTimes(1)
+  })
+
+  it('sufixa -2 quando o slug base já existe', async () => {
+    const { client } = clientWith([{ group: { id: 'g0' } }, { group: null }])
+    expect(await resolveUniqueSlug(client, 'Pedal da Sé')).toBe('pedal-da-se-2')
+  })
+})
+
+describe('applyCreate', () => {
+  it('cria o grupo, marca APPROVED por último e devolve o slug', async () => {
+    const { client, request } = clientWith([
+      { group: null }, // slug livre
+      { createGroup: { id: 'g1', slug: 'pedal-da-se' } },
+      { updateSuggestion: { id: 's1' } }, // mark
+    ])
+    const result = await applyCreate(
+      client,
+      createSuggestion,
+      fullCreatePayload,
+    )
+    expect(result).toBe('pedal-da-se')
+    expect(request).toHaveBeenCalledTimes(3)
+    expect(request).toHaveBeenLastCalledWith(expect.any(String), {
+      id: 's1',
+      status: 'APPROVED',
+    })
+  })
+
+  it('avisa quando cria sem agenda completa', async () => {
+    const { client } = clientWith([
+      { group: null },
+      { createGroup: { id: 'g1', slug: 'x' } },
+      { updateSuggestion: { id: 's1' } },
+    ])
+    const result = await applyCreate(client, createSuggestion, {
+      name: 'X',
+      latitude: -23.5,
+      longitude: -46.6,
+    })
+    expect(result).toContain('sem agenda')
+  })
+
+  it('se a marcação falha após criar, lança erro citando o grupo já criado', async () => {
+    const { client, request } = clientWith([
+      { group: null },
+      { createGroup: { id: 'g1', slug: 'pedal-da-se' } },
+    ])
+    request.mockRejectedValueOnce(new Error('rede caiu'))
+
+    let message = ''
+    try {
+      await applyCreate(client, createSuggestion, fullCreatePayload)
+    } catch (error) {
+      message = error instanceof Error ? error.message : String(error)
+    }
+    expect(message).toContain('pedal-da-se')
+    expect(message).toContain('PENDENTE')
+  })
+})
+
+describe('applyUpdate', () => {
+  it('roteia campos de Group e de GroupInfo e marca APPROVED', async () => {
+    const { client, request } = clientWith([
+      { group: { ...currentGroup, groupInfos: [{ id: 'gi1' }] } },
+      { updateGroup: { id: 'g1' } },
+      { updateGroupInfo: { id: 'gi1' } },
+      { updateSuggestion: { id: 's2' } },
+    ])
+    const result = await applyUpdate(client, updateSuggestion, {
+      name: 'Pedal Novo',
+      distanceKm: 50,
+    })
+    expect(result).toBe('Pedal da Sé')
+    expect(request).toHaveBeenCalledTimes(4)
+  })
+
+  it('avisa e aplica na primeira quando há múltiplas agendas', async () => {
+    const { client } = clientWith([
+      {
+        group: { ...currentGroup, groupInfos: [{ id: 'gi1' }, { id: 'gi2' }] },
+      },
+      { updateGroupInfo: { id: 'gi1' } },
+      { updateSuggestion: { id: 's2' } },
+    ])
+    const result = await applyUpdate(client, updateSuggestion, {
+      distanceKm: 50,
+    })
+    expect(result).toContain('2 agendas')
+  })
+
+  it('avisa quando não há GroupInfo para receber a agenda', async () => {
+    const { client } = clientWith([
+      { group: { ...currentGroup, groupInfos: [] } },
+      { updateSuggestion: { id: 's2' } },
+    ])
+    const result = await applyUpdate(client, updateSuggestion, {
+      distanceKm: 50,
+    })
+    expect(result).toContain('criar no Studio')
+  })
+
+  it('mira a agenda escolhida pelo scheduleId (não a primeira)', async () => {
+    const { client, request } = clientWith([
+      {
+        group: { ...currentGroup, groupInfos: [{ id: 'gi1' }, { id: 'gi2' }] },
+      },
+      { updateGroupInfo: { id: 'gi2' } },
+      { updateSuggestion: { id: 's2' } },
+    ])
+    const result = await applyUpdate(client, updateSuggestion, {
+      distanceKm: 50,
+      scheduleId: 'gi2',
+    })
+    expect(result).toBe('Pedal da Sé')
+    // updateGroupInfo aplicado em gi2 (a 2ª), não na primeira
+    expect(request).toHaveBeenNthCalledWith(2, expect.any(String), {
+      id: 'gi2',
+      data: { distance: 50 },
+    })
+  })
+})
+
+describe('applyAddSchedule', () => {
+  it('anexa a agenda ao grupo existente e marca APPROVED', async () => {
+    const { client, request } = clientWith([
+      { updateGroup: { id: 'g1' } },
+      { updateSuggestion: { id: 's3' } },
+    ])
+    const result = await applyAddSchedule(
+      client,
+      addScheduleSuggestion,
+      fullSchedulePayload,
+    )
+    expect(result).toBe('Pedal da Sé')
+    expect(request).toHaveBeenCalledTimes(2)
+    expect(request).toHaveBeenNthCalledWith(1, expect.any(String), {
+      id: 'g1',
+      data: {
+        groupInfos: { create: [expect.objectContaining({ rhythm: 25 })] },
+      },
+    })
+    expect(request).toHaveBeenLastCalledWith(expect.any(String), {
+      id: 's3',
+      status: 'APPROVED',
+    })
+  })
+
+  it('se a marcação falha após anexar, avisa para não duplicar', async () => {
+    const { client, request } = clientWith([{ updateGroup: { id: 'g1' } }])
+    request.mockRejectedValueOnce(new Error('rede caiu'))
+    let message = ''
+    try {
+      await applyAddSchedule(client, addScheduleSuggestion, fullSchedulePayload)
+    } catch (error) {
+      message = error instanceof Error ? error.message : String(error)
+    }
+    expect(message).toContain('pedal-da-se')
+    expect(message).toContain('duplicar')
+  })
+})
+
+describe('dryRunSummary', () => {
+  it('descreve um CREATE com grupo como adicionar agenda', () => {
+    const summary = dryRunSummary(addScheduleSuggestion, fullSchedulePayload)
+    expect(summary).toContain('adicionaria 1 agenda')
+    expect(summary).toContain('pedal-da-se')
+  })
+
+  it('descreve um CREATE com agenda', () => {
+    const summary = dryRunSummary(createSuggestion, fullCreatePayload)
+    expect(summary).toContain('criaria Group "Pedal da Sé"')
+    expect(summary).toContain('+ 1 agenda')
+  })
+
+  it('descreve um DELETE como despublicação', () => {
+    const del: PendingSuggestion = {
+      ...createSuggestion,
+      type: 'DELETE',
+      group: { id: 'g1', slug: 'pedal-da-se', name: 'Pedal da Sé' },
+    }
+    expect(dryRunSummary(del, null)).toContain('despublicar pedal-da-se')
+  })
+
+  it('descreve um DELETE de uma agenda específica', () => {
+    const del: PendingSuggestion = {
+      ...createSuggestion,
+      type: 'DELETE',
+      payload: { scheduleId: 'gi9' },
+      group: { id: 'g1', slug: 'pedal-da-se', name: 'Pedal da Sé' },
+    }
+    const summary = dryRunSummary(del, null)
+    expect(summary).toContain('despublicar pedal-da-se')
+    expect(summary).toContain('agenda gi9')
+  })
+})
+
+describe('formatSuggestion', () => {
+  it('inclui id, tipo, alvo e justificativa', () => {
+    const out = formatSuggestion(updateSuggestion)
+    expect(out).toContain('#s2')
+    expect(out).toContain('UPDATE')
+    expect(out).toContain('alvo: Pedal da Sé (pedal-da-se)')
+    expect(out).toContain('justificativa: corrigindo a distância')
+  })
+})

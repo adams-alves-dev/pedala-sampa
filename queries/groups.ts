@@ -12,7 +12,7 @@ export const GET_GROUPS_QUERY = /* GraphQL */ `
         latitude
         longitude
       }
-      groupInfos {
+      groupInfos(orderBy: createdAt_ASC) {
         id
         startHour
         address
@@ -40,7 +40,7 @@ export const GET_GROUP_QUERY = /* GraphQL */ `
         latitude
         longitude
       }
-      groupInfos {
+      groupInfos(orderBy: createdAt_ASC) {
         id
         startHour
         address
