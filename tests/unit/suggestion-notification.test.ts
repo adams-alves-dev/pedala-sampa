@@ -22,7 +22,7 @@ describe('buildDiscordMessage', () => {
     expect(msg.content).toContain('**Grupo:** Pedal da Sé')
     expect(msg.content).toContain('grupo novo do meu bairro')
     expect(msg.content).toContain('**Contato:** foo@bar.com')
-    expect(msg.content).toContain('id: abc123')
+    expect(msg.content).toContain('**ID da sugestão:** `abc123`')
   })
 
   it('UPDATE: mostra o alvo e os campos alterados', () => {

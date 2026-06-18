@@ -95,7 +95,9 @@ export function buildDiscordMessage(
   if (notice.contactEmail) {
     lines.push(`**Contato:** ${notice.contactEmail}`)
   }
-  lines.push(`\`id: ${notice.id}\``)
+  // id do registro Suggestion no Hygraph — o curador usa pra achar e avaliar
+  // esta sugestão no Studio/CLI de curadoria; code inline facilita copiar
+  lines.push(`**ID da sugestão:** \`${notice.id}\``)
 
   return {
     content: truncate(lines.join('\n'), DISCORD_CONTENT_LIMIT),
