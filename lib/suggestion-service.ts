@@ -1,25 +1,14 @@
 import type { SuggestionResponse } from '../types/suggestion'
+import { FormError } from './form-errors'
+import { readIdFromResponse, type HygraphRequest } from './hygraph-response'
 import { suggestionSchema } from './suggestion-schemas'
 import type { ValidatedSuggestion } from './suggestion-schemas'
 
-/**
- * Assinatura mínima de um client GraphQL — injetada para facilitar teste/mocking.
- * Retorna `unknown` de propósito: o serviço estreita a resposta em runtime.
- */
-export type HygraphRequest = (
-  query: string,
-  variables?: Record<string, unknown>,
-) => Promise<unknown>
+// re-export p/ compat: o teste de suggestion-service importa este tipo daqui
+export type { HygraphRequest }
 
-export class SuggestionError extends Error {
-  constructor(
-    public readonly statusCode: number,
-    message: string,
-    public readonly issues?: Array<{ path: string; message: string }>,
-  ) {
-    super(message)
-  }
-}
+/** Erro do fluxo de sugestão (status HTTP + issues por campo). */
+export class SuggestionError extends FormError {}
 
 const GROUP_EXISTS_QUERY = /* GraphQL */ `
   query groupExists($id: ID!) {
@@ -76,23 +65,6 @@ const CREATE_SUGGESTION_WITHOUT_TARGET_MUTATION = /* GraphQL */ `
     }
   }
 `
-
-/** Lê `data.<key>.id` de uma resposta GraphQL sem depender de type casts. */
-function readIdFromResponse(
-  data: unknown,
-  key: 'group' | 'createSuggestion',
-): string | null {
-  if (data && typeof data === 'object' && key in data) {
-    const node = Reflect.get(data, key)
-    if (node && typeof node === 'object' && 'id' in node) {
-      const id = Reflect.get(node, 'id')
-      if (typeof id === 'string') {
-        return id
-      }
-    }
-  }
-  return null
-}
 
 /** Lê `data.group.name` da checagem de existência (para dar contexto no aviso). */
 function readGroupName(data: unknown): string | undefined {
@@ -152,16 +124,15 @@ export function parseSuggestion(body: unknown): ValidatedSuggestion {
 }
 
 /**
- * Valida o corpo recebido, confirma a existência do alvo (UPDATE/DELETE) e cria
- * a entry `Suggestion` em DRAFT no Hygraph. Lança `SuggestionError` com o status
- * HTTP apropriado: 400 validação, 404 alvo inexistente, 502 falha no Hygraph.
+ * Confirma a existência do alvo (UPDATE/DELETE) e cria a entry `Suggestion` em
+ * DRAFT no Hygraph a partir de um corpo **já validado** (use `parseSuggestion` na
+ * borda). Lança `SuggestionError`: 404 alvo inexistente, 502 falha no Hygraph.
  */
 export async function createSuggestion(
-  body: unknown,
+  input: ValidatedSuggestion,
   hygraph: HygraphRequest,
 ): Promise<SuggestionResponse> {
-  const { type, targetId, payload, justification, contactEmail } =
-    parseSuggestion(body)
+  const { type, targetId, payload, justification, contactEmail } = input
 
   let targetName: string | undefined
   if (targetId) {

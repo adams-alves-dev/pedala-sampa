@@ -66,6 +66,16 @@
         >Sobre</NuxtLink
       >
       <NuxtLink to="/contribute">+ Sugerir grupo</NuxtLink>
+      <NuxtLink
+        to="/privacy"
+        :aria-current="route.path === '/privacy' ? 'page' : undefined"
+        >Privacidade</NuxtLink
+      >
+      <NuxtLink
+        to="/terms"
+        :aria-current="route.path === '/terms' ? 'page' : undefined"
+        >Termos</NuxtLink
+      >
     </div>
   </header>
 </template>
