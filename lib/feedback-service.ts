@@ -1,17 +1,11 @@
 import type { FeedbackResponse } from '../types/feedback'
 import { feedbackSchema } from './feedback-schema'
 import type { ValidatedFeedback } from './feedback-schema'
+import { FormError } from './form-errors'
 import { readIdFromResponse, type HygraphRequest } from './hygraph-response'
 
-export class FeedbackError extends Error {
-  constructor(
-    public readonly statusCode: number,
-    message: string,
-    public readonly issues?: Array<{ path: string; message: string }>,
-  ) {
-    super(message)
-  }
-}
+/** Erro do fluxo de feedback (status HTTP + issues por campo). */
+export class FeedbackError extends FormError {}
 
 const CREATE_FEEDBACK_MUTATION = /* GraphQL */ `
   mutation createFeedback($message: String!, $contactEmail: String) {
@@ -40,14 +34,14 @@ export function parseFeedback(body: unknown): ValidatedFeedback {
 }
 
 /**
- * Valida o corpo recebido e cria a entry `Feedback` em DRAFT no Hygraph. Lança
- * `FeedbackError` com o status HTTP apropriado: 400 validação, 502 falha no Hygraph.
+ * Cria a entry `Feedback` em DRAFT no Hygraph a partir de um corpo **já validado**
+ * (use `parseFeedback` na borda). Lança `FeedbackError` 502 se o Hygraph falhar.
  */
 export async function createFeedback(
-  body: unknown,
+  input: ValidatedFeedback,
   hygraph: HygraphRequest,
 ): Promise<FeedbackResponse> {
-  const { message, contactEmail } = parseFeedback(body)
+  const { message, contactEmail } = input
 
   let created: unknown
   try {

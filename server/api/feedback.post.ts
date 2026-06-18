@@ -41,7 +41,7 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    const result = await createFeedback(body, hygraphRequest)
+    const result = await createFeedback(parsed, hygraphRequest)
 
     // aviso best-effort no Discord: nunca derruba a resposta — o feedback já foi
     // registrado. No-op se DISCORD_WEBHOOK_URL não estiver configurado.

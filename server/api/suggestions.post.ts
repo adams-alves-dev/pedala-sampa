@@ -41,7 +41,7 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    const result = await createSuggestion(body, hygraphRequest)
+    const result = await createSuggestion(parsed, hygraphRequest)
 
     // aviso best-effort no Discord: awaitado (com timeout curto) para o serverless
     // não congelar antes do POST, mas nunca derruba a resposta — a sugestão já foi

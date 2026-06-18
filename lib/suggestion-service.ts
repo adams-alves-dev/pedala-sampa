@@ -1,4 +1,5 @@
 import type { SuggestionResponse } from '../types/suggestion'
+import { FormError } from './form-errors'
 import { readIdFromResponse, type HygraphRequest } from './hygraph-response'
 import { suggestionSchema } from './suggestion-schemas'
 import type { ValidatedSuggestion } from './suggestion-schemas'
@@ -6,15 +7,8 @@ import type { ValidatedSuggestion } from './suggestion-schemas'
 // re-export p/ compat: o teste de suggestion-service importa este tipo daqui
 export type { HygraphRequest }
 
-export class SuggestionError extends Error {
-  constructor(
-    public readonly statusCode: number,
-    message: string,
-    public readonly issues?: Array<{ path: string; message: string }>,
-  ) {
-    super(message)
-  }
-}
+/** Erro do fluxo de sugestão (status HTTP + issues por campo). */
+export class SuggestionError extends FormError {}
 
 const GROUP_EXISTS_QUERY = /* GraphQL */ `
   query groupExists($id: ID!) {
@@ -130,16 +124,15 @@ export function parseSuggestion(body: unknown): ValidatedSuggestion {
 }
 
 /**
- * Valida o corpo recebido, confirma a existência do alvo (UPDATE/DELETE) e cria
- * a entry `Suggestion` em DRAFT no Hygraph. Lança `SuggestionError` com o status
- * HTTP apropriado: 400 validação, 404 alvo inexistente, 502 falha no Hygraph.
+ * Confirma a existência do alvo (UPDATE/DELETE) e cria a entry `Suggestion` em
+ * DRAFT no Hygraph a partir de um corpo **já validado** (use `parseSuggestion` na
+ * borda). Lança `SuggestionError`: 404 alvo inexistente, 502 falha no Hygraph.
  */
 export async function createSuggestion(
-  body: unknown,
+  input: ValidatedSuggestion,
   hygraph: HygraphRequest,
 ): Promise<SuggestionResponse> {
-  const { type, targetId, payload, justification, contactEmail } =
-    parseSuggestion(body)
+  const { type, targetId, payload, justification, contactEmail } = input
 
   let targetName: string | undefined
   if (targetId) {

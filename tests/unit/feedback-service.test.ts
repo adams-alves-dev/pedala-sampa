@@ -1,5 +1,9 @@
 import { describe, expect, it, vi } from 'vitest'
-import { FeedbackError, createFeedback } from '../../lib/feedback-service'
+import {
+  FeedbackError,
+  createFeedback,
+  parseFeedback,
+} from '../../lib/feedback-service'
 import type { HygraphRequest } from '../../lib/hygraph-response'
 
 const message = 'Senti falta de um filtro por bairro no mapa.'
@@ -27,16 +31,19 @@ describe('createFeedback', () => {
     )
   })
 
-  it('retorna 400 para corpo inválido, com issues por campo', async () => {
-    const hygraph = vi.fn<HygraphRequest>(async () => ({}))
-    const promise = createFeedback({ message: 'oi' }, hygraph)
+  it('parseFeedback rejeita corpo inválido (400) com issues por campo', () => {
+    let caught: unknown
+    try {
+      parseFeedback({ message: 'oi' })
+    } catch (error) {
+      caught = error
+    }
 
-    await expect(promise).rejects.toBeInstanceOf(FeedbackError)
-    await promise.catch((error: FeedbackError) => {
-      expect(error.statusCode).toBe(400)
-      expect(error.issues?.length).toBeGreaterThan(0)
-    })
-    expect(hygraph).not.toHaveBeenCalled()
+    expect(caught).toBeInstanceOf(FeedbackError)
+    if (caught instanceof FeedbackError) {
+      expect(caught.statusCode).toBe(400)
+      expect(caught.issues?.length).toBeGreaterThan(0)
+    }
   })
 
   it('retorna 502 quando o Hygraph falha', async () => {
