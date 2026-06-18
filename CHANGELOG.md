@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.4.0](https://github.com/adams-alves-dev/pedala-sampa/compare/v1.3.0...v1.4.0) (2026-06-18)
+
+
+### ✨ Funcionalidades
+
+* canal de feedback + páginas de Privacidade/LGPD e Termos ([4e960f8](https://github.com/adams-alves-dev/pedala-sampa/commit/4e960f803187155106d79f3f6791e07ea89a25b9))
+* canal de feedback + páginas de Privacidade/LGPD e Termos ([e9494ad](https://github.com/adams-alves-dev/pedala-sampa/commit/e9494adabafa6dfcb0ae59704a73d03226eaf1ed))
+* **feedback:** canal de contato genérico no Sobre ([3cf28c6](https://github.com/adams-alves-dev/pedala-sampa/commit/3cf28c65eb826f3a6747b083035b0f3098fe5189))
+* **legal:** páginas de Privacidade/LGPD e Termos de Uso ([ab2af3e](https://github.com/adams-alves-dev/pedala-sampa/commit/ab2af3edc4fc8407c80e24b1d7f59c2c0db4ce78))
+
+
+### ♻️ Refatorações
+
+* aplica ajustes do review do PR [#102](https://github.com/adams-alves-dev/pedala-sampa/issues/102) ([8127a6f](https://github.com/adams-alves-dev/pedala-sampa/commit/8127a6fbbdfc90f1224d3f170322d37d6f632b8c))
+* **suggestions:** extrai helpers compartilhados p/ reuso ([fce70f5](https://github.com/adams-alves-dev/pedala-sampa/commit/fce70f571b333941e6f0c158bbb6f396bc380cb2))
+
 ## [1.3.0](https://github.com/adams-alves-dev/pedala-sampa/compare/v1.2.0...v1.3.0) (2026-06-18)
 
 
