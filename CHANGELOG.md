@@ -1,5 +1,32 @@
 # Changelog
 
+## [1.3.0](https://github.com/adams-alves-dev/pedala-sampa/compare/v1.2.0...v1.3.0) (2026-06-18)
+
+
+### ✨ Funcionalidades
+
+* curadoria assistida, avisos no Discord e múltiplas agendas por grupo ([8d9c1ae](https://github.com/adams-alves-dev/pedala-sampa/commit/8d9c1ae5c88da8c62d053a5c4f54e20fef3f04e5))
+* **curation:** CLI de curadoria assistida (draft-only) ([719c610](https://github.com/adams-alves-dev/pedala-sampa/commit/719c6102fe5c11e4445401758160ee363ce75cce))
+* **curation:** CLI de curadoria assistida (draft-only) ([520cae8](https://github.com/adams-alves-dev/pedala-sampa/commit/520cae812023aea86b0900685a89e7c1a9f8be1c))
+* **schedules:** corrigir e remover por agenda específica ([834c8b8](https://github.com/adams-alves-dev/pedala-sampa/commit/834c8b88cb4188e14ff7c3443fa1e98f730d33d1))
+* **schedules:** várias agendas por grupo + fluxo de adicionar agenda ([9690e5e](https://github.com/adams-alves-dev/pedala-sampa/commit/9690e5e87708e6c54bbd115f3a642f1a2f454936))
+* **schedules:** várias agendas por grupo + fluxo de adicionar agenda ([d2759fb](https://github.com/adams-alves-dev/pedala-sampa/commit/d2759fb5e1f9a307e4e07358a03f98541c5fa70f))
+* **suggestions:** aviso no Discord a cada nova sugestão ([d3642fa](https://github.com/adams-alves-dev/pedala-sampa/commit/d3642fa317a481292758479e227ad1c3f1484a69))
+* **suggestions:** aviso no Discord a cada nova sugestão ([9bd705b](https://github.com/adams-alves-dev/pedala-sampa/commit/9bd705bda757d055f9b3be6884d32bea3ffe28fd))
+* **suggestions:** nome do grupo alvo no aviso do Discord (além do id) ([ba19b77](https://github.com/adams-alves-dev/pedala-sampa/commit/ba19b7731e4569290a2533074671884e5d556311))
+* **suggestions:** rótulo descritivo do id da sugestão no aviso do Discord ([b41046c](https://github.com/adams-alves-dev/pedala-sampa/commit/b41046cd38e95aa831b5c632c58801fe5392c443))
+
+
+### 🐛 Correções
+
+* **schedules:** endurece o fluxo de agendas (revisão do PR [#99](https://github.com/adams-alves-dev/pedala-sampa/issues/99)) ([57fbc77](https://github.com/adams-alves-dev/pedala-sampa/commit/57fbc775f280aca99ccf5351dadca3dbf7575ede))
+
+
+### ♻️ Refatorações
+
+* **curation:** robustez da CLI (paginação, slug em draft, atomicidade) ([5d13ba7](https://github.com/adams-alves-dev/pedala-sampa/commit/5d13ba79059a449ed6bbdf5f8586e20711ba29fa))
+* **suggestions:** timeout, aviso de PII e testes do notify (code review) ([947f40e](https://github.com/adams-alves-dev/pedala-sampa/commit/947f40eca9ec47f30f39f6a2048ad027da6af64b))
+
 ## [1.2.0](https://github.com/adams-alves-dev/pedala-sampa/compare/v1.1.0...v1.2.0) (2026-06-15)
 
 
