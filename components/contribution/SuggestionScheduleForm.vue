@@ -52,7 +52,7 @@ const fields = ref<SuggestionFormFields>(emptyFields())
 
 // pré-seleção via ?group=slug, assim que a lista de grupos carrega
 watch(
-  () => [props.groups, props.preselectSlug] as const,
+  [() => props.groups, () => props.preselectSlug],
   ([groups, slug]) => {
     if (!slug || selection.value) {
       return

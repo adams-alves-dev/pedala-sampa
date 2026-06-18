@@ -75,7 +75,7 @@ export const GROUP_FOR_UPDATE_QUERY = /* GraphQL */ `
         latitude
         longitude
       }
-      groupInfos {
+      groupInfos(orderBy: createdAt_ASC) {
         id
       }
     }

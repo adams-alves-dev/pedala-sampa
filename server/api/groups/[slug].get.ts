@@ -18,7 +18,7 @@ const GET_GROUP_RECORD_QUERY = /* GraphQL */ `
         latitude
         longitude
       }
-      groupInfos {
+      groupInfos(orderBy: createdAt_ASC) {
         id
         startHour
         address

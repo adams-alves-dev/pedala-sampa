@@ -16,12 +16,13 @@
         :aria-expanded="open"
         :aria-controls="`${uid}-listbox`"
         :aria-activedescendant="activeId"
+        :aria-describedby="`${uid}-hint`"
         :placeholder="pending ? 'Carregando grupos…' : placeholder"
         :disabled="pending"
         @input="onInput"
         @focus="open = true"
         @keydown="onKeydown"
-        @blur="open = false"
+        @blur="onBlur"
       />
       <span
         v-if="selectedKind"
@@ -162,6 +163,21 @@ function choose(index: number) {
 function chooseNew() {
   model.value = { kind: 'new', name: query.value.trim() }
   open.value = false
+}
+
+/** Ao sair do campo: fecha a lista e, se a pessoa digitou o nome EXATO de um
+ *  grupo sem selecioná-lo, assume esse grupo — evita o submit sem seleção. */
+function onBlur() {
+  open.value = false
+  if (model.value || !query.value.trim()) {
+    return
+  }
+  const q = normalize(query.value)
+  const match = props.groups.find((group) => normalize(group.name) === q)
+  if (match) {
+    model.value = { kind: 'existing', group: match }
+    query.value = match.name
+  }
 }
 
 /** Enter/clique na opção ativa: grupo existente ou a opção "criar novo". */
