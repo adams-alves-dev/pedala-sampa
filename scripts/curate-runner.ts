@@ -7,6 +7,7 @@ import { createInterface } from 'node:readline/promises'
 import { parseArgs } from 'node:util'
 import type { GraphQLClient } from 'graphql-request'
 import {
+  addScheduleUpdateFromPayload,
   groupCreateInputFromPayload,
   isScheduleComplete,
   slugify,
@@ -80,6 +81,10 @@ export function dryRunSummary(
   payload: SuggestionGroupPayload | null,
 ): string {
   if (s.type === 'CREATE' && payload) {
+    // CREATE com grupo alvo = adicionar agenda a um grupo existente
+    if (s.group) {
+      return `adicionaria 1 agenda ao grupo ${s.group.slug}`
+    }
     const schedule = isScheduleComplete(payload)
       ? ' + 1 agenda'
       : ' (sem agenda)'
@@ -87,11 +92,17 @@ export function dryRunSummary(
   }
   if (s.type === 'UPDATE' && payload) {
     const fields = Object.entries(payload)
-      .filter(([, value]) => value !== undefined && value !== null)
+      .filter(
+        ([key, value]) =>
+          key !== 'scheduleId' && value !== undefined && value !== null,
+      )
       .map(([key]) => key)
-    return `atualizaria ${s.group?.slug ?? '?'}: ${fields.join(', ')}`
+    const agenda = payload.scheduleId ? ` (agenda ${payload.scheduleId})` : ''
+    return `atualizaria ${s.group?.slug ?? '?'}${agenda}: ${fields.join(', ')}`
   }
-  return `marcaria APPROVED e lembraria de despublicar ${s.group?.slug ?? '?'}`
+  const scheduleId = s.payload?.scheduleId
+  const agenda = scheduleId ? ` (agenda ${scheduleId})` : ''
+  return `marcaria APPROVED e lembraria de despublicar ${s.group?.slug ?? '?'}${agenda}`
 }
 
 async function mark(
@@ -154,6 +165,42 @@ export async function applyCreate(
   return `${createGroup.slug}${note}`
 }
 
+/**
+ * Adiciona uma agenda (GroupInfo) a um grupo já existente — fluxo "adicionar
+ * agenda" (CREATE com grupo alvo). Anexa via create aninhado, sem tocar nas
+ * agendas atuais. Mesmo cuidado de idempotência do applyCreate: se a marcação
+ * falhar depois de anexar, a sugestão segue PENDENTE e uma nova execução
+ * duplicaria a agenda — por isso o aviso explícito.
+ */
+export async function applyAddSchedule(
+  client: GraphQLClient,
+  s: PendingSuggestion,
+  payload: SuggestionGroupPayload,
+): Promise<string> {
+  if (!s.group) {
+    throw new Error('CREATE de agenda sem grupo alvo')
+  }
+  const data = addScheduleUpdateFromPayload(payload)
+  if (!data) {
+    throw new Error(
+      'agenda incompleta (faltam dia/horário/nível/distância/ritmo)',
+    )
+  }
+  await client.request(UPDATE_GROUP_MUTATION, { id: s.group.id, data })
+  try {
+    await mark(client, s.id, 'APPROVED')
+  } catch (error) {
+    const reason = error instanceof Error ? error.message : String(error)
+    throw new Error(
+      `Agenda adicionada ao grupo "${s.group.slug}" (DRAFT), mas falhou ao ` +
+        `marcar a sugestão como APPROVED: ${reason}. A sugestão continua ` +
+        `PENDENTE — marque-a no Studio antes de rodar de novo para não ` +
+        `duplicar a agenda.`,
+    )
+  }
+  return s.group.name
+}
+
 export async function applyUpdate(
   client: GraphQLClient,
   s: PendingSuggestion,
@@ -181,15 +228,21 @@ export async function applyUpdate(
   }
   let note = ''
   if (parts.groupInfo) {
-    const info = group.groupInfos[0]
+    // mira a agenda escolhida (scheduleId); sem ela, cai na primeira (compat)
+    const scheduleId = diff.scheduleId
+    const info = scheduleId
+      ? group.groupInfos.find((gi) => gi.id === scheduleId)
+      : group.groupInfos[0]
     if (!info) {
-      note = ' (sem GroupInfo para a agenda — criar no Studio)'
+      note = scheduleId
+        ? ` (agenda ${scheduleId} não encontrada no grupo — confira no Studio)`
+        : ' (sem GroupInfo para a agenda — criar no Studio)'
     } else {
       await client.request(UPDATE_GROUP_INFO_MUTATION, {
         id: info.id,
         data: parts.groupInfo,
       })
-      if (group.groupInfos.length > 1) {
+      if (!scheduleId && group.groupInfos.length > 1) {
         note = ` (atenção: ${group.groupInfos.length} agendas; apliquei na primeira)`
       }
     }
@@ -290,7 +343,13 @@ export async function main(client: GraphQLClient): Promise<void> {
       .trim()
       .toLowerCase()
     try {
-      if (answer === 'a' && s.type === 'CREATE' && payload) {
+      if (answer === 'a' && s.type === 'CREATE' && payload && s.group) {
+        toPublish.push(
+          `Agenda em ${await applyAddSchedule(client, s, payload)}`,
+        )
+        applied += 1
+        console.log('  ✓ agenda adicionada (DRAFT) + sugestão APPROVED\n')
+      } else if (answer === 'a' && s.type === 'CREATE' && payload) {
         toPublish.push(`Group ${await applyCreate(client, s, payload)}`)
         applied += 1
         console.log('  ✓ criado (DRAFT) + sugestão APPROVED\n')
@@ -300,7 +359,11 @@ export async function main(client: GraphQLClient): Promise<void> {
         console.log('  ✓ atualizado (DRAFT) + sugestão APPROVED\n')
       } else if (answer === 'a' && s.type === 'DELETE') {
         await mark(client, s.id, 'APPROVED')
-        toUnpublish.push(s.group ? `${s.group.name} (${s.group.slug})` : s.id)
+        const scheduleId = s.payload?.scheduleId
+        const agenda = scheduleId ? ` — agenda ${scheduleId}` : ''
+        toUnpublish.push(
+          s.group ? `${s.group.name} (${s.group.slug})${agenda}` : s.id,
+        )
         applied += 1
         console.log('  ✓ sugestão APPROVED (despublicar no Studio)\n')
       } else if (answer === 'r') {

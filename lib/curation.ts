@@ -114,6 +114,23 @@ export function groupCreateInputFromPayload(
   return input
 }
 
+/**
+ * Monta o `GroupUpdateInput` que ANEXA uma agenda a um grupo já existente, a
+ * partir de uma sugestão CREATE com grupo alvo (fluxo "adicionar agenda"). Usa
+ * o create aninhado de `groupInfos`, que não toca nas agendas existentes.
+ * `null` se a agenda estiver incompleta — não deveria ocorrer, pois a validação
+ * exige os cinco campos de agenda nesse fluxo.
+ */
+export function addScheduleUpdateFromPayload(
+  payload: SuggestionGroupPayload,
+): GroupUpdateInput | null {
+  const schedule = groupInfoCreateInputFromPayload(payload)
+  if (!schedule) {
+    return null
+  }
+  return { groupInfos: { create: [schedule] } }
+}
+
 export type GroupUpdateParts = {
   group?: GroupUpdateInput
   groupInfo?: GroupInfoUpdateInput

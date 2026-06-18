@@ -9,6 +9,8 @@ export type NewSuggestionNotice = {
   type: SuggestionType
   justification: string
   targetId?: string
+  /** Nome do grupo alvo, para dar contexto além do id opaco. */
+  targetName?: string
   contactEmail?: string
   payload?: SuggestionGroupPayload
 }
@@ -38,7 +40,10 @@ function truncate(text: string, max: number): string {
 /** Campos preenchidos do payload — usado no resumo de um UPDATE. */
 function filledFields(payload: SuggestionGroupPayload): string[] {
   return Object.entries(payload)
-    .filter(([, value]) => value !== undefined && value !== null)
+    .filter(
+      ([key, value]) =>
+        key !== 'scheduleId' && value !== undefined && value !== null,
+    )
     .map(([key]) => key)
 }
 
@@ -46,15 +51,40 @@ function filledFields(payload: SuggestionGroupPayload): string[] {
 export function buildDiscordMessage(
   notice: NewSuggestionNotice,
 ): DiscordWebhookPayload {
-  const lines = [`🚲 **Nova sugestão · ${TYPE_LABEL[notice.type]}**`]
+  // CREATE com grupo alvo = adicionar agenda a um grupo existente
+  const isAddSchedule = notice.type === 'CREATE' && Boolean(notice.targetId)
+  const label = isAddSchedule ? 'nova agenda' : TYPE_LABEL[notice.type]
+  const lines = [`🚲 **Nova sugestão · ${label}**`]
 
-  if (notice.type === 'CREATE' && notice.payload?.name) {
+  if (notice.type === 'CREATE' && !isAddSchedule && notice.payload?.name) {
     lines.push(`**Grupo:** ${notice.payload.name}`)
   } else if (notice.targetId) {
-    lines.push(`**Grupo alvo:** \`${notice.targetId}\``)
+    const ref = notice.targetName
+      ? `${notice.targetName} \`${notice.targetId}\``
+      : `\`${notice.targetId}\``
+    lines.push(`**Grupo alvo:** ${ref}`)
   }
 
-  if (notice.type === 'UPDATE' && notice.payload) {
+  // correção/remoção de UMA agenda específica
+  if (notice.payload?.scheduleId) {
+    lines.push(`**Agenda alvo:** \`${notice.payload.scheduleId}\``)
+  }
+
+  if (isAddSchedule && notice.payload) {
+    const p = notice.payload
+    const parts = [p.day, p.startHour, p.effort].filter(
+      (value): value is string => Boolean(value),
+    )
+    if (p.distanceKm !== undefined) {
+      parts.push(`${p.distanceKm} km`)
+    }
+    if (p.rhythmKmH !== undefined) {
+      parts.push(`${p.rhythmKmH} km/h`)
+    }
+    if (parts.length > 0) {
+      lines.push(`**Agenda:** ${parts.join(' · ')}`)
+    }
+  } else if (notice.type === 'UPDATE' && notice.payload) {
     const fields = filledFields(notice.payload)
     if (fields.length > 0) {
       lines.push(`**Campos:** ${fields.join(', ')}`)
@@ -65,7 +95,9 @@ export function buildDiscordMessage(
   if (notice.contactEmail) {
     lines.push(`**Contato:** ${notice.contactEmail}`)
   }
-  lines.push(`\`id: ${notice.id}\``)
+  // id do registro Suggestion no Hygraph — o curador usa pra achar e avaliar
+  // esta sugestão no Studio/CLI de curadoria; code inline facilita copiar
+  lines.push(`**ID da sugestão:** \`${notice.id}\``)
 
   return {
     content: truncate(lines.join('\n'), DISCORD_CONTENT_LIMIT),
