@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <title>Post 4 — Comunidade & segurança | Slides</title>
+    <link rel="stylesheet" href="_base.css" />
+  </head>
+  <body>
+    <!-- 1 ------------------------------------------------------------- -->
+    <section class="slide slide--dark" data-n="1">
+      <div class="brand"><span class="brand__pin"></span> Pedala Sampa</div>
+      <div class="spacer"></div>
+      <p class="eyebrow">Segurança</p>
+      <h1>Um formulário aberto na internet é um <span class="hl-yellow">alvo</span></h1>
+      <p class="lead" style="margin-top: 44px">
+        Sem login, sem conta, sem e-mail de confirmação.<br />
+        <strong>4 camadas</strong> para não virar depósito de spam.
+      </p>
+      <div class="spacer"></div>
+      <span class="cta">Arraste →</span>
+    </section>
+
+    <!-- 2 ------------------------------------------------------------- -->
+    <section class="slide" data-n="2">
+      <p class="eyebrow">A decisão</p>
+      <h2>Pedir cadastro mataria a contribuição</h2>
+      <p class="lead">
+        Quem tem a informação certa é quem <strong>organiza o pedal</strong>.
+      </p>
+      <p class="lead" style="margin-top: 26px">
+        E essa pessoa não vai criar uma conta num site que ela nunca viu para consertar o horário de
+        saída dela.
+      </p>
+      <div class="spacer"></div>
+      <div class="card">
+        <h3>Ou é fácil, ou não acontece</h3>
+        <p>
+          Então a fricção saiu do usuário e foi para as <strong>camadas de trás</strong>.
+        </p>
+      </div>
+    </section>
+
+    <!-- 3 ------------------------------------------------------------- -->
+    <section class="slide slide--paper" data-n="3">
+      <p class="eyebrow">Camada 1</p>
+      <h2>Honeypot: o 200 mentiroso</h2>
+      <div class="code">
+<span class="c">// server/api/suggestions.post.ts</span>
+<span class="c">// bots preenchem o campo escondido;</span>
+<span class="c">// respondemos 200 sem criar nada</span>
+<span class="k">if</span> (body?.website) {
+  <span class="k">return</span> { ok: <span class="g">true</span>, id: <span class="g">'ok'</span> }
+}</div>
+      <div class="spacer"></div>
+      <p class="lead">
+        Um campo escondido no formulário. Humano não vê, bot preenche.
+      </p>
+      <p class="lead" style="margin-top: 24px">
+        A API responde <strong>200 e não cria nada</strong>. O bot registra sucesso e vai embora
+        feliz.
+      </p>
+      <div class="spacer"></div>
+      <p class="footer-note">Custa 3 linhas e resolve o bot mais simples.</p>
+    </section>
+
+    <!-- 4 ------------------------------------------------------------- -->
+    <section class="slide slide--dark" data-n="4">
+      <p class="eyebrow">A ordem importa</p>
+      <h2 style="font-size: 56px">
+        O Zod roda <span class="hl-yellow">antes</span> do Turnstile
+      </h2>
+      <div class="compare">
+        <div class="compare__cell compare__cell--bad">
+          <p class="compare__tag">✗ Ordem errada</p>
+          <p>
+            Checa o desafio → descobre que faltou um campo → devolve 400.<br /><br />
+            O token <strong>já foi queimado</strong>. O reenvio corrigido falha.
+          </p>
+        </div>
+        <div class="compare__cell compare__cell--good">
+          <p class="compare__tag">✓ Ordem certa</p>
+          <p>
+            Valida os campos → só então checa o desafio.<br /><br />
+            Um 400 de validação <strong>não consome</strong> o token.
+          </p>
+        </div>
+      </div>
+      <div class="spacer"></div>
+      <div class="card">
+        <h3>Por quê</h3>
+        <p>
+          O token do Turnstile é de <strong>uso único</strong>. Na ordem errada, a pessoa preenche
+          tudo de novo e leva erro de novo — estando certa.
+        </p>
+      </div>
+      <div class="spacer"></div>
+      <p class="footer-note">Ordem errada não quebra o teste. Quebra o usuário honesto.</p>
+    </section>
+
+    <!-- 5 ------------------------------------------------------------- -->
+    <section class="slide" data-n="5">
+      <p class="eyebrow">Honestidade</p>
+      <h2>O comentário que deixei no código</h2>
+      <div class="code">
+<span class="c">/**</span>
+<span class="c"> * Rate limit simples por IP, em memória.</span>
+<span class="c"> *</span>
+<span class="c"> * Limitação conhecida: em ambiente serverless</span>
+<span class="c"> * cada instância tem sua própria memória e</span>
+<span class="c"> * instâncias são recicladas, então o limite</span>
+<span class="c"> * vale por instância — é uma barreira contra</span>
+<span class="c"> * rajadas, NÃO uma garantia global.</span>
+<span class="c"> */</span></div>
+      <div class="spacer"></div>
+      <p class="lead">
+        Junto vai a evolução sugerida: Redis compartilhado.
+      </p>
+      <div class="spacer"></div>
+      <div class="card">
+        <h3>Defesa que você não sabe onde falha</h3>
+        <p>não é defesa. É <strong>sorte</strong>.</p>
+      </div>
+    </section>
+
+    <!-- 6 ------------------------------------------------------------- -->
+    <section class="slide slide--dark" data-n="6">
+      <p class="eyebrow">Curadoria</p>
+      <h2>Nenhuma automação minha publica</h2>
+      <div class="stack">
+        <div class="card">
+          <h3 style="color: var(--concrete)">Dois tokens, não um</h3>
+          <p>O público é read-only. A CLI de curadoria usa outro, separado.</p>
+        </div>
+        <div class="card" style="border-left-color: var(--yellow)">
+          <h3 style="color: var(--concrete)">Sem permissão de publish</h3>
+          <p>De propósito. O máximo que a automação faz é criar <strong>rascunho</strong>.</p>
+        </div>
+        <div class="card">
+          <h3 style="color: var(--concrete)">Publicar é humano</h3>
+          <p>No CMS, com o conteúdo na frente.</p>
+        </div>
+      </div>
+      <div class="spacer"></div>
+      <p class="lead">
+        Quando a única forma de ir ao ar é alguém clicando, o pior caso de um bug na automação é
+        <strong>rascunho sujo</strong> — nunca conteúdo errado em produção.
+      </p>
+    </section>
+
+    <!-- 7 ------------------------------------------------------------- -->
+    <section class="slide" data-n="7">
+      <p class="eyebrow">Discord & LGPD</p>
+      <h2>Dado de terceiro é responsabilidade</h2>
+      <div class="list">
+        <div class="item">
+          <span class="item__mark">→</span>
+          <div class="item__body">
+            <h3>allowed_mentions vazio</h3>
+            <p>Texto livre de desconhecido não vai pingar @everyone no meu servidor.</p>
+          </div>
+        </div>
+        <div class="item">
+          <span class="item__mark">→</span>
+          <div class="item__body">
+            <h3>Timeout de 3s, best-effort</h3>
+            <p>Se o Discord cair, a sugestão é salva do mesmo jeito.</p>
+          </div>
+        </div>
+        <div class="item">
+          <span class="item__mark">→</span>
+          <div class="item__body">
+            <h3>Canal privado, documentado</h3>
+            <p>O aviso carrega o e-mail de quem contribuiu.</p>
+          </div>
+        </div>
+      </div>
+      <div class="spacer"></div>
+      <div class="card">
+        <h3>A notificação é minha conveniência</h3>
+        <p>não parte do contrato com quem contribuiu.</p>
+        <p style="margin-top: 18px; font-size: 27px">
+          pedalasampa.netlify.app<br />
+          github.com/adams-alves-dev/pedala-sampa
+        </p>
+      </div>
+    </section>
+
+    <script>
+      const n = new URLSearchParams(location.search).get('slide')
+      if (n) {
+        document.querySelectorAll('.slide').forEach((s) => {
+          if (s.dataset.n !== n) s.remove()
+        })
+        document.body.style.cssText += ';padding:0;gap:0;overflow:hidden;'
+        document.documentElement.style.overflow = 'hidden'
+      }
+    </script>
+  </body>
+</html>

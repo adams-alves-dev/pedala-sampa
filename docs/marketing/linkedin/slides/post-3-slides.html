@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <title>Post 3 — Arquitetura | Slides</title>
+    <link rel="stylesheet" href="_base.css" />
+  </head>
+  <body>
+    <!-- 1 ------------------------------------------------------------- -->
+    <section class="slide slide--dark" data-n="1">
+      <div class="brand"><span class="brand__pin"></span> Pedala Sampa</div>
+      <div class="spacer"></div>
+      <p class="eyebrow">Arquitetura</p>
+      <h1>Prerender é rápido.<br />Também é uma <span class="hl-yellow">foto congelada</span>.</h1>
+      <p class="lead" style="margin-top: 44px">
+        Por que um grupo novo no CMS dá <strong>404</strong> — e por que isso não é bug.
+      </p>
+      <div class="spacer"></div>
+      <span class="cta">Arraste →</span>
+    </section>
+
+    <!-- 2 ------------------------------------------------------------- -->
+    <section class="slide" data-n="2">
+      <p class="eyebrow">Os dois caminhos do dado</p>
+      <h2>Leitura vai direto. Escrita, nunca.</h2>
+      <div class="stack">
+        <div class="card">
+          <h3>Leitura</h3>
+          <p>browser → CMS</p>
+          <p style="margin-top: 14px; font-size: 27px; color: var(--asphalt-58)">
+            Endpoint público, token read-only. Não precisa de servidor no meio.
+          </p>
+        </div>
+        <div class="card" style="border-left-color: var(--yellow)">
+          <h3>Escrita</h3>
+          <p>browser → <strong>server route</strong> → CMS</p>
+          <p style="margin-top: 14px; font-size: 27px; color: var(--asphalt-58)">
+            Todo POST passa por uma função. Sempre.
+          </p>
+        </div>
+      </div>
+      <div class="spacer"></div>
+      <div class="code">
+<span class="c">// composables/useSuggestions.ts</span>
+<span class="c">// o token de escrita NÃO pode existir no bundle</span>
+<span class="c">// do client — por isso nunca vai direto ao CMS</span></div>
+      <div class="spacer"></div>
+      <p class="footer-note">
+        A regra está escrita como comentário, para ninguém "otimizar" isso depois.
+      </p>
+    </section>
+
+    <!-- 3 ------------------------------------------------------------- -->
+    <section class="slide slide--paper" data-n="3">
+      <p class="eyebrow">O problema</p>
+      <h2>Ele descobriu as rotas <span class="hl-red">no build</span></h2>
+      <p class="lead">
+        O Nuxt roda o prerender com <strong>crawlLinks</strong>: começa na home, segue todos os
+        links e gera um HTML para cada rota que encontrou.
+      </p>
+      <div class="spacer"></div>
+      <div class="flow">
+        <div class="flow__step">
+          <span class="flow__n">1</span>
+          <span class="flow__t">Build roda. Crawler visita a home e segue os links.</span>
+        </div>
+        <p class="flow__arrow">↓</p>
+        <div class="flow__step">
+          <span class="flow__n">2</span>
+          <span class="flow__t">Um HTML é gerado por rota descoberta. Site no ar, rápido.</span>
+        </div>
+        <p class="flow__arrow">↓</p>
+        <div class="flow__step" style="border-color: var(--red); background: rgb(216 67 47 / 8%)">
+          <span class="flow__n" style="background: var(--red)">3</span>
+          <span class="flow__t">
+            Grupo novo publicado no CMS. O crawler nunca passou por essa rota.
+          </span>
+        </div>
+        <p class="flow__arrow">↓</p>
+        <div class="flow__step" style="border-color: var(--red); background: rgb(216 67 47 / 8%)">
+          <span class="flow__n" style="background: var(--red)">4</span>
+          <span class="flow__t"><strong>404.</strong> O arquivo não existe no dist.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4 ------------------------------------------------------------- -->
+    <section class="slide slide--dark" data-n="4">
+      <p class="eyebrow">A solução</p>
+      <h2 style="font-size: 58px">
+        E ela <span class="hl-yellow">não está</span> no repositório
+      </h2>
+      <div class="flow">
+        <div class="flow__step" style="background: rgb(220 231 218 / 10%); border-color: var(--concrete)">
+          <span class="flow__n" style="background: var(--yellow); color: var(--asphalt)">1</span>
+          <span class="flow__t" style="color: var(--concrete)">Conteúdo publicado no Hygraph</span>
+        </div>
+        <p class="flow__arrow" style="color: rgb(220 231 218 / 46%)">↓</p>
+        <div class="flow__step" style="background: rgb(220 231 218 / 10%); border-color: var(--concrete)">
+          <span class="flow__n" style="background: var(--yellow); color: var(--asphalt)">2</span>
+          <span class="flow__t" style="color: var(--concrete)">
+            Webhook dispara o <strong>build hook</strong> da Netlify
+          </span>
+        </div>
+        <p class="flow__arrow" style="color: rgb(220 231 218 / 46%)">↓</p>
+        <div class="flow__step" style="background: rgb(220 231 218 / 10%); border-color: var(--concrete)">
+          <span class="flow__n" style="background: var(--yellow); color: var(--asphalt)">3</span>
+          <span class="flow__t" style="color: var(--concrete)">
+            Build roda de novo. Agora a rota existe.
+          </span>
+        </div>
+      </div>
+      <div class="spacer"></div>
+      <div class="card">
+        <h3>Por que virou documentação</h3>
+        <p>
+          É infraestrutura invisível no código e <strong>requisito absoluto</strong> de
+          funcionamento. Exatamente o tipo de coisa que some quando alguém assume o projeto.
+        </p>
+      </div>
+    </section>
+
+    <!-- 5 ------------------------------------------------------------- -->
+    <section class="slide" data-n="5">
+      <p class="eyebrow">Cache</p>
+      <h2>Cada miss custa uma chamada autenticada</h2>
+      <div class="code">
+<span class="c">// server/api/groups/[slug].get.ts</span>
+setResponseHeader(event, <span class="g">'Cache-Control'</span>,
+  <span class="g">'public, max-age=60, s-maxage=300,</span>
+<span class="g">   stale-while-revalidate=600'</span>
+)</div>
+      <div class="spacer"></div>
+      <div class="stack">
+        <div class="card">
+          <h3>max-age=60</h3>
+          <p>O formulário de correção não precisa de dado fresquíssimo.</p>
+        </div>
+        <div class="card">
+          <h3>s-maxage=300</h3>
+          <p>O CDN segura por 5 minutos e absorve o pico.</p>
+        </div>
+        <div class="card">
+          <h3>stale-while-revalidate=600</h3>
+          <p>Ninguém espera revalidação. Serve o velho, atualiza atrás.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6 ------------------------------------------------------------- -->
+    <section class="slide slide--dark" data-n="6">
+      <p class="eyebrow">Leaflet × SSR</p>
+      <h2>Duas armadilhas que custaram tempo</h2>
+      <div class="list">
+        <div class="item">
+          <span class="item__mark">1</span>
+          <div class="item__body">
+            <h3 style="color: var(--concrete)">Import como valor quebra o SSR</h3>
+            <p>
+              O Leaflet toca em <code>window</code> na avaliação do módulo. No escopo do módulo só
+              entram <strong>tipos</strong>; o import real é tardio.
+            </p>
+          </div>
+        </div>
+        <div class="item">
+          <span class="item__mark">2</span>
+          <div class="item__body">
+            <h3 style="color: var(--concrete)">Estilo do pin não pode ser scoped</h3>
+            <p>
+              O Leaflet renderiza marcadores <strong>fora</strong> da árvore do componente. O
+              atributo de escopo do Vue nunca chega neles.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="spacer"></div>
+      <div class="card">
+        <h3>Se eu mudasse uma coisa hoje</h3>
+        <p>
+          Trocar o rebuild inteiro por <strong>ISR via routeRules</strong>. Publicar um grupo não
+          deveria custar um build do site todo.
+        </p>
+        <p style="margin-top: 18px; font-size: 27px">
+          pedalasampa.netlify.app<br />
+          github.com/adams-alves-dev/pedala-sampa
+        </p>
+      </div>
+    </section>
+
+    <script>
+      const n = new URLSearchParams(location.search).get('slide')
+      if (n) {
+        document.querySelectorAll('.slide').forEach((s) => {
+          if (s.dataset.n !== n) s.remove()
+        })
+        document.body.style.cssText += ';padding:0;gap:0;overflow:hidden;'
+        document.documentElement.style.overflow = 'hidden'
+      }
+    </script>
+  </body>
+</html>

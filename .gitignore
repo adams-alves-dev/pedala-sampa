@@ -103,3 +103,6 @@ sw.*
 
 # Local Netlify folder
 .netlify
+
+# Imagens geradas da série do LinkedIn (~9 MB, regeráveis via docs/marketing/linkedin/README.md)
+docs/marketing/linkedin/exports/

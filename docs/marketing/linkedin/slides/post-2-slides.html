@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <title>Post 2 — Design & frontend | Slides</title>
+    <link rel="stylesheet" href="_base.css" />
+  </head>
+  <body>
+    <!-- 1 ------------------------------------------------------------- -->
+    <section class="slide slide--dark" data-n="1">
+      <div class="brand"><span class="brand__pin"></span> Pedala Sampa</div>
+      <div class="spacer"></div>
+      <p class="eyebrow">Design system</p>
+      <h1>Um design system que parece <span class="hl-yellow">placa de rua</span></h1>
+      <p class="lead" style="margin-top: 44px">
+        E o bug de CSS que me custou <strong>7 commits</strong> para acertar um estado de hover.
+      </p>
+      <div class="spacer"></div>
+      <span class="cta">Arraste →</span>
+    </section>
+
+    <!-- 2 ------------------------------------------------------------- -->
+    <section class="slide" data-n="2">
+      <p class="eyebrow">A base</p>
+      <h2>O sistema inteiro cabe em 8 cores</h2>
+      <div class="swatches">
+        <div class="swatch">
+          <span class="swatch__chip" style="background: #1a120b"></span>
+          <span>
+            <span class="swatch__name">Asfalto</span><br />
+            <span class="swatch__hex">#1A120B</span>
+          </span>
+        </div>
+        <div class="swatch">
+          <span class="swatch__chip" style="background: #e8e0d0"></span>
+          <span>
+            <span class="swatch__name">Concreto</span><br />
+            <span class="swatch__hex">#E8E0D0</span>
+          </span>
+        </div>
+        <div class="swatch">
+          <span class="swatch__chip" style="background: #fff8ee"></span>
+          <span>
+            <span class="swatch__name">Papel</span><br />
+            <span class="swatch__hex">#FFF8EE</span>
+          </span>
+        </div>
+        <div class="swatch">
+          <span class="swatch__chip" style="background: #00796b"></span>
+          <span>
+            <span class="swatch__name">Verde ciclovia</span><br />
+            <span class="swatch__hex">#00796B</span>
+          </span>
+        </div>
+        <div class="swatch">
+          <span class="swatch__chip" style="background: #ffb300"></span>
+          <span>
+            <span class="swatch__name">Amarelo placa</span><br />
+            <span class="swatch__hex">#FFB300</span>
+          </span>
+        </div>
+        <div class="swatch">
+          <span class="swatch__chip" style="background: #e53935"></span>
+          <span>
+            <span class="swatch__name">Vermelho alerta</span><br />
+            <span class="swatch__hex">#E53935</span>
+          </span>
+        </div>
+        <div class="swatch">
+          <span class="swatch__chip" style="background: #1565c0"></span>
+          <span>
+            <span class="swatch__name">Azul transporte</span><br />
+            <span class="swatch__hex">#1565C0</span>
+          </span>
+        </div>
+        <div class="swatch">
+          <span class="swatch__chip" style="background: #c8bfa8"></span>
+          <span>
+            <span class="swatch__name">Borda</span><br />
+            <span class="swatch__hex">#C8BFA8</span>
+          </span>
+        </div>
+      </div>
+      <div class="spacer"></div>
+      <div class="card">
+        <h3>A regra que segura o sistema</h3>
+        <p>
+          Nenhum tom fora dessas 8. Precisou de variação? <strong>Deriva em oklch</strong> a partir
+          do token — não inventa um hex novo.
+        </p>
+      </div>
+    </section>
+
+    <!-- 3 ------------------------------------------------------------- -->
+    <section class="slide" data-n="3">
+      <p class="eyebrow">Dois temas</p>
+      <h2>O escuro troca os tiles do mapa</h2>
+      <div class="shots">
+        <div>
+          <p class="shot-label" style="color: var(--green)">Ciclovia</p>
+          <img class="shot" src="../exports/07-home-mobile-ciclovia.png" alt="Tema Ciclovia" />
+        </div>
+        <div>
+          <p class="shot-label" style="color: var(--asphalt-58)">Noturno</p>
+          <img class="shot" src="../exports/08-home-mobile-noturno.png" alt="Tema Noturno" />
+        </div>
+      </div>
+      <div class="spacer"></div>
+      <p style="font-size: 31px">
+        Não basta escurecer a interface. Interface escura com um mapa claro estourando no meio da
+        tela é <strong>pior</strong> que não ter tema escuro.
+      </p>
+    </section>
+
+    <!-- 4 ------------------------------------------------------------- -->
+    <section class="slide slide--paper" data-n="4">
+      <p class="eyebrow">Signature moves</p>
+      <h2>O que dá identidade</h2>
+      <div class="list">
+        <div class="item">
+          <span class="item__mark">→</span>
+          <div class="item__body">
+            <h3>Sombra dura, blur zero</h3>
+            <p>Deslocada e sólida. Parece placa impressa, não Material Design.</p>
+          </div>
+        </div>
+        <div class="item">
+          <span class="item__mark">→</span>
+          <div class="item__body">
+            <h3>CTA em paralelogramo</h3>
+            <p>Cortado com <code>clip-path</code>. É o herói do próximo slide.</p>
+          </div>
+        </div>
+        <div class="item">
+          <span class="item__mark">→</span>
+          <div class="item__body">
+            <h3>Trilho verde de 5px</h3>
+            <p>Na lateral do card. Sinaliza seleção sem precisar de cor de fundo.</p>
+          </div>
+        </div>
+        <div class="item">
+          <span class="item__mark">→</span>
+          <div class="item__body">
+            <h3>Pin teardrop numerado</h3>
+            <p>O selecionado cresce e vira amarelo.</p>
+          </div>
+        </div>
+      </div>
+      <div class="spacer"></div>
+      <div style="display: flex; align-items: center; gap: 34px">
+        <span class="cta">Sugerir grupo</span>
+        <p style="font-size: 27px; color: var(--asphalt-58)">
+          ← este botão<br />é onde tudo deu errado
+        </p>
+      </div>
+    </section>
+
+    <!-- 5 ------------------------------------------------------------- -->
+    <section class="slide slide--dark" data-n="5">
+      <p class="eyebrow">O bug</p>
+      <h2 style="font-size: 58px">
+        <span class="hl-yellow" style="white-space: nowrap">clip-path</span> recorta o
+        <span class="hl-yellow" style="white-space: nowrap">box-shadow</span>
+      </h2>
+      <p class="lead">
+        O hover do CTA amarelo simplesmente não aparecia. A sombra era desenhada e cortada
+        <strong>no mesmo frame</strong>.
+      </p>
+      <p class="lead" style="margin-top: 24px">
+        Sobrava só o deslocamento de 2px. Imperceptível.
+      </p>
+      <div class="spacer"></div>
+      <div class="code">
+<span class="c">/* o elemento é cortado em paralelogramo... */</span>
+.ps-cta {
+  <span class="k">clip-path</span>: polygon(16px 0, 100% 0, ...);
+}
+
+<span class="c">/* ...e a sombra do hover nasce já cortada */</span>
+.ps-cta:hover {
+  <span class="k">box-shadow</span>: 4px 4px 0 var(--green); <span class="c">/* ✗ */</span>
+}</div>
+      <div class="spacer"></div>
+      <p class="footer-note">
+        Recorte e sombra vivem em estágios diferentes do pipeline de pintura.
+      </p>
+    </section>
+
+    <!-- 6 ------------------------------------------------------------- -->
+    <section class="slide" data-n="6">
+      <p class="eyebrow">Duas tentativas</p>
+      <h2>A primeira correção também falhou</h2>
+      <div class="compare">
+        <div class="compare__cell compare__cell--bad">
+          <p class="compare__tag">✗ Tentativa 1</p>
+          <h3 style="margin-bottom: 12px">filter: drop-shadow()</h3>
+          <p>
+            Aplicado <em>depois</em> do recorte — deveria funcionar. Mas não renderiza sobre
+            <code>clip-path</code> em alguns navegadores.
+          </p>
+        </div>
+        <div class="compare__cell compare__cell--good">
+          <p class="compare__tag">✓ Solução</p>
+          <h3 style="margin-bottom: 12px">Camadas na mão</h3>
+          <p>
+            Parar de pedir sombra ao browser e construir a camada como elemento real.
+          </p>
+        </div>
+      </div>
+      <div class="spacer"></div>
+      <div class="code">
+.ps-cta {
+  <span class="k">isolation</span>: isolate; <span class="c">/* escopa o z-index negativo */</span>
+}
+.ps-cta::after  { <span class="c">/* face amarela          */</span> }
+.ps-cta::before { <span class="c">/* bloco verde atrás dela */</span>
+  <span class="k">z-index</span>: -1;
+}
+.ps-cta:hover::before {
+  <span class="g">transform</span>: translate(4px, 4px); <span class="c">/* ✓ desliza */</span>
+}</div>
+      <div class="spacer"></div>
+      <p class="footer-note">Sem filter. Sem box-shadow recortado. Confiável cross-browser.</p>
+    </section>
+
+    <!-- 7 ------------------------------------------------------------- -->
+    <section class="slide slide--dark" data-n="7">
+      <div class="brand"><span class="brand__pin"></span> Pedala Sampa</div>
+      <div class="spacer"></div>
+      <p class="eyebrow">A lição</p>
+      <h2 style="font-size: 58px">
+        Quando você corta um elemento, corta <span class="hl-yellow">tudo</span> que ele desenha
+      </h2>
+      <p class="lead">
+        Inclusive o que você queria que vazasse para fora dele.
+      </p>
+      <div class="spacer"></div>
+      <div class="card">
+        <h3>Mapa colaborativo dos grupos de pedal de SP</h3>
+        <p style="margin-top: 10px">
+          pedalasampa.netlify.app<br />
+          github.com/adams-alves-dev/pedala-sampa
+        </p>
+      </div>
+    </section>
+
+    <script>
+      // ?slide=N exibe só o slide N — facilita capturar um por vez em 1080×1350
+      const n = new URLSearchParams(location.search).get('slide')
+      if (n) {
+        document.querySelectorAll('.slide').forEach((s) => {
+          if (s.dataset.n !== n) s.remove()
+        })
+        // sem padding/scrollbar: a página passa a ter exatamente 1080×1350,
+        // então `take_screenshot --fullPage` sai no tamanho certo
+        document.body.style.cssText += ';padding:0;gap:0;overflow:hidden;'
+        document.documentElement.style.overflow = 'hidden'
+      }
+    </script>
+  </body>
+</html>

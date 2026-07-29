@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <title>Post 5 — Processo & entrega | Slides</title>
+    <link rel="stylesheet" href="_base.css" />
+  </head>
+  <body>
+    <!-- 1 ------------------------------------------------------------- -->
+    <section class="slide slide--dark" data-n="1">
+      <div class="brand"><span class="brand__pin"></span> Pedala Sampa</div>
+      <div class="spacer"></div>
+      <p class="eyebrow">Processo</p>
+      <h1>4 anos parado.<br /><span class="hl-yellow">5 versões</span> em 8 dias.</h1>
+      <div style="margin-top: 56px">
+        <div class="rows" style="background: rgb(220 231 218 / 8%); border-color: var(--concrete)">
+          <div class="row" style="border-color: rgb(220 231 218 / 25%)">
+            <span class="row__v" style="color: var(--yellow)">set/2021</span>
+            <span class="row__t" style="color: var(--concrete)">
+              Último commit. Um app Nuxt 2 que funcionava e que eu abandonei.
+            </span>
+          </div>
+          <div class="row" style="border-color: rgb(220 231 218 / 25%)">
+            <span class="row__v" style="color: rgb(220 231 218 / 46%)">···</span>
+            <span class="row__t" style="color: rgb(220 231 218 / 55%)">
+              4 anos e 8 meses de silêncio
+            </span>
+          </div>
+          <div class="row">
+            <span class="row__v" style="color: var(--yellow)">jun/2026</span>
+            <span class="row__t" style="color: var(--concrete)">
+              Um PR troca Nuxt 2 por Nuxt 3 + TypeScript strict, com o redesign junto.
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="spacer"></div>
+      <p class="lead">A diferença não foi disposição. Foi <strong>tooling</strong>.</p>
+      <div class="spacer"></div>
+      <span class="cta">Arraste →</span>
+    </section>
+
+    <!-- 2 ------------------------------------------------------------- -->
+    <section class="slide" data-n="2">
+      <p class="eyebrow">11 a 18 de junho de 2026</p>
+      <h2>Cinco releases em oito dias</h2>
+      <div class="rows">
+        <div class="row">
+          <span class="row__v">v1.0.0</span>
+          <span class="row__t">Nuxt 3 + redesign no ar</span>
+        </div>
+        <div class="row">
+          <span class="row__v">v1.1.0</span>
+          <span class="row__t">
+            Sugestões da comunidade: criar, corrigir e remover grupo. Ponto de saída pelo mapa.
+          </span>
+        </div>
+        <div class="row">
+          <span class="row__v">v1.2.0</span>
+          <span class="row__t">Ritmo derivado da duração do pedal</span>
+        </div>
+        <div class="row">
+          <span class="row__v">v1.3.0</span>
+          <span class="row__t">
+            CLI de curadoria, avisos no Discord, múltiplas agendas por grupo
+          </span>
+        </div>
+        <div class="row">
+          <span class="row__v">v1.4.0</span>
+          <span class="row__t">Canal de feedback, privacidade e termos</span>
+        </div>
+      </div>
+      <div class="spacer"></div>
+      <p class="footer-note">
+        Versão e changelog gerados a partir dos commits. Eu não escrevi nenhum dos dois.
+      </p>
+    </section>
+
+    <!-- 3 ------------------------------------------------------------- -->
+    <section class="slide slide--dark" data-n="3">
+      <p class="eyebrow">Onde o projeto está hoje</p>
+      <h2>Os números</h2>
+      <div class="stats">
+        <div class="stat">
+          <p class="stat__n">170</p>
+          <p class="stat__label">casos de teste, em 19 arquivos</p>
+        </div>
+        <div class="stat">
+          <p class="stat__n">21</p>
+          <p class="stat__label">módulos puros em lib/</p>
+        </div>
+        <div class="stat">
+          <p class="stat__n">26</p>
+          <p class="stat__label">componentes Vue</p>
+        </div>
+        <div class="stat">
+          <p class="stat__n">10</p>
+          <p class="stat__label">rotas</p>
+        </div>
+      </div>
+      <div class="spacer"></div>
+      <div class="card">
+        <h3>3</h3>
+        <p>
+          server routes. É toda a superfície de backend — o resto é estático.
+        </p>
+      </div>
+    </section>
+
+    <!-- 4 ------------------------------------------------------------- -->
+    <section class="slide slide--paper" data-n="4">
+      <p class="eyebrow">Por que 170 testes foram baratos</p>
+      <h2>A regra de negócio não mora no componente</h2>
+      <div class="compare">
+        <div class="compare__cell compare__cell--bad">
+          <p class="compare__tag">✗ Lógica no componente</p>
+          <p>
+            Montar componente, mockar o CMS, esperar renderização — para testar uma regra de
+            filtro.
+          </p>
+        </div>
+        <div class="compare__cell compare__cell--good">
+          <p class="compare__tag">✓ Lógica em lib/</p>
+          <p>
+            Função pura. Escreve entrada, espera saída. Sem montagem, sem mock, sem espera.
+          </p>
+        </div>
+      </div>
+      <div class="spacer"></div>
+      <p class="lead">
+        Filtros, normalizadores, schemas, formatação de tempo: <strong>21 módulos</strong> que não
+        sabem que existe um browser.
+      </p>
+      <p class="lead" style="margin-top: 26px">
+        O componente fica com o que é dele: apresentar.
+      </p>
+      <div class="spacer"></div>
+      <p class="footer-note">
+        Quando testar dói, quase sempre o problema é onde a lógica está — não a ferramenta.
+      </p>
+    </section>
+
+    <!-- 5 ------------------------------------------------------------- -->
+    <section class="slide" data-n="5">
+      <p class="eyebrow">O pipeline</p>
+      <h2>O erro pego antes do CI</h2>
+      <div class="flow">
+        <div class="flow__step flow__step--accent">
+          <span class="flow__n">1</span>
+          <span class="flow__t"><strong>pre-commit</strong> — lint-staged</span>
+        </div>
+        <p class="flow__arrow">↓</p>
+        <div class="flow__step flow__step--accent">
+          <span class="flow__n">2</span>
+          <span class="flow__t"><strong>commit-msg</strong> — commitlint</span>
+        </div>
+        <p class="flow__arrow">↓</p>
+        <div class="flow__step flow__step--accent">
+          <span class="flow__n">3</span>
+          <span class="flow__t"><strong>pre-push</strong> — typecheck</span>
+        </div>
+        <p class="flow__arrow">↓</p>
+        <div class="flow__step">
+          <span class="flow__n">4</span>
+          <span class="flow__t">CI — lint → typecheck → test</span>
+        </div>
+        <p class="flow__arrow">↓</p>
+        <div class="flow__step">
+          <span class="flow__n">5</span>
+          <span class="flow__t">release-please → tag → deploy</span>
+        </div>
+      </div>
+      <div class="spacer"></div>
+      <p class="lead">
+        CI vermelho é feedback <strong>caro</strong>: chega minutos depois, quando você já está em
+        outra coisa.
+      </p>
+      <p class="lead" style="margin-top: 22px">O mesmo erro pego no commit custa 4 segundos.</p>
+    </section>
+
+    <!-- 6 ------------------------------------------------------------- -->
+    <section class="slide slide--dark" data-n="6">
+      <p class="eyebrow">A pegadinha</p>
+      <h2 style="font-size: 56px">
+        O <span class="hl-yellow">GITHUB_TOKEN</span> não dispara o próprio workflow
+      </h2>
+      <p class="lead">
+        O release-please abre a PR de release. Ao mergear, deveria rodar o workflow que cria a tag.
+      </p>
+      <p class="lead" style="margin-top: 26px">Não roda.</p>
+      <div class="spacer"></div>
+      <div class="card">
+        <h3>Por quê</h3>
+        <p>
+          Ação feita com o token do sistema <strong>não gera evento</strong> para o próprio sistema.
+          É proteção contra loop infinito.
+        </p>
+        <p style="margin-top: 16px">A saída é um PAT.</p>
+      </div>
+      <div class="spacer"></div>
+      <p class="footer-note">
+        Depois do release, back-merge automático de main para develop — para as branches não
+        divergirem sozinhas.
+      </p>
+    </section>
+
+    <!-- 7 ------------------------------------------------------------- -->
+    <section class="slide slide--dark" data-n="7">
+      <div class="brand"><span class="brand__pin"></span> Pedala Sampa</div>
+      <div class="spacer"></div>
+      <p class="eyebrow">O ponto</p>
+      <h2 style="font-size: 60px">
+        Ferramenta boa não é a que faz você ir rápido
+      </h2>
+      <p class="lead">
+        É a que faz o <span class="hl-yellow">certo</span> ser o caminho mais fácil.
+      </p>
+      <div class="spacer"></div>
+      <div class="card">
+        <h3>Mapa colaborativo dos grupos de pedal de SP</h3>
+        <p style="margin-top: 10px">
+          pedalasampa.netlify.app<br />
+          github.com/adams-alves-dev/pedala-sampa
+        </p>
+      </div>
+    </section>
+
+    <script>
+      const n = new URLSearchParams(location.search).get('slide')
+      if (n) {
+        document.querySelectorAll('.slide').forEach((s) => {
+          if (s.dataset.n !== n) s.remove()
+        })
+        document.body.style.cssText += ';padding:0;gap:0;overflow:hidden;'
+        document.documentElement.style.overflow = 'hidden'
+      }
+    </script>
+  </body>
+</html>
