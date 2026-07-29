@@ -14,7 +14,7 @@ arquitetura → a comunidade → o processo.
 | 2 | [O design system](post-2-design.md) | "8 cores. E não entra uma nona." | carrossel, 6 slides |
 | 3 | [Arquitetura](post-3-arquitetura.md) | "Prerender é rápido. Também é uma foto congelada." | carrossel, 6 slides |
 | 4 | [Comunidade & segurança](post-4-comunidade.md) | "Um formulário aberto na internet é um alvo" | carrossel, 7 slides |
-| 5 | [Processo & entrega](post-5-processo.md) | "4 anos parado. 5 versões em 8 dias." | carrossel, 7 slides |
+| 5 | [Processo & entrega](post-5-processo.md) | "5 versões em 8 dias. Nenhum changelog escrito à mão." | carrossel, 7 slides |
 
 ## Cadência sugerida
 
