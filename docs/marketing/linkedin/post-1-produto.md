@@ -27,7 +27,7 @@ Porque um mapa de grupos de pedal só continua verdadeiro se quem pedala puder c
 
 O projeto é open source e roda em Nuxt 3, com Hygraph de CMS e deploy na Netlify.
 
-Nos próximos posts eu abro o capô: o design system que faz o site parecer sinalização de rua, por que um site prerenderizado precisa de um webhook para funcionar, como aceitar contribuição de desconhecido sem virar alvo de spam, e como saíram 5 versões em 8 dias.
+Nos próximos posts eu abro o capô: o design system de 8 cores que sustenta a interface, por que um site prerenderizado precisa de um webhook para funcionar, como aceitar contribuição de desconhecido sem virar alvo de spam, e como saíram 5 versões em 8 dias.
 
 Se você pedala em SP, dá uma olhada — e me conta qual grupo está faltando.
 

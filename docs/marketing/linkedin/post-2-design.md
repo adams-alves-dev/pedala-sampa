@@ -1,53 +1,50 @@
-# Post 2 — Design & frontend
+# Post 2 — O design system
 
-**Tema**: design system próprio, dois temas, e um bug de CSS que levou duas tentativas erradas.
-**Objetivo**: o post mais "frontend puro" da série. É o que melhor vende competência técnica de CSS.
-**Imagem**: carrossel de 7 slides (`slides/post-2-slides.html`).
+**Tema**: um design system pequeno e fechado, e o que a restrição resolve.
+**Objetivo**: mostrar disciplina de frontend sem depender de nenhuma leitura estética do site.
+**Imagem**: carrossel de 6 slides (`slides/post-2-slides.html`).
 
 ---
 
 ## Texto para colar
 
 ```
-O redesign do meu projeto não começou num Figma. Começou num design system escrito em HTML e CSS — com uma regra explícita: recriar fielmente, sem copiar uma linha do protótipo para dentro do Nuxt.
+O design system do meu projeto tem 8 cores.
 
-A direção visual tem nome: wayfinding. Sinalização urbana.
+Oito. E a regra é que não entra uma nona.
 
-Tinta asfalto sobre concreto. Verde de ciclovia para seleção. Amarelo de placa de trânsito para as ações principais. Superfícies anguladas, tipografia grotesca, nada de gradiente.
+Precisou de um tom que não existe? Deriva em oklch a partir de um dos 8 — não inventa um hex novo. É uma restrição chata de propósito, porque é ela que impede um sistema de virar uma paleta de 40 cores em três meses, com quatro cinzas quase iguais que ninguém sabe mais quando usar.
 
-O sistema inteiro cabe em 8 cores. E a regra é dura: nenhum tom fora dessas 8. Precisou de uma variação? Deriva em oklch a partir do token, não inventa um hex novo. É isso que impede um design system de virar uma paleta de 40 cores em três meses.
+Outra decisão que mudou meu jeito de trabalhar: o design não chegou como Figma. Chegou como um design system em HTML e CSS — tokens, componentes e uma página de showcase, tudo funcionando no browser.
 
-Alguns detalhes que dão identidade:
+Com uma regra explícita junto: recriar fielmente em componentes Vue idiomáticos, sem copiar o HTML e o JS do protótipo para dentro do Nuxt.
 
-→ Sombra dura, deslocada, sem blur nenhum. Parece placa impressa, não Material Design.
-→ CTAs cortados em paralelogramo com clip-path.
-→ Card com trilho verde de 5px na lateral.
-→ Pin do mapa em teardrop numerado — o selecionado cresce e vira amarelo.
+Isso resolve o problema clássico do handoff. Não tem "mas no Figma o espaçamento era outro", porque a referência é executável — dá para abrir e inspecionar. E não tem protótipo virando código de produção por preguiça, porque portar é obrigatório.
 
-E dois temas: Ciclovia (claro) e Noturno (escuro). O Noturno não troca só as cores da interface — ele troca os tiles do mapa também. Interface escura com mapa claro estourando no meio da tela seria pior que não ter tema escuro.
+O que o sistema define:
 
-Agora o bug.
+→ 8 cores core, mais tons derivados com papel semântico
+→ Escala tipográfica fechada, de 11px a um clamp que chega a 80px
+→ Espaçamento em base 4px
+→ Dois raios de borda. Dois.
+→ Duas sombras: a de placa, 4px 4px 0 sem blur nenhum, e a de painel, essa sim difusa
 
-O CTA amarelo tem clip-path, para virar paralelogramo. E o hover dele simplesmente não aparecia.
+Os temas são a parte que mais me agrada, porque não são um tema escuro pregado em cima. Cada tema é só um override dos mesmos tokens. Trocar de Ciclovia para Noturno não passa por nenhum componente — passa por um bloco de variáveis CSS.
 
-Descoberta: clip-path RECORTA o box-shadow. A sombra era desenhada e cortada no mesmo frame. Sobrava só o deslocamento de 2px, imperceptível.
+E o tema escuro troca os tiles do mapa junto. Interface escura com um mapa claro estourando no meio da tela é pior do que não ter tema escuro.
 
-Primeira correção: trocar box-shadow por filter: drop-shadow(), que é aplicado depois do recorte.
+A parte que quase ninguém conta sobre design system: o handoff explorou 6 temas e 5 pareamentos de fonte. Foram para produção 2 temas e 1 par.
 
-Isso também falhou. drop-shadow não renderiza em elemento com clip-path em alguns navegadores. De novo, só o movimento aparecia.
+Também tinha um painel de tweaks para ajustar tokens ao vivo. Não foi.
 
-Solução final: parar de pedir sombra ao browser e construir a camada na mão. ::after é a face amarela, ::before é um bloco verde escondido atrás dela. No hover, a placa salta e o bloco desliza para fora. isolation: isolate escopa o z-index negativo.
+Explorar seis e escolher dois não é desperdício — é como você descobre que dois bastam. O desperdício seria implementar os seis porque já estavam prontos.
 
-Sem filter. Sem box-shadow recortado. Funciona em todo navegador.
-
-A lição que fica: recorte e sombra vivem em estágios diferentes do pipeline de pintura. Quando você corta um elemento, você está cortando tudo que ele desenha — inclusive o que você queria que vazasse para fora dele.
-
-Foram 7 commits para um estado de hover. Não me arrependo de nenhum.
+Sistema pequeno não é sistema pobre. É sistema que alguém consegue seguir sem consultar documentação toda vez.
 
 🔗 O site: https://pedalasampa.netlify.app
 🔗 O código: https://github.com/adams-alves-dev/pedala-sampa
 
-#css #frontend #designsystem #vuejs #nuxt
+#designsystem #css #frontend #vuejs #nuxt
 ```
 
 ---
@@ -55,34 +52,33 @@ Foram 7 commits para um estado de hover. Não me arrependo de nenhum.
 ## Variante curta (~700 caracteres)
 
 ```
-Bug de CSS que me custou 7 commits:
+O design system do meu projeto tem 8 cores. E a regra é que não entra uma nona.
 
-Meu CTA amarelo é cortado em paralelogramo com clip-path. O hover dele não aparecia.
+Precisou de um tom novo? Deriva em oklch a partir dos 8. É chato de propósito — é o que impede o sistema de virar uma paleta de 40 cores com quatro cinzas quase iguais.
 
-Motivo: clip-path RECORTA o box-shadow. A sombra era desenhada e cortada no mesmo frame.
+Junto: escala tipográfica fechada, espaçamento base 4px, dois raios de borda, duas sombras.
 
-Tentativa 1 — trocar por filter: drop-shadow(), aplicado depois do recorte. Falhou: drop-shadow não renderiza sobre clip-path em alguns navegadores.
+E os temas são só override dos mesmos tokens. Trocar de claro para escuro não passa por nenhum componente — passa por um bloco de variáveis CSS.
 
-Solução — parar de pedir sombra ao browser. ::after é a face amarela, ::before é um bloco verde atrás. No hover a placa salta e o bloco desliza.
+O handoff explorou 6 temas. Foram para produção 2.
 
-Recorte e sombra vivem em estágios diferentes do pipeline de pintura. Ao cortar o elemento, você corta tudo que ele desenha.
+Sistema pequeno não é sistema pobre. É sistema que alguém consegue seguir sem consultar documentação toda vez.
 
-#css #frontend #webdev
+#designsystem #css #frontend
 ```
 
 ---
 
-## Carrossel — 7 slides
+## Carrossel — 6 slides
 
 | # | Conteúdo |
 |---|---|
-| 1 | **Capa** — "Um design system que parece placa de rua" + subtítulo "e o bug de CSS que me custou 7 commits" |
-| 2 | **Os 8 tokens** — swatches com nome e hex |
-| 3 | **Ciclovia × Noturno** — as duas capturas reais lado a lado, com destaque "os tiles do mapa também mudam" |
-| 4 | **Anatomia do CTA** — o paralelogramo, o clip-path e a sombra dura sem blur |
-| 5 | **O bug** — "clip-path recorta box-shadow" com diagrama antes/depois |
-| 6 | **As duas tentativas** — drop-shadow falhou; pseudo-elementos funcionaram (com o CSS) |
-| 7 | **Fecho** — a lição + links |
+| 1 | **Capa** — "Um design system de 8 cores. E a regra é que não entra uma nona." |
+| 2 | **Os 8 tokens** — swatches com nome e hex + a regra do oklch |
+| 3 | **O que mais o sistema fecha** — tipografia, espaçamento, raios, sombras |
+| 4 | **Tema é override de token** — Ciclovia × Noturno (capturas reais), incluindo os tiles |
+| 5 | **O corte** — 6 temas e 5 pares de fonte explorados; 2 temas e 1 par no ar |
+| 6 | **Fecho** — "sistema pequeno não é sistema pobre" + links |
 
 ---
 
@@ -90,14 +86,20 @@ Recorte e sombra vivem em estágios diferentes do pipeline de pintura. Ao cortar
 
 | Afirmação | Onde se verifica |
 |---|---|
-| Direção "wayfinding / sinalização urbana" | `docs/redesign/design_handoff_pedala_sampa/README.md` |
-| Regra "recriar fielmente, não copiar o protótipo" | Spec do handoff, `docs/redesign/2026-06-02-handoff-implementation-spec.md` |
 | 8 tokens core | `design-system/colors_and_type.css` — asphalt `#1A120B`, concrete `#E8E0D0`, paper `#FFF8EE`, bike-green `#00796B`, sign-yellow `#FFB300`, alert-red `#E53935`, transit-blue `#1565C0`, border `#C8BFA8` |
-| Tema Ciclovia | `design-system/themes.css` — asphalt `#11271C`, concrete `#DCE7DA`, paper `#F4F9F0`, green `#1F8A4C`, yellow `#F2B33A` |
-| Derivar novos tons em oklch | Don'ts do `design-system/README.md` |
-| Tiles trocam no tema escuro | `components/map/MapTileLayer.vue`; **confirmado ao vivo**: o toggle troca a URL para `basemaps.cartocdn.com/dark_all/...` |
-| Archivo + Hanken Grotesk | `nuxt.config.ts` (Google Fonts) e `--font-display` / `--font-body` |
-| clip-path recorta box-shadow | commit `26d9ebd` — *"clip-path RECORTA o box-shadow — a sombra do hover era desenhada e cortada na hora, sobrando só o deslocamento"* |
-| drop-shadow também falhou | commit `c53177d` — *"filter: drop-shadow não renderiza em elemento com clip-path em alguns navegadores"* |
-| Solução por pseudo-elementos | commit `c53177d` — `::after` face amarela, `::before` bloco verde, `isolation: isolate` |
-| 7 commits | `1a54353`, `fe6569b`, `26d9ebd`, `d028842`, `ee14559`, `c53177d`, `a1b9184` |
+| "Nunca invente cores/fontes fora destes tokens" | `design_handoff_pedala_sampa/README.md:29` |
+| Derivar novos tons em oklch | `design-system/README.md:57` — *"New shades should be derived in oklch from the core palette"* |
+| Handoff em HTML/CSS, não Figma | `docs/redesign/design_handoff_pedala_sampa/` — protótipo + `Design System.html` |
+| Regra "recriar fielmente, não copiar o protótipo" | `docs/redesign/2026-06-02-handoff-implementation-spec.md` |
+| Escala tipográfica 11px → clamp 80px | `colors_and_type.css:38-45` — `--text-xs` `0.6875rem` … `--text-3xl` `clamp(2.25rem, 8vw, 5rem)` |
+| Espaçamento base 4px, dois raios | `README.md:65` — `--space-1`=4 … `--space-16`=64; `--radius-sm` 4px, `--radius-md` 6px |
+| Duas sombras | `README.md:65` e `:194` — placa `4px 4px 0` **sem blur**; painel `0 18px 50px rgb(26 18 11 / 18%)` **com** blur |
+| Tema = override de token | `design-system/themes.css` — cada tema é um bloco `[data-theme='…']` redefinindo as mesmas variáveis |
+| Tema escuro troca os tiles | `components/map/MapTileLayer.vue`; **confirmado ao vivo**: o toggle troca a URL para `basemaps.cartocdn.com/dark_all/...` |
+| 6 temas explorados, 2 em produção | `themes.css` — `asfalto`, `ciclovia`, `sol`, `metro`, `coral`, `noturno`; só Ciclovia e Noturno viraram light/dark no app |
+| 5 pares de fonte, 1 em produção | `design-system/themes.css`; produção usa Archivo + Hanken Grotesk (`nuxt.config.ts`) |
+| Painel de tweaks descartado | Decisão registrada no handoff: *"Painel de Tweaks: não vai para produção"* |
+
+⚠️ **Precisão que vale manter**: a regra "sem blur" vale só para a **sombra de placa**. A sombra de
+painel (`0 18px 50px`) é difusa de propósito. O texto do post já faz essa distinção — não
+simplifique para "o sistema não usa blur", porque seria falso.

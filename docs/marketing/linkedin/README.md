@@ -11,7 +11,7 @@ arquitetura → a comunidade → o processo.
 | # | Post | Gancho | Imagem |
 |---|---|---|---|
 | 1 | [O produto](post-1-produto.md) | "Descobrir qual grupo passa perto de você não existia em lugar nenhum" | 2 screenshots |
-| 2 | [Design & frontend](post-2-design.md) | "clip-path recorta o box-shadow" — 7 commits para um hover | carrossel, 7 slides |
+| 2 | [O design system](post-2-design.md) | "8 cores. E não entra uma nona." | carrossel, 6 slides |
 | 3 | [Arquitetura](post-3-arquitetura.md) | "Prerender é rápido. Também é uma foto congelada." | carrossel, 6 slides |
 | 4 | [Comunidade & segurança](post-4-comunidade.md) | "Um formulário aberto na internet é um alvo" | carrossel, 7 slides |
 | 5 | [Processo & entrega](post-5-processo.md) | "4 anos parado. 5 versões em 8 dias." | carrossel, 7 slides |
@@ -44,7 +44,7 @@ cd docs/marketing/linkedin
 # 1440×900 (desktop) e 390×844 (mobile), nos dois temas
 
 # slides dos carrosséis — 1080×1350 (4:5), o formato que mais ocupa a tela no feed
-for deck in 2:7 3:6 4:7 5:7; do
+for deck in 2:6 3:6 4:7 5:7; do
   post="${deck%%:*}"; count="${deck##*:}"
   for n in $(seq 1 "$count"); do
     google-chrome --headless --disable-gpu --hide-scrollbars \
