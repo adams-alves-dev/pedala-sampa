@@ -15,10 +15,12 @@ lançamento de releases.
 ## Fluxo de branches
 
 ```
-feature/*  →  develop  →  main (produção, deploy no Netlify)
+feat/* | fix/* | docs/* | chore/*  →  develop  →  main (produção, deploy no Netlify)
 ```
 
 - Trabalhe sempre em uma branch a partir da `develop`.
+- O prefixo da branch acompanha o tipo do Conventional Commit que ela vai gerar
+  (`feat/`, `fix/`, `docs/`, `chore/`, `refactor/`…).
 - Nunca faça commit direto na `main` — ela é produção e exige Pull Request.
 - `develop` é a branch de integração; `main` reflete o que está no ar.
 
@@ -102,7 +104,7 @@ Usamos **[SemVer](https://semver.org/)** (`MAJOR.MINOR.PATCH`), partindo de
 
 ### Rotina de lançamento
 
-1. Trabalhe em `feature/*` → PR para **`develop`**.
+1. Trabalhe em uma branch a partir da `develop` → PR para **`develop`**.
 2. **Pronto para publicar: PR `develop` → `main` e mergeie.** Esta é a sua única
    decisão de release.
 3. O push na `main` faz o release-please abrir uma **Release PR** (bump no

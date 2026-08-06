@@ -106,6 +106,14 @@ Quer adicionar um grupo ou corrigir uma informação? Use o formulário de contr
 
 Quer contribuir com **código**? Veja o **[CONTRIBUTING.md](CONTRIBUTING.md)**.
 
+## Licença
+
+Distribuído sob a **[Licença MIT](LICENSE)** — pode usar, modificar e
+redistribuir, inclusive comercialmente, mantendo o aviso de copyright.
+
+A licença cobre o **código**. O conteúdo dos grupos de pedal vem de
+contribuições da comunidade e do CMS, e não faz parte deste repositório.
+
 ## Desenvolvedor :computer:
 
 - **Adams Alves** — [github.com/adamsalves](https://github.com/adamsalves)
