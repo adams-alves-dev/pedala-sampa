@@ -3,6 +3,15 @@
   "version": "1.4.0",
   "private": true,
   "license": "MIT",
+  "author": "Adams Alves (https://github.com/adamsalves)",
+  "homepage": "https://pedalasampa.netlify.app",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adams-alves-dev/pedala-sampa.git"
+  },
+  "bugs": {
+    "url": "https://github.com/adams-alves-dev/pedala-sampa/issues"
+  },
   "type": "module",
   "packageManager": "yarn@1.22.22",
   "engines": {
