@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.4.1](https://github.com/adams-alves-dev/pedala-sampa/compare/v1.4.0...v1.4.1) (2026-09-04)
+
+
+### 🐛 Correções
+
+* **deps:** sobe nuxt, @nuxt/devtools e brace-expansion (7 advisories) ([#117](https://github.com/adams-alves-dev/pedala-sampa/issues/117)) ([3e612f5](https://github.com/adams-alves-dev/pedala-sampa/commit/3e612f5c7b16eae62d4d976685c05849435346eb))
+* **map:** usa key da carto nos basemaps raster e cai para tiles osm sem key ([#125](https://github.com/adams-alves-dev/pedala-sampa/issues/125)) ([0b152c6](https://github.com/adams-alves-dev/pedala-sampa/commit/0b152c6e95c4337940d2e532fd7a984a57c7b442))
+
+
+### 📝 Documentação
+
+* adiciona licença MIT ([#116](https://github.com/adams-alves-dev/pedala-sampa/issues/116)) ([73e3274](https://github.com/adams-alves-dev/pedala-sampa/commit/73e3274a3e21a994a2b0c09904d234b8e7460e1d))
+
 ## [1.4.0](https://github.com/adams-alves-dev/pedala-sampa/compare/v1.3.0...v1.4.0) (2026-06-18)
 
 
