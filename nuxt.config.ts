@@ -50,6 +50,7 @@ export default defineNuxtConfig({
         process.env.HYGRAPH_ENDPOINT ||
         'https://api-us-east-1.graphcms.com/v2/cktlzsv381lsy01z0109u52uf/master',
       turnstileSiteKey: process.env.NUXT_PUBLIC_TURNSTILE_SITE_KEY || '',
+      cartoApiKey: process.env.NUXT_PUBLIC_CARTO_API_KEY || '',
     },
   },
   // preset netlify: páginas continuam estáticas (prerender com crawl), mas as
