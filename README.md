@@ -92,6 +92,12 @@ Deploy contínuo no **Netlify** a partir da branch de produção:
 - Comando: `yarn generate` · Publicação: `.output/public`
 - `NODE_VERSION = "22"` fixado no `netlify.toml`
 
+## Decisões de arquitetura
+
+Decisões estruturais do projeto ficam registradas como ADRs (Architecture Decision Records) em [`docs/adr/`](docs/adr/):
+
+- [ADR 0001 — Data layer encapsulado e build estático](docs/adr/0001-data-layer-encapsulado-e-build-estatico.md) — por que a UI não acessa o Hygraph diretamente e por que consultamos os dados no build em vez de em tempo real.
+
 ## Versionamento e releases
 
 O projeto segue **[SemVer](https://semver.org/)** (a partir de `1.0.0`) com
