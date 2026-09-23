@@ -206,6 +206,8 @@ Observações:
 
 ## 10. Arquitetura Técnica
 
+> O racional desta arquitetura (data layer encapsulado + consultas no build, em vez de consultas em tempo real) está documentado no [ADR 0001](../../adr/0001-data-layer-encapsulado-e-build-estatico.md).
+
 ### 10.1 Stack
 
 - Nuxt 3.
