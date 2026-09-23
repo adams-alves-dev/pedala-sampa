@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.4.2](https://github.com/adams-alves-dev/pedala-sampa/compare/v1.4.1...v1.4.2) (2026-09-23)
+
+
+### 📝 Documentação
+
+* adiciona ADR 0001 do data layer encapsulado e build estático ([#134](https://github.com/adams-alves-dev/pedala-sampa/issues/134)) ([dec37dc](https://github.com/adams-alves-dev/pedala-sampa/commit/dec37dc521df90c832435a22253b1fa0277af302))
+* sync ADR 0001 to main ([1e0af93](https://github.com/adams-alves-dev/pedala-sampa/commit/1e0af931aada6e5e6a192ed67c1b9bf9de336b9f))
+
 ## [1.4.1](https://github.com/adams-alves-dev/pedala-sampa/compare/v1.4.0...v1.4.1) (2026-09-04)
 
 
