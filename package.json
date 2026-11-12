@@ -41,7 +41,7 @@
     "nuxt": "^3.21.7",
     "ofetch": "^1.5.1",
     "vue": "latest",
-    "zod": "^4.4.3"
+    "zod": "^4.6.6"
   },
   "devDependencies": {
     "@commitlint/cli": "^21.0.2",
